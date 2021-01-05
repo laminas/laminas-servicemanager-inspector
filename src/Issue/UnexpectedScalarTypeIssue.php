@@ -8,22 +8,19 @@ declare(strict_types=1);
  * @license   https://github.com/laminas/laminas-servicemanager/blob/master/LICENSE.md New BSD License
  */
 
-namespace Laminas\PsalmPlugin\Exception;
+namespace Laminas\PsalmPlugin\Issue;
 
 use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 use LogicException;
+use Psalm\CodeLocation;
+use Psalm\Issue\PluginIssue;
 use Throwable;
 
 use function sprintf;
 
-final class UnexpectedScalarTypeInspectorException extends LogicException implements InspectorExceptionInterface
+final class UnexpectedScalarTypeIssue extends PluginIssue
 {
-    /**
-     * @param string $serviceName
-     * @param string $paramName
-     * @param Throwable|null $previous
-     */
-    public function __construct(string $serviceName, string $paramName, Throwable $previous = null)
+    public function __construct(string $serviceName, string $paramName, CodeLocation $codeLocation)
     {
         parent::__construct(
             sprintf(
@@ -32,8 +29,7 @@ final class UnexpectedScalarTypeInspectorException extends LogicException implem
                 $paramName,
                 $serviceName
             ),
-            0,
-            $previous
+            $codeLocation
         );
     }
 }

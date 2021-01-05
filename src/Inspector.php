@@ -12,8 +12,8 @@ namespace Laminas\PsalmPlugin;
 
 use Laminas\PsalmPlugin\Collector\StatsCollectorInterface;
 use Laminas\PsalmPlugin\DependencyDetector\DependencyDetectorInterface;
-use Laminas\PsalmPlugin\Exception\CircularDependencyInspectorException;
-use Laminas\PsalmPlugin\Exception\MissingFactoryInspectorException;
+use Laminas\PsalmPlugin\Exception\CircularDependencyIssue;
+use Laminas\PsalmPlugin\Exception\MissingFactoryIssue;
 use Throwable;
 
 use function in_array;
@@ -72,7 +72,7 @@ final class Inspector
         $dependencies = $this->dependenciesDetector->detect($dependency->getName());
         foreach ($dependencies as $childDependency) {
             if (! $this->config->hasFactory($childDependency->getName()) && ! $childDependency->isOptional()) {
-                throw new MissingFactoryInspectorException($childDependency->getName());
+                throw new MissingFactoryIssue($childDependency->getName());
             }
 
             $this->walk($childDependency, $instantiationStack);
@@ -88,7 +88,7 @@ final class Inspector
     private function assertNotCircularDependency(Dependency $dependency, array $instantiationStack): void
     {
         if (in_array($dependency->getName(), $instantiationStack, true)) {
-            throw new CircularDependencyInspectorException($dependency->getName(), $instantiationStack);
+            throw new CircularDependencyIssue($dependency->getName(), $instantiationStack);
         }
     }
 }

@@ -8,21 +8,22 @@ declare(strict_types=1);
  * @license   https://github.com/laminas/laminas-servicemanager/blob/master/LICENSE.md New BSD License
  */
 
-namespace Laminas\PsalmPlugin\Exception;
+namespace Laminas\PsalmPlugin\Issue;
 
-use LogicException;
+use Psalm\CodeLocation;
+use Psalm\Issue\PluginIssue;
 use Throwable;
 
 use function sprintf;
 
-final class MissingFactoryInspectorException extends LogicException implements InspectorExceptionInterface
+final class MissingFactoryIssue extends PluginIssue
 {
     /**
      * @param string $name
      * @param Throwable|null $previous
      */
-    public function __construct(string $name, Throwable $previous = null)
+    public function __construct(string $name, CodeLocation $codeLocation)
     {
-        parent::__construct(sprintf("No factory is provided for '%s' service.", $name), 0, $previous);
+        parent::__construct(sprintf("No factory is provided for '%s' service.", $name), $codeLocation);
     }
 }

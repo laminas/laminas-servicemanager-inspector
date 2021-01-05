@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace Laminas\PsalmPlugin;
 
 use Laminas\ServiceManager\Factory\InvokableFactory;
-use Laminas\PsalmPlugin\Exception\MissingFactoryInspectorException;
+use Laminas\PsalmPlugin\Exception\MissingFactoryIssue;
 
 use function class_exists;
 use function in_array;
@@ -111,7 +111,7 @@ final class DependencyConfig
         foreach ($factories as $serviceName => $factoryClass) {
             // I saw some cases with Service::class => null, don't think we should allow it here
             if (! is_string($factoryClass) || ! class_exists($factoryClass)) {
-                throw new MissingFactoryInspectorException($serviceName);
+                throw new MissingFactoryIssue($serviceName);
             }
         }
 

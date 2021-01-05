@@ -13,7 +13,7 @@ namespace Laminas\PsalmPlugin\DependencyDetector;
 use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 use Laminas\PsalmPlugin\DependencyConfig;
 use Laminas\PsalmPlugin\Dependency;
-use Laminas\PsalmPlugin\Exception\UnexpectedScalarTypeInspectorException;
+use Laminas\PsalmPlugin\Exception\UnexpectedScalarTypeIssue;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionParameter;
@@ -103,7 +103,7 @@ final class ReflectionBasedDependencyDetector implements DependencyDetectorInter
         if ($parameter->getClass() === null) {
             // FIXME config param
             if (! $this->isOptional($parameter)) {
-                throw new UnexpectedScalarTypeInspectorException($serviceName, $parameter->getName());
+                throw new UnexpectedScalarTypeIssue($serviceName, $parameter->getName());
             }
         }
     }

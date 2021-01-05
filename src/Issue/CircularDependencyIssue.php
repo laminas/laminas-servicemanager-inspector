@@ -8,14 +8,16 @@ declare(strict_types=1);
  * @license   https://github.com/laminas/laminas-servicemanager/blob/master/LICENSE.md New BSD License
  */
 
-namespace Laminas\PsalmPlugin\Exception;
+namespace Laminas\PsalmPlugin\Issue;
 
-use LogicException;
+use Psalm\CodeLocation;
+use Psalm\Issue\PluginIssue;
 use Throwable;
 
 use function implode;
+use function sprintf;
 
-final class CircularDependencyInspectorException extends LogicException implements InspectorExceptionInterface
+final class CircularDependencyIssue extends PluginIssue
 {
     /**
      * @var array
@@ -27,7 +29,7 @@ final class CircularDependencyInspectorException extends LogicException implemen
      * @param array $instantiationStack
      * @param Throwable|null $previous
      */
-    public function __construct(string $name, array $instantiationStack, ?Throwable $previous = null)
+    public function __construct(string $name, array $instantiationStack, CodeLocation $codeLocation)
     {
         $this->instantiationStack = $instantiationStack;
 
@@ -37,7 +39,7 @@ final class CircularDependencyInspectorException extends LogicException implemen
             $name
         );
 
-        parent::__construct($message, 0, $previous);
+        parent::__construct($message, $codeLocation);
     }
 
     /**
