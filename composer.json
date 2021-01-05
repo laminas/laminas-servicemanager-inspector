@@ -1,6 +1,6 @@
 {
-    "name": "laminas/laminas-{component}",
-    "description": "",
+    "name": "laminas/laminas-psalm-plugin",
+    "description": "Psalm plugin for Laminas",
     "license": "BSD-3-Clause",
     "keywords": [
         "laminas"
@@ -21,12 +21,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Laminas\\{component-namespace}\\": "src//"
+            "Laminas\\LaminasPsalmPlugin\\": "src//"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "LaminasTest\\{component-namespace}\\": "test/"
+            "LaminasTest\\LaminasPsalmPlugin\\": "test/"
         }
     },
     "extra": {
