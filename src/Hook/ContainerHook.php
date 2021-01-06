@@ -10,14 +10,18 @@ declare(strict_types=1);
 
 namespace Laminas\PsalmPlugin\Hook;
 
+use Laminas\PsalmPlugin\UnsatisfiedDependencyRegistry;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Scalar\String_;
 use Psalm\Codebase;
+use Psalm\CodeLocation;
 use Psalm\Context;
 use Psalm\Plugin\Hook\AfterMethodCallAnalysisInterface;
 use Psalm\StatementsSource;
 use Psalm\Type\Union;
+
+use function is_string;
 
 final class ContainerHook implements AfterMethodCallAnalysisInterface
 {
@@ -50,11 +54,15 @@ final class ContainerHook implements AfterMethodCallAnalysisInterface
             $serviceId = (string) $arg->class->getAttribute('resolvedName');
             if ($arg->name != 'class') {
                 $serviceId = constant(sprintf('%s::%s', $serviceId, $arg->name));
+                if (!is_string($serviceId)) {
+                    // @todo throw an issue
+                }
             }
         } else {
             return;
         }
 
-        $this->inspector->walk(new Dependency($serviceId));
+        $codeLoction = new CodeLocation($statements_source, $expr->args[0]->value);
+        UnsatisfiedDependencyRegistry::add($serviceId, $codeLoction);
     }
 }
