@@ -8,51 +8,26 @@ declare(strict_types=1);
  * @license   https://github.com/laminas/laminas-servicemanager/blob/master/LICENSE.md New BSD License
  */
 
-namespace Laminas\PsalmPlugin;
+namespace Laminas\PsalmPlugin\Traverser;
 
-use Laminas\PsalmPlugin\Collector\StatsCollectorInterface;
-use Laminas\PsalmPlugin\DependencyDetector\DependencyDetectorInterface;
-use Laminas\PsalmPlugin\Exception\CircularDependencyIssue;
-use Laminas\PsalmPlugin\Exception\MissingFactoryIssue;
 use Throwable;
 
 use function in_array;
 
-final class Inspector
+final class Traverser
 {
     /**
      * @var DependencyConfig
      */
-    private DependencyConfig $config;
-
-    /**
-     * @var DependencyDetectorInterface
-     */
-    private DependencyDetectorInterface $dependenciesDetector;
-
+    private $config;
 
     /**
      * @param DependencyConfig $config
-     * @param DependencyDetectorInterface $dependenciesDetector
      */
     public function __construct(
-        DependencyConfig $config,
-        DependencyDetectorInterface $dependenciesDetector,
+        DependencyConfig $config
     ) {
         $this->config = $config;
-        $this->dependenciesDetector = $dependenciesDetector;
-    }
-
-    /**
-     * @throws Throwable
-     */
-    public function __invoke(): void
-    {
-        foreach ($this->config->getFactories() as $serviceName => $_) {
-            if ($this->dependenciesDetector->canDetect($serviceName)) {
-                $this->walk(new Dependency($serviceName));
-            }
-        }
     }
 
     /**
@@ -62,12 +37,11 @@ final class Inspector
      * @param array $instantiationStack
      * @throws Throwable
      */
-    public function walk(Dependency $dependency, array $instantiationStack = []): void
+    public function __invoke(Dependency $dependency, array $instantiationStack = []): void
     {
         $this->assertNotCircularDependency($dependency, $instantiationStack);
 
         $instantiationStack[] = $dependency->getName();
-
 
         $dependencies = $this->dependenciesDetector->detect($dependency->getName());
         foreach ($dependencies as $childDependency) {
@@ -75,7 +49,7 @@ final class Inspector
                 throw new MissingFactoryIssue($childDependency->getName());
             }
 
-            $this->walk($childDependency, $instantiationStack);
+            ($this)($childDependency, $instantiationStack);
         }
     }
 

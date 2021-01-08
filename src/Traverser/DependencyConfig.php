@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @license   https://github.com/laminas/laminas-servicemanager/blob/master/LICENSE.md New BSD License
  */
 
-namespace Laminas\PsalmPlugin;
+namespace Laminas\PsalmPlugin\Traverser;
 
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\PsalmPlugin\Exception\MissingFactoryIssue;

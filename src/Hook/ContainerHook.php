@@ -10,7 +10,9 @@ declare(strict_types=1);
 
 namespace Laminas\PsalmPlugin\Hook;
 
-use Laminas\PsalmPlugin\UnsatisfiedDependencyRegistry;
+use Laminas\PsalmPlugin\DependencyDetector\ReflectionBasedDependencyDetector;
+use Laminas\PsalmPlugin\Traverser\Traverser;
+use Laminas\PsalmPlugin\PluginConfig;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Scalar\String_;
@@ -21,16 +23,32 @@ use Psalm\Plugin\Hook\AfterMethodCallAnalysisInterface;
 use Psalm\StatementsSource;
 use Psalm\Type\Union;
 
+use Throwable;
+
 use function is_string;
 
 final class ContainerHook implements AfterMethodCallAnalysisInterface
 {
+    // TODO container methods
     private const CONTAINER_CALLS = [
         'Psr\Container\ContainerInterface::get',
-        'Interop\Container\ContainerInterface',
+        'Interop\Container\ContainerInterface::get',
         'Laminas\ServiceManager\ServiceManager::get',
         'Zend\ServiceManager\ServiceManager::get',
     ];
+
+    private static $dependencyConfig;
+
+    private static $traverser;
+
+    private static $dependencyDetector;
+
+    public static function init(PluginConfig $config): void
+    {
+        self::$dependencyConfig = $config->getDependencyConfig();
+        self::$traverser = new Traverser($config->getDependencyConfig());
+        self::$dependencyDetector = new ReflectionBasedDependencyDetector($config->getDependencyConfig());
+    }
 
     public static function afterMethodCallAnalysis(
         Expr $expr,
@@ -62,7 +80,11 @@ final class ContainerHook implements AfterMethodCallAnalysisInterface
             return;
         }
 
-        $codeLoction = new CodeLocation($statements_source, $expr->args[0]->value);
-        UnsatisfiedDependencyRegistry::add($serviceId, $codeLoction);
+        try {
+            (self::$traverser)($serviceId);
+        } catch (Throwable $e) {
+            // TODO wrap in an issue
+            $codeLoction = new CodeLocation($statements_source, $expr->args[0]->value);
+        }
     }
 }

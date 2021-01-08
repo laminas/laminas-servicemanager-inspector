@@ -8,19 +8,19 @@ declare(strict_types=1);
  * @license   https://github.com/laminas/laminas-servicemanager/blob/master/LICENSE.md New BSD License
  */
 
-namespace Laminas\PsalmPlugin;
+namespace Laminas\PsalmPlugin\Traverser;
 
 final class Dependency
 {
     /**
      * @var string
      */
-    private string $name;
+    private $name;
 
     /**
      * @var bool
      */
-    private bool $isOptional;
+    private $isOptional;
 
     /**
      * @param string $name

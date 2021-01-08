@@ -10,17 +10,21 @@ use Psalm\Plugin\PluginEntryPointInterface;
 use Psalm\Plugin\RegistrationInterface;
 use SimpleXMLElement;
 
+use function class_exists;
+
 /**
- * @todo WIP
+ * TODO WIP
  */
-class Plugin implements PluginEntryPointInterface
+final class Plugin implements PluginEntryPointInterface
 {
     public function __invoke(RegistrationInterface $registration, ?SimpleXMLElement $config = null): void
     {
-        require_once __DIR__ . '/Hook/ContainerHook.php';
+        class_exists(ContainerHook::class, true);
         $registration->registerHooksFromClass(ContainerHook::class);
+        ContainerHook::init(new PluginConfig((array)$config));
 
-        require_once __DIR__ . '/Hook/ConfigHook.php';
+        class_exists(ConfigHook::class, true);
         $registration->registerHooksFromClass(ConfigHook::class);
+        ConfigHook::init(new PluginConfig((array)$config));
     }
 }
