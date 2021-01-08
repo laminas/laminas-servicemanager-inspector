@@ -1,5 +1,5 @@
 {
-    "name": "laminas/laminas-psalm-plugin",
+    "name": "zakirullin/laminas-psalm-plugin",
     "description": "Psalm plugin for Laminas",
     "type": "psalm-plugin",
     "license": "BSD-3-Clause",
