@@ -22,17 +22,17 @@ final class DependencyConfig
     /**
      * @psalm-var array<string, string>
      */
-    private array $factories;
+    private $factories;
 
     /**
      * @psalm-var list<string>
      */
-    private array $invokables;
+    private $invokables;
 
     /**
      * @psalm-var array<string, string>
      */
-    private array $resolvedAliases;
+    private $resolvedAliases;
 
 
     /**
