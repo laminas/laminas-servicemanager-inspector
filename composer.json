@@ -1,6 +1,7 @@
 {
     "name": "laminas/laminas-psalm-plugin",
     "description": "Psalm plugin for Laminas",
+    "type": "psalm-plugin",
     "license": "BSD-3-Clause",
     "keywords": [
         "laminas"
@@ -37,6 +38,9 @@
         },
         "laminas": {
             "module": "Laminas\\{component-namespace}"
+        },
+        "psalm": {
+            "pluginClass": "Laminas\\PsalmPlugin\\Plugin"
         }
     },
     "config": {
