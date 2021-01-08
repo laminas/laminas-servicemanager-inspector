@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Laminas\PsalmPlugin\Hook;
 
-use Laminas\PsalmPlugin\Analyser\ReflectionBasedFactoryAnalyser;
+use Laminas\PsalmPlugin\Analyzer\ReflectionBasedFactoryAnalyzer;
 use Laminas\PsalmPlugin\Traverser\Traverser;
 use Laminas\PsalmPlugin\PluginConfig;
 use PhpParser\Node\Expr;
@@ -47,7 +47,7 @@ final class ContainerHook implements AfterMethodCallAnalysisInterface
     {
         self::$dependencyConfig = $config->getDependencyConfig();
         self::$traverser = new Traverser($config->getDependencyConfig());
-        self::$dependencyDetector = new ReflectionBasedFactoryAnalyser($config->getDependencyConfig());
+        self::$dependencyDetector = new ReflectionBasedFactoryAnalyzer($config->getDependencyConfig());
     }
 
     public static function afterMethodCallAnalysis(

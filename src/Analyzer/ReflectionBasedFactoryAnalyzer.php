@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @license   https://github.com/laminas/laminas-servicemanager/blob/master/LICENSE.md New BSD License
  */
 
-namespace Laminas\PsalmPlugin\Analyser;
+namespace Laminas\PsalmPlugin\Analyzer;
 
 use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 use Laminas\PsalmPlugin\Traverser\DependencyConfig;
@@ -17,7 +17,7 @@ use ReflectionClass;
 use ReflectionException;
 use ReflectionParameter;
 
-final class ReflectionBasedFactoryAnalyser implements FactoryAnalyserInterface
+final class ReflectionBasedFactoryAnalyzer implements FactoryAnalyzerInterface
 {
     /**
      * @var DependencyConfig

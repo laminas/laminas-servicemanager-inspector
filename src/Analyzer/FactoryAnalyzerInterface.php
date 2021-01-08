@@ -8,11 +8,11 @@ declare(strict_types=1);
  * @license   https://github.com/laminas/laminas-servicemanager/blob/master/LICENSE.md New BSD License
  */
 
-namespace Laminas\PsalmPlugin\Analyser;
+namespace Laminas\PsalmPlugin\Analyzer;
 
 use Laminas\PsalmPlugin\Dependency;
 
-interface FactoryAnalyserInterface
+interface FactoryAnalyzerInterface
 {
     /**
      * @param string $serviceName
