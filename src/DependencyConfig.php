@@ -8,9 +8,9 @@ declare(strict_types=1);
  * @license   https://github.com/laminas/laminas-servicemanager/blob/master/LICENSE.md New BSD License
  */
 
-namespace Laminas\PsalmPlugin\Traverser;
+namespace Laminas\PsalmPlugin;
 
-use Laminas\ServiceManager\Factory\InvokableFactory;
+use Laminas\PsalmPlugin\Traverser\AliasResolver;
 use Laminas\PsalmPlugin\Exception\MissingFactoryIssue;
 
 use function class_exists;
@@ -19,6 +19,11 @@ use function is_string;
 
 final class DependencyConfig
 {
+    private const INVOKABLE_FACTORIES = [
+        'Laminas\ServiceManager\Factory\InvokableFactory',
+        'Zend\ServiceManager\Factory\InvokableFactory'
+    ];
+
     /**
      * @psalm-var array<string, string>
      */
@@ -70,7 +75,7 @@ final class DependencyConfig
     {
         $realServiceName = $this->getRealName($serviceName);
         $isInvokable = in_array($realServiceName, $this->invokables, true);
-        $hasInvokableFactory = $this->getFactory($realServiceName) === InvokableFactory::class;
+        $hasInvokableFactory = in_array($this->getFactory($realServiceName), self::INVOKABLE_FACTORIES);
 
         return $isInvokable || $hasInvokableFactory;
     }

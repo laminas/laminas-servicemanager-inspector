@@ -16,7 +16,7 @@ use Throwable;
 
 use function sprintf;
 
-final class UnexpectedScalarTypeInspectorException extends LogicException implements InspectorExceptionInterface
+final class UnexpectedScalarTypeException extends LogicException implements ExceptionInterface
 {
     /**
      * @param string $serviceName

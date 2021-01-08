@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Laminas\PsalmPlugin\Analyzer;
 
-use Laminas\PsalmPlugin\Dependency;
+use Laminas\PsalmPlugin\Traverser\Dependency;
 
 interface FactoryAnalyzerInterface
 {

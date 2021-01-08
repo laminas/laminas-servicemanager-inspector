@@ -10,6 +10,10 @@ declare(strict_types=1);
 
 namespace Laminas\PsalmPlugin\Traverser;
 
+use Laminas\PsalmPlugin\Analyzer\FactoryAnalyzerInterface;
+use Laminas\PsalmPlugin\DependencyConfig;
+use Laminas\PsalmPlugin\Exception\CircularDependencyException;
+use Laminas\PsalmPlugin\Exception\MissingFactoryException;
 use Throwable;
 
 use function in_array;
@@ -22,12 +26,20 @@ final class Traverser
     private $config;
 
     /**
+     * @var FactoryAnalyzerInterface
+     */
+    private $factoryAnalyzer;
+
+    /**
      * @param DependencyConfig $config
+     * @param FactoryAnalyzerInterface $factoryAnalyzer
      */
     public function __construct(
-        DependencyConfig $config
+        DependencyConfig $config,
+        FactoryAnalyzerInterface $factoryAnalyzer
     ) {
         $this->config = $config;
+        $this->factoryAnalyzer = $factoryAnalyzer;
     }
 
     /**
@@ -43,10 +55,10 @@ final class Traverser
 
         $instantiationStack[] = $dependency->getName();
 
-        $dependencies = $this->dependenciesDetector->detect($dependency->getName());
+        $dependencies = $this->factoryAnalyzer->detect($dependency->getName());
         foreach ($dependencies as $childDependency) {
             if (! $this->config->hasFactory($childDependency->getName()) && ! $childDependency->isOptional()) {
-                throw new MissingFactoryIssue($childDependency->getName());
+                throw new MissingFactoryException($childDependency->getName());
             }
 
             ($this)($childDependency, $instantiationStack);
@@ -62,7 +74,7 @@ final class Traverser
     private function assertNotCircularDependency(Dependency $dependency, array $instantiationStack): void
     {
         if (in_array($dependency->getName(), $instantiationStack, true)) {
-            throw new CircularDependencyIssue($dependency->getName(), $instantiationStack);
+            throw new CircularDependencyException($dependency->getName(), $instantiationStack);
         }
     }
 }

@@ -10,22 +10,29 @@ declare(strict_types=1);
 
 namespace Laminas\PsalmPlugin\Analyzer;
 
-use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
-use Laminas\PsalmPlugin\Traverser\DependencyConfig;
+use Laminas\PsalmPlugin\DependencyConfig;
+use Laminas\PsalmPlugin\Traverser\Dependency;
 use Laminas\PsalmPlugin\Exception\UnexpectedScalarTypeIssue;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionParameter;
 
+use function in_array;
+
 final class ReflectionBasedFactoryAnalyzer implements FactoryAnalyzerInterface
 {
+    private const SUPPORTED_FACTORIES = [
+        'Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory',
+        'Zend\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory',
+    ];
+
     /**
      * @var DependencyConfig
      */
-    private DependencyConfig $config;
+    private $config;
 
     /**
-     * @param DependencyConfig $config
+     * @param $config
      */
     public function __construct(DependencyConfig $config)
     {
@@ -63,7 +70,7 @@ final class ReflectionBasedFactoryAnalyzer implements FactoryAnalyzerInterface
     {
         $class = $this->config->getFactory($serviceName);
 
-        return $class === ReflectionBasedAbstractFactory::class;
+        return in_array($class, self::SUPPORTED_FACTORIES, true);
     }
 
     /**

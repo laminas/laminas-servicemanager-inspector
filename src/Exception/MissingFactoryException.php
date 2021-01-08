@@ -15,7 +15,7 @@ use Throwable;
 
 use function sprintf;
 
-final class MissingFactoryInspectorException extends LogicException implements InspectorExceptionInterface
+final class MissingFactoryException extends LogicException implements ExceptionInterface
 {
     /**
      * @param string $name

@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Laminas\PsalmPlugin\Exception;
 
-interface InspectorExceptionInterface
+interface ExceptionInterface
 {
 
 }

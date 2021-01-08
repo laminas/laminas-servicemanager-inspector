@@ -10,8 +10,6 @@ declare(strict_types=1);
 
 namespace Laminas\PsalmPlugin;
 
-use Laminas\PsalmPlugin\Traverser\DependencyConfig;
-
 use function dirname;
 use function getcwd;
 
@@ -32,7 +30,7 @@ final class PluginConfig
 
     public function getDependencyConfig(): DependencyConfig
     {
-        $config = require_once $this->getBaseDir() . $this->configPath;
+        $config = require $this->getBaseDir() . $this->configPath;
 
         return new DependencyConfig($config[$this->configKey] ?? []);
     }
@@ -45,4 +43,3 @@ final class PluginConfig
         return dirname($configPath) . DIRECTORY_SEPARATOR;
     }
 }
-

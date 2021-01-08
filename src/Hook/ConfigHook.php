@@ -24,13 +24,16 @@ final class ConfigHook implements AfterAnalysisInterface
 
     private static $traverser;
 
-    private static $dependencyDetector;
+    private static $factoryAnalyzer;
 
     public static function init(PluginConfig $config): void
     {
         self::$dependencyConfig = $config->getDependencyConfig();
-        self::$traverser = new Traverser($config->getDependencyConfig());
-        self::$dependencyDetector = new ReflectionBasedFactoryAnalyzer($config->getDependencyConfig());
+        self::$traverser = new Traverser(
+            $config->getDependencyConfig(),
+            new ReflectionBasedFactoryAnalyzer($config->getDependencyConfig())
+        );
+        self::$factoryAnalyzer = new ReflectionBasedFactoryAnalyzer($config->getDependencyConfig());
     }
 
     public static function afterAnalysis(
@@ -40,7 +43,7 @@ final class ConfigHook implements AfterAnalysisInterface
         ?SourceControlInfo $source_control_info = null
     ): void {
         foreach (self::$dependencyConfig->getFactories() as $serviceName => $_) {
-            if (self::$dependencyDetector->canDetect($serviceName)) {
+            if (self::$factoryAnalyzer->canDetect($serviceName)) {
                 (self::$traverser)((new Dependency($serviceName)));
             }
         }

@@ -11,8 +11,9 @@ declare(strict_types=1);
 namespace Laminas\PsalmPlugin\Hook;
 
 use Laminas\PsalmPlugin\Analyzer\ReflectionBasedFactoryAnalyzer;
-use Laminas\PsalmPlugin\Traverser\Traverser;
 use Laminas\PsalmPlugin\PluginConfig;
+use Laminas\PsalmPlugin\Traverser\Dependency;
+use Laminas\PsalmPlugin\Traverser\Traverser;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Scalar\String_;
@@ -22,7 +23,6 @@ use Psalm\Context;
 use Psalm\Plugin\Hook\AfterMethodCallAnalysisInterface;
 use Psalm\StatementsSource;
 use Psalm\Type\Union;
-
 use Throwable;
 
 use function is_string;
@@ -41,13 +41,16 @@ final class ContainerHook implements AfterMethodCallAnalysisInterface
 
     private static $traverser;
 
-    private static $dependencyDetector;
+    private static $factoryAnalyzer;
 
     public static function init(PluginConfig $config): void
     {
         self::$dependencyConfig = $config->getDependencyConfig();
-        self::$traverser = new Traverser($config->getDependencyConfig());
-        self::$dependencyDetector = new ReflectionBasedFactoryAnalyzer($config->getDependencyConfig());
+        self::$traverser = new Traverser(
+            $config->getDependencyConfig(),
+            new ReflectionBasedFactoryAnalyzer($config->getDependencyConfig())
+        );
+        self::$factoryAnalyzer = new ReflectionBasedFactoryAnalyzer($config->getDependencyConfig());
     }
 
     public static function afterMethodCallAnalysis(
@@ -69,7 +72,7 @@ final class ContainerHook implements AfterMethodCallAnalysisInterface
         if ($arg instanceof String_) {
             $serviceId = $arg->value;
         } elseif ($arg instanceof ClassConstFetch) {
-            $serviceId = (string) $arg->class->getAttribute('resolvedName');
+            $serviceId = (string)$arg->class->getAttribute('resolvedName');
             if ($arg->name != 'class') {
                 $serviceId = constant(sprintf('%s::%s', $serviceId, $arg->name));
                 if (!is_string($serviceId)) {
@@ -81,10 +84,11 @@ final class ContainerHook implements AfterMethodCallAnalysisInterface
         }
 
         try {
-            (self::$traverser)($serviceId);
+            (self::$traverser)(new Dependency($serviceId));
         } catch (Throwable $e) {
             // TODO wrap in an issue
             $codeLoction = new CodeLocation($statements_source, $expr->args[0]->value);
+            throw $e;
         }
     }
 }

@@ -15,7 +15,7 @@ use Throwable;
 
 use function implode;
 
-final class CircularDependencyInspectorException extends LogicException implements InspectorExceptionInterface
+final class CircularDependencyException extends LogicException implements ExceptionInterface
 {
     /**
      * @var array
