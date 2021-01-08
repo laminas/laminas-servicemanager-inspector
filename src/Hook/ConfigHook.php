@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Laminas\PsalmPlugin\Hook;
 
-use Laminas\PsalmPlugin\DependencyDetector\ReflectionBasedDependencyDetector;
+use Laminas\PsalmPlugin\Analyser\ReflectionBasedFactoryAnalyser;
 use Laminas\PsalmPlugin\Traverser\Dependency;
 use Laminas\PsalmPlugin\Traverser\Traverser;
 use Laminas\PsalmPlugin\PluginConfig;
@@ -30,7 +30,7 @@ final class ConfigHook implements AfterAnalysisInterface
     {
         self::$dependencyConfig = $config->getDependencyConfig();
         self::$traverser = new Traverser($config->getDependencyConfig());
-        self::$dependencyDetector = new ReflectionBasedDependencyDetector($config->getDependencyConfig());
+        self::$dependencyDetector = new ReflectionBasedFactoryAnalyser($config->getDependencyConfig());
     }
 
     public static function afterAnalysis(

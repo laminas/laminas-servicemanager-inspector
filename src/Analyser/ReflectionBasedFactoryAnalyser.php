@@ -8,17 +8,16 @@ declare(strict_types=1);
  * @license   https://github.com/laminas/laminas-servicemanager/blob/master/LICENSE.md New BSD License
  */
 
-namespace Laminas\PsalmPlugin\DependencyDetector;
+namespace Laminas\PsalmPlugin\Analyser;
 
 use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
-use Laminas\PsalmPlugin\DependencyConfig;
-use Laminas\PsalmPlugin\Dependency;
+use Laminas\PsalmPlugin\Traverser\DependencyConfig;
 use Laminas\PsalmPlugin\Exception\UnexpectedScalarTypeIssue;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionParameter;
 
-final class ReflectionBasedDependencyDetector implements DependencyDetectorInterface
+final class ReflectionBasedFactoryAnalyser implements FactoryAnalyserInterface
 {
     /**
      * @var DependencyConfig
