@@ -75,6 +75,6 @@ final class ConfigHook implements AfterAnalysisInterface
             self::$factoryAnalyzer = new ReflectionBasedFactoryAnalyzer(self::getDependencyConfig());
         }
 
-        return self::$traverser;
+        return self::$factoryAnalyzer;
     }
 }

@@ -12,7 +12,6 @@ namespace Laminas\PsalmPlugin;
 
 use Laminas\PsalmPlugin\Exception\MissingFactoryException;
 use Laminas\PsalmPlugin\Traverser\AliasResolver;
-use Zakirullin\Mess\Exception\MessExceptionInterface;
 use Zakirullin\Mess\Mess;
 
 use function class_exists;
@@ -24,6 +23,10 @@ final class DependencyConfig
     private const INVOKABLE_FACTORIES = [
         'Laminas\ServiceManager\Factory\InvokableFactory',
         'Zend\ServiceManager\Factory\InvokableFactory'
+    ];
+
+    private const PREDEFINED_CONTAINER_KEYS = [
+        'config'
     ];
 
     /**
@@ -63,6 +66,10 @@ final class DependencyConfig
     {
         $factories = (new Mess($dependencies))['factories']->findArrayOfStringToString() ?? [];
         foreach ($factories as $serviceName => $factoryClass) {
+            if (in_array($serviceName, self::PREDEFINED_CONTAINER_KEYS, true)) {
+                continue;
+            }
+
             if (! is_string($factoryClass) || ! class_exists($factoryClass)) {
                 throw new MissingFactoryException($serviceName);
             }
@@ -150,6 +157,9 @@ final class DependencyConfig
     public function hasFactory(string $serviceName): bool
     {
         // TODO check if invokable/FactoryInterface
+        if (in_array($serviceName, self::PREDEFINED_CONTAINER_KEYS, true)) {
+            return true;
+        }
 
         return $this->getFactory($serviceName) !== null;
     }

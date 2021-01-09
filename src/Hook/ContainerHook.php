@@ -131,7 +131,7 @@ final class ContainerHook implements AfterMethodCallAnalysisInterface
             self::$factoryAnalyzer =new ReflectionBasedFactoryAnalyzer(self::getDependencyConfig());
         }
 
-        return self::$traverser;
+        return self::$factoryAnalyzer;
     }
 
     private static function buildIssue(Throwable $e, CodeLocation $codeLocation): PluginIssue
