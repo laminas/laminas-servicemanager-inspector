@@ -75,7 +75,7 @@ final class ContainerHook implements AfterMethodCallAnalysisInterface
             $serviceId = (string)$arg->class->getAttribute('resolvedName');
             if ($arg->name != 'class') {
                 $serviceId = constant(sprintf('%s::%s', $serviceId, $arg->name));
-                if (!is_string($serviceId)) {
+                if (! is_string($serviceId)) {
                     // @todo throw an issue
                 }
             }

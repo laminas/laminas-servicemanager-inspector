@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace Laminas\PsalmPlugin\Traverser;
 
+use Laminas\PsalmPlugin\Exception\CyclicAliasException;
+
 final class AliasResolver
 {
     /**
