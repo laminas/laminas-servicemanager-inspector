@@ -23,10 +23,10 @@ final class PluginConfig
 
     private $configKey;
 
-    public function __construct(MessInterface $messedConfig)
+    public function __construct(MessInterface $messedPluginConfig)
     {
-        $this->configPath = $messedConfig['configPath']->getString();
-        $this->configKey = $messedConfig['configServiceManagerKey']->getString();
+        $this->configPath = $messedPluginConfig['configPath']->getString();
+        $this->configKey = $messedPluginConfig['configServiceManagerKey']->getString();
     }
 
     public function getDependencyConfig(): DependencyConfig
