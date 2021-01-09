@@ -42,23 +42,20 @@ final class CyclicAliasException extends LogicException implements ExceptionInte
             )
         );
 
-        if (! $detectedCycles) {
-            return new self(
-                sprintf(
+        $message = sprintf(
+            "Cycles were detected within the provided aliases:\n\n%s\n\n"
+            . "The cycle was detected in the following alias map:\n\n%s",
+            self::printCycles(self::deDuplicateDetectedCycles($detectedCycles)),
+            self::printReferencesMap($aliases)
+        );
+        if (!$detectedCycles) {
+            $message = sprintf(
                     "A cycle was detected within the following aliases map:\n\n%s",
                     self::printReferencesMap($aliases)
-                )
-            );
+                );
         }
 
-        return new self(
-            sprintf(
-                "Cycles were detected within the provided aliases:\n\n%s\n\n"
-                . "The cycle was detected in the following alias map:\n\n%s",
-                self::printCycles(self::deDuplicateDetectedCycles($detectedCycles)),
-                self::printReferencesMap($aliases)
-            )
-        );
+        return new self($message);
     }
 
     /**
@@ -83,22 +80,6 @@ final class CyclicAliasException extends LogicException implements ExceptionInte
         }
 
         return null;
-    }
-
-    /**
-     * @param string[] $aliases
-     *
-     * @return string
-     */
-    private static function printReferencesMap(array $aliases): string
-    {
-        $map = [];
-
-        foreach ($aliases as $alias => $reference) {
-            $map[] = '"' . $alias . '" => "' . $reference . '"';
-        }
-
-        return "[\n" . implode("\n", $map) . "\n]";
     }
 
     /**
@@ -133,6 +114,22 @@ final class CyclicAliasException extends LogicException implements ExceptionInte
         }
 
         return array_values($detectedCyclesByHash);
+    }
+
+    /**
+     * @param string[] $aliases
+     *
+     * @return string
+     */
+    private static function printReferencesMap(array $aliases): string
+    {
+        $map = [];
+
+        foreach ($aliases as $alias => $reference) {
+            $map[] = '"' . $alias . '" => "' . $reference . '"';
+        }
+
+        return "[\n" . implode("\n", $map) . "\n]";
     }
 
     /**
