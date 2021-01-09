@@ -10,19 +10,34 @@ declare(strict_types=1);
 
 namespace Laminas\PsalmPlugin\Exception;
 
+use Laminas\PsalmPlugin\Issue\MissingFactoryIssue;
 use LogicException;
+use Psalm\CodeLocation;
+use Psalm\Issue\PluginIssue;
 use Throwable;
 
 use function sprintf;
 
-final class MissingFactoryException extends LogicException implements ExceptionInterface
+final class MissingFactoryException extends LogicException implements ExceptionInterface, IssuableInterface
 {
+    /**
+     * @var
+     */
+    private $name;
+
     /**
      * @param string $name
      * @param Throwable|null $previous
      */
     public function __construct(string $name, Throwable $previous = null)
     {
+        $this->name = $name;
+
         parent::__construct(sprintf("No factory is provided for '%s' service.", $name), 0, $previous);
+    }
+
+    public function toIssue(CodeLocation $codeLocation): PluginIssue
+    {
+        return new MissingFactoryIssue($this->name, $codeLocation);
     }
 }

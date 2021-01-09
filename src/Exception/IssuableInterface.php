@@ -8,15 +8,12 @@ declare(strict_types=1);
  * @license   https://github.com/laminas/laminas-servicemanager/blob/master/LICENSE.md New BSD License
  */
 
-namespace Laminas\PsalmPlugin\Issue;
+namespace Laminas\PsalmPlugin\Exception;
 
 use Psalm\CodeLocation;
 use Psalm\Issue\PluginIssue;
 
-final class CyclicAliasIssue extends PluginIssue
+interface IssuableInterface
 {
-    public function __construct(string $message, CodeLocation $codeLocation)
-    {
-        parent::__construct($message, $codeLocation);
-    }
+    public function toIssue(CodeLocation $codeLocation): PluginIssue;
 }

@@ -51,10 +51,7 @@ final class Traverser
      */
     public function __invoke(Dependency $dependency, array $instantiationStack = []): void
     {
-        if (! $this->config->hasFactory($dependency->getName()) && ! $dependency->isOptional()) {
-            throw new MissingFactoryException($dependency->getName());
-        }
-
+        $this->assertHasFactory($dependency);
         $this->assertNotCircularDependency($dependency, $instantiationStack);
 
         $instantiationStack[] = $dependency->getName();
@@ -63,6 +60,22 @@ final class Traverser
         foreach ($dependencies as $childDependency) {
             ($this)($childDependency, $instantiationStack);
         }
+    }
+
+    /**
+     * @param Dependency $dependency
+     */
+    private function assertHasFactory(Dependency $dependency): void
+    {
+        if ($this->config->isInvokable($dependency->getName())) {
+            return;
+        }
+
+        if ($this->config->hasFactory($dependency->getName()) || $dependency->isOptional()) {
+            return;
+        }
+
+        throw new MissingFactoryException($dependency->getName());
     }
 
     /**

@@ -13,6 +13,12 @@ namespace Laminas\PsalmPlugin\Hook;
 use Laminas\PsalmPlugin\Analyzer\FactoryAnalyzerInterface;
 use Laminas\PsalmPlugin\Analyzer\ReflectionBasedFactoryAnalyzer;
 use Laminas\PsalmPlugin\DependencyConfig;
+use Laminas\PsalmPlugin\Exception\CircularDependencyException;
+use Laminas\PsalmPlugin\Exception\CyclicAliasException;
+use Laminas\PsalmPlugin\Exception\IssuableInterface;
+use Laminas\PsalmPlugin\Issue\CircularDependencyIssue;
+use Laminas\PsalmPlugin\Issue\CyclicAliasIssue;
+use Laminas\PsalmPlugin\Issue\InvalidConfigIssue;
 use Laminas\PsalmPlugin\PluginConfig;
 use Laminas\PsalmPlugin\Traverser\Dependency;
 use Laminas\PsalmPlugin\Traverser\Traverser;
@@ -22,10 +28,14 @@ use PhpParser\Node\Scalar\String_;
 use Psalm\Codebase;
 use Psalm\CodeLocation;
 use Psalm\Context;
+use Psalm\Issue\PluginIssue;
+use Psalm\IssueBuffer;
 use Psalm\Plugin\Hook\AfterMethodCallAnalysisInterface;
 use Psalm\StatementsSource;
 use Psalm\Type\Union;
 use Throwable;
+
+use Zakirullin\Mess\Exception\MessExceptionInterface;
 
 use function is_string;
 
@@ -89,8 +99,8 @@ final class ContainerHook implements AfterMethodCallAnalysisInterface
             (self::getTraverser())(new Dependency($serviceId));
         } catch (Throwable $e) {
             // TODO wrap in an issue
-            $codeLoction = new CodeLocation($statements_source, $expr->args[0]->value);
-            throw $e;
+            $codeLocation = new CodeLocation($statements_source, $expr->args[0]->value);
+            IssueBuffer::accepts(self::buildIssue($e, $codeLocation));
         }
     }
 
@@ -122,5 +132,14 @@ final class ContainerHook implements AfterMethodCallAnalysisInterface
         }
 
         return self::$traverser;
+    }
+
+    private static function buildIssue(Throwable $e, CodeLocation $codeLocation): PluginIssue
+    {
+        if ($e instanceof IssuableInterface) {
+            return $e->toIssue($codeLocation);
+        }
+
+        return new InvalidConfigIssue($e->getMessage(), $codeLocation);
     }
 }

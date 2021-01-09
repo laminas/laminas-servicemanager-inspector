@@ -48,7 +48,6 @@ final class ConfigHook implements AfterAnalysisInterface
         }
     }
 
-
     private static function getDependencyConfig(): DependencyConfig
     {
         if (self::$dependencyConfig === null) {

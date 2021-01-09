@@ -27,7 +27,7 @@ final class AliasResolver
 
             while (isset($aliases[$name])) {
                 if (isset($visited[$name])) {
-                    throw CyclicAliasException::fromAliasesMap($aliases);
+                    throw new CyclicAliasException($aliases);
                 }
 
                 $visited[$name] = true;

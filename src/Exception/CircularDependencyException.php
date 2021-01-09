@@ -10,18 +10,16 @@ declare(strict_types=1);
 
 namespace Laminas\PsalmPlugin\Exception;
 
+use Laminas\PsalmPlugin\Issue\CircularDependencyIssue;
 use LogicException;
+use Psalm\CodeLocation;
+use Psalm\Issue\PluginIssue;
 use Throwable;
 
 use function implode;
 
-final class CircularDependencyException extends LogicException implements ExceptionInterface
+final class CircularDependencyException extends LogicException implements ExceptionInterface, IssuableInterface
 {
-    /**
-     * @var array
-     */
-    private $instantiationStack;
-
     /**
      * @param string $name
      * @param array $instantiationStack
@@ -40,11 +38,8 @@ final class CircularDependencyException extends LogicException implements Except
         parent::__construct($message, 0, $previous);
     }
 
-    /**
-     * @return array
-     */
-    public function getInstantiationStack(): array
+    public function toIssue(CodeLocation $codeLocation): PluginIssue
     {
-        return $this->instantiationStack;
+        return new CircularDependencyIssue($this->message, $this->instantiationStack, $codeLocation);
     }
 }

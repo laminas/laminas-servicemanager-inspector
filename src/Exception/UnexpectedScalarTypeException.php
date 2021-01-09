@@ -10,12 +10,12 @@ declare(strict_types=1);
 
 namespace Laminas\PsalmPlugin\Exception;
 
-use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 use LogicException;
 use Throwable;
 
 use function sprintf;
 
+// TODO issue
 final class UnexpectedScalarTypeException extends LogicException implements ExceptionInterface
 {
     /**
@@ -27,8 +27,7 @@ final class UnexpectedScalarTypeException extends LogicException implements Exce
     {
         parent::__construct(
             sprintf(
-                "%s cannot resolve scalar '%s' for '%s' service.",
-                ReflectionBasedAbstractFactory::class,
+                "ReflectionBasedAbstractFactory cannot resolve scalar '%s' for '%s' service.",
                 $paramName,
                 $serviceName
             ),

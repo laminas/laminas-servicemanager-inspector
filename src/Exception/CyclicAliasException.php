@@ -10,7 +10,13 @@ declare(strict_types=1);
 
 namespace Laminas\PsalmPlugin\Exception;
 
+use Laminas\PsalmPlugin\Issue\CyclicAliasIssue;
 use LogicException;
+
+use Psalm\CodeLocation;
+
+use Psalm\Issue\PluginIssue;
+use Throwable;
 
 use function array_filter;
 use function array_keys;
@@ -22,16 +28,19 @@ use function serialize;
 use function sort;
 use function sprintf;
 
-final class CyclicAliasException extends LogicException implements ExceptionInterface
+final class CyclicAliasException extends LogicException implements ExceptionInterface, IssuableInterface
 {
-    /**
-     * @psalm-var array<string, string>
-     *
-     * @param string[] $aliases
-     *
-     * @return self
-     */
-    public static function fromAliasesMap(array $aliases): self
+    public function __construct(array $aliases, ?Throwable $previous = null)
+    {
+        parent::__construct(self::getDetailedMessage($aliases), 0, $previous);
+    }
+
+    public function toIssue(CodeLocation $codeLocation): PluginIssue
+    {
+        return new CyclicAliasIssue($this->message, $codeLocation);
+    }
+
+    private static function getDetailedMessage(array $aliases): string
     {
         $detectedCycles = array_filter(
             array_map(
@@ -42,27 +51,26 @@ final class CyclicAliasException extends LogicException implements ExceptionInte
             )
         );
 
-        $message = sprintf(
-            "Cycles were detected within the provided aliases:\n\n%s\n\n"
-            . "The cycle was detected in the following alias map:\n\n%s",
-            self::printCycles(self::deDuplicateDetectedCycles($detectedCycles)),
-            self::printReferencesMap($aliases)
-        );
-
         if (! $detectedCycles) {
-            $message = sprintf(
+            return sprintf(
                 "A cycle was detected within the following aliases map:\n\n%s",
                 self::printReferencesMap($aliases)
             );
         }
 
-        return new self($message);
+        return sprintf(
+            "Cycles were detected within the provided aliases:\n\n%s\n\n"
+            . "The cycle was detected in the following alias map:\n\n%s",
+            self::printCycles(self::deDuplicateDetectedCycles($detectedCycles)),
+            self::printReferencesMap($aliases)
+        );
     }
 
     /**
+     * Retrieves the cycle detected for the given $alias, or `null` if no cycle was detected
+     *
      * @param string[] $aliases
      * @param string $alias
-     *
      * @return array|null
      */
     private static function getCycleFor(array $aliases, $alias): ?array
@@ -76,7 +84,6 @@ final class CyclicAliasException extends LogicException implements ExceptionInte
             }
 
             $cycleCandidate[$targetName] = true;
-
             $targetName = $aliases[$targetName];
         }
 
@@ -84,8 +91,22 @@ final class CyclicAliasException extends LogicException implements ExceptionInte
     }
 
     /**
+     * @param string[] $aliases
+     * @return string
+     */
+    private static function printReferencesMap(array $aliases): string
+    {
+        $map = [];
+
+        foreach ($aliases as $alias => $reference) {
+            $map[] = '"' . $alias . '" => "' . $reference . '"';
+        }
+
+        return "[\n" . implode("\n", $map) . "\n]";
+    }
+
+    /**
      * @param string[][] $detectedCycles
-     *
      * @return string
      */
     private static function printCycles(array $detectedCycles): string
@@ -95,7 +116,6 @@ final class CyclicAliasException extends LogicException implements ExceptionInte
 
     /**
      * @param bool[][] $detectedCycles
-     *
      * @return bool[][] de-duplicated
      */
     private static function deDuplicateDetectedCycles(array $detectedCycles): array
@@ -118,24 +138,7 @@ final class CyclicAliasException extends LogicException implements ExceptionInte
     }
 
     /**
-     * @param string[] $aliases
-     *
-     * @return string
-     */
-    private static function printReferencesMap(array $aliases): string
-    {
-        $map = [];
-
-        foreach ($aliases as $alias => $reference) {
-            $map[] = '"' . $alias . '" => "' . $reference . '"';
-        }
-
-        return "[\n" . implode("\n", $map) . "\n]";
-    }
-
-    /**
      * @param string[] $detectedCycle
-     *
      * @return string
      */
     private static function printCycle(array $detectedCycle): string

@@ -13,7 +13,7 @@ namespace Laminas\PsalmPlugin\Issue;
 use Psalm\CodeLocation;
 use Psalm\Issue\PluginIssue;
 
-final class CyclicAliasIssue extends PluginIssue
+final class InvalidConfigIssue extends PluginIssue
 {
     public function __construct(string $message, CodeLocation $codeLocation)
     {

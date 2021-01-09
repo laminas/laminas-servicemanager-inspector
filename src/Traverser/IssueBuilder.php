@@ -8,15 +8,22 @@ declare(strict_types=1);
  * @license   https://github.com/laminas/laminas-servicemanager/blob/master/LICENSE.md New BSD License
  */
 
-namespace Laminas\PsalmPlugin\Issue;
+namespace Laminas\PsalmPlugin\Traverser;
 
+use Psalm\Codebase;
 use Psalm\CodeLocation;
 use Psalm\Issue\PluginIssue;
+use Throwable;
 
-final class CyclicAliasIssue extends PluginIssue
+final class IssueBuilder
 {
-    public function __construct(string $message, CodeLocation $codeLocation)
+    public static function fromContainerException(Throwable $e, CodeLocation $location): PluginIssue
     {
-        parent::__construct($message, $codeLocation);
+
+    }
+
+    public static function fromConfigException(Throwable $e, Codebase $codebase): PluginIssue
+    {
+
     }
 }

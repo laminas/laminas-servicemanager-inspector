@@ -109,6 +109,8 @@ final class DependencyConfig
     }
 
     /**
+     * TODO it's not a list
+     *
      * @param string $serviceName
      * @return bool
      */
