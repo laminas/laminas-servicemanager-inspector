@@ -10,8 +10,10 @@ declare(strict_types=1);
 
 namespace Laminas\PsalmPlugin;
 
+use Laminas\PsalmPlugin\Exception\MissingFactoryException;
 use Laminas\PsalmPlugin\Traverser\AliasResolver;
-use Laminas\PsalmPlugin\Exception\MissingFactoryIssue;
+
+use Zakirullin\Mess\Mess;
 
 use function class_exists;
 use function in_array;
@@ -111,12 +113,10 @@ final class DependencyConfig
      */
     private function getValidFactories(array $dependencies): array
     {
-        // TODO implement more checks here
-        $factories = $dependencies['factories'] ?? [];
+        $factories = (new Mess($dependencies['factories'] ?? []))->getArrayOfStringToString();
         foreach ($factories as $serviceName => $factoryClass) {
-            // I saw some cases with Service::class => null, don't think we should allow it here
             if (! is_string($factoryClass) || ! class_exists($factoryClass)) {
-                throw new MissingFactoryIssue($serviceName);
+                throw new MissingFactoryException($serviceName);
             }
         }
 
@@ -125,16 +125,16 @@ final class DependencyConfig
 
     /**
      * @psalm-var array<string, string> $dependencies
-     * @psalm-return list<string>
+     * @psalm-return list<string>|<array, string>
      *
      * @param array $dependencies
      * @return array
      */
     private function getValidInvokables(array $dependencies): array
     {
-        // TODO implement more checks here
+        $mess = new Mess($dependencies['invokables'] ?? []);
 
-        return $dependencies['invokables'] ?? [];
+        return $mess->findListOfString() ?? $mess->getArrayOfStringToString() ;
     }
 
     /**
@@ -146,8 +146,8 @@ final class DependencyConfig
      */
     private function getValidResolvedAliases(array $dependencies): array
     {
-        // TODO implement more checks here
+        $aliases = (new Mess($dependencies['aliases'] ?? []))->getListOfString();
 
-        return (new AliasResolver())($dependencies['aliases'] ?? []);
+        return (new AliasResolver())($aliases);
     }
 }

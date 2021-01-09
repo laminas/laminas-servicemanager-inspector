@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace Laminas\PsalmPlugin;
 
+use Zakirullin\Mess\MessInterface;
+
 use function dirname;
 use function getcwd;
 
@@ -21,11 +23,10 @@ final class PluginConfig
 
     private $configKey;
 
-    public function __construct(array $config)
+    public function __construct(MessInterface $messedConfig)
     {
-        // TODO enforce array keys with Mess
-        $this->configPath = $config['configPath'];
-        $this->configKey = $config['configServiceManagerKey'];
+        $this->configPath = $messedConfig['configPath']->getString();
+        $this->configKey = $messedConfig['configServiceManagerKey']->getString();
     }
 
     public function getDependencyConfig(): DependencyConfig

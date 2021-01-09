@@ -15,7 +15,8 @@
     },
     "require": {
         "php": "^7.3",
-        "vimeo/psalm": "^4.3"
+        "vimeo/psalm": "^4.3",
+        "zakirullin/mess": "^0.8"
     },
     "require-dev": {
         "laminas/laminas-coding-standard": "~1.0",
