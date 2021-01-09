@@ -15,10 +15,9 @@ use Laminas\PsalmPlugin\Hook\ContainerHook;
 use Psalm\Exception\ConfigException;
 use Psalm\Plugin\PluginEntryPointInterface;
 use Psalm\Plugin\RegistrationInterface;
-use SimpleXMLElement;
-
 use Throwable;
 use Zakirullin\Mess\Mess;
+use SimpleXMLElement;
 
 use function class_exists;
 

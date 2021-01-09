@@ -19,11 +19,9 @@ final class IssueBuilder
 {
     public static function fromContainerException(Throwable $e, CodeLocation $location): PluginIssue
     {
-
     }
 
     public static function fromConfigException(Throwable $e, Codebase $codebase): PluginIssue
     {
-
     }
 }

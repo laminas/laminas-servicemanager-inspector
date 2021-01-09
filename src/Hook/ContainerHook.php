@@ -128,7 +128,7 @@ final class ContainerHook implements AfterMethodCallAnalysisInterface
     private static function getFactoryAnalyzer(): FactoryAnalyzerInterface
     {
         if (self::$factoryAnalyzer === null) {
-            self::$factoryAnalyzer =new ReflectionBasedFactoryAnalyzer(self::getDependencyConfig());
+            self::$factoryAnalyzer = new ReflectionBasedFactoryAnalyzer(self::getDependencyConfig());
         }
 
         return self::$factoryAnalyzer;
