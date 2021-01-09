@@ -67,11 +67,11 @@ final class Traverser
      */
     private function assertHasFactory(Dependency $dependency): void
     {
-        if ($this->config->isInvokable($dependency->getName())) {
-            return;
-        }
 
-        if ($this->config->hasFactory($dependency->getName()) || $dependency->isOptional()) {
+        $isInvokable =$this->config->isInvokable($dependency->getName());
+        $hasFactory = $this->config->hasFactory($dependency->getName());
+        $isOptional = $dependency->isOptional();
+        if ($isInvokable || $hasFactory || $isOptional) {
             return;
         }
 
