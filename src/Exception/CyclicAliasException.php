@@ -48,11 +48,12 @@ final class CyclicAliasException extends LogicException implements ExceptionInte
             self::printCycles(self::deDuplicateDetectedCycles($detectedCycles)),
             self::printReferencesMap($aliases)
         );
-        if (!$detectedCycles) {
+
+        if (! $detectedCycles) {
             $message = sprintf(
-                    "A cycle was detected within the following aliases map:\n\n%s",
-                    self::printReferencesMap($aliases)
-                );
+                "A cycle was detected within the following aliases map:\n\n%s",
+                self::printReferencesMap($aliases)
+            );
         }
 
         return new self($message);

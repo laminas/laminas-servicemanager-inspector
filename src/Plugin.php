@@ -12,10 +12,12 @@ namespace Laminas\PsalmPlugin;
 
 use Laminas\PsalmPlugin\Hook\ConfigHook;
 use Laminas\PsalmPlugin\Hook\ContainerHook;
+use Psalm\Exception\ConfigException;
 use Psalm\Plugin\PluginEntryPointInterface;
 use Psalm\Plugin\RegistrationInterface;
 use SimpleXMLElement;
 
+use Throwable;
 use Zakirullin\Mess\Mess;
 
 use function class_exists;
@@ -23,6 +25,15 @@ use function class_exists;
 final class Plugin implements PluginEntryPointInterface
 {
     public function __invoke(RegistrationInterface $registration, ?SimpleXMLElement $config = null): void
+    {
+        try {
+            $this->init($registration, $config);
+        } catch (Throwable $e) {
+            throw new ConfigException($e->getMessage(), 0, $e);
+        }
+    }
+
+    private function init(RegistrationInterface  $registration, ?SimpleXMLElement $config = null): void
     {
         $messedPluginConfig = new Mess((array)$config);
         $pluginConfig = new PluginConfig($messedPluginConfig);

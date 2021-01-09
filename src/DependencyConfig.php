@@ -12,6 +12,7 @@ namespace Laminas\PsalmPlugin;
 
 use Laminas\PsalmPlugin\Exception\MissingFactoryException;
 use Laminas\PsalmPlugin\Traverser\AliasResolver;
+use Zakirullin\Mess\Exception\MessExceptionInterface;
 use Zakirullin\Mess\Mess;
 
 use function class_exists;
@@ -72,7 +73,7 @@ final class DependencyConfig
 
     /**
      * @psalm-var array<string, string> $dependencies
-     * @psalm-return list<string>|<array, string>
+     * @psalm-return list<string>|array<string, string>
      *
      * @param array $dependencies
      * @return array
@@ -81,7 +82,8 @@ final class DependencyConfig
     {
         $messedInvokables = (new Mess($dependencies))['invokables'];
 
-        return $messedInvokables->findListOfString() ?? $messedInvokables->findArrayOfStringToString() ?? [];
+        // FIXME findArrayOfStringToString
+        return $messedInvokables->findArray() ?? [];
     }
 
     /**
@@ -93,7 +95,7 @@ final class DependencyConfig
      */
     private function getValidResolvedAliases(array $dependencies): array
     {
-        $aliases = (new Mess($dependencies))['aliases']->findListOfString() ?? [];
+        $aliases = (new Mess($dependencies))['aliases']->findArrayOfStringToString() ?? [];
 
         return (new AliasResolver())($aliases);
     }
