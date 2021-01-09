@@ -10,7 +10,9 @@ declare(strict_types=1);
 
 namespace Laminas\PsalmPlugin\Hook;
 
+use Laminas\PsalmPlugin\Analyzer\FactoryAnalyzerInterface;
 use Laminas\PsalmPlugin\Analyzer\ReflectionBasedFactoryAnalyzer;
+use Laminas\PsalmPlugin\DependencyConfig;
 use Laminas\PsalmPlugin\Traverser\Dependency;
 use Laminas\PsalmPlugin\Traverser\Traverser;
 use Laminas\PsalmPlugin\PluginConfig;
@@ -20,20 +22,17 @@ use Psalm\SourceControl\SourceControlInfo;
 
 final class ConfigHook implements AfterAnalysisInterface
 {
+    private static $pluginConfig;
+
     private static $dependencyConfig;
 
     private static $traverser;
 
     private static $factoryAnalyzer;
 
-    public static function init(PluginConfig $config): void
+    public static function init(PluginConfig $pluginConfig): void
     {
-        self::$dependencyConfig = $config->getDependencyConfig();
-        self::$traverser = new Traverser(
-            $config->getDependencyConfig(),
-            new ReflectionBasedFactoryAnalyzer($config->getDependencyConfig())
-        );
-        self::$factoryAnalyzer = new ReflectionBasedFactoryAnalyzer($config->getDependencyConfig());
+        self::$pluginConfig = $pluginConfig;
     }
 
     public static function afterAnalysis(
@@ -42,10 +41,41 @@ final class ConfigHook implements AfterAnalysisInterface
         array $build_info,
         ?SourceControlInfo $source_control_info = null
     ): void {
-        foreach (self::$dependencyConfig->getFactories() as $serviceName => $_) {
-            if (self::$factoryAnalyzer->canDetect($serviceName)) {
-                (self::$traverser)((new Dependency($serviceName)));
+        foreach (self::getDependencyConfig()->getFactories() as $serviceName => $_) {
+            if (self::getFactoryAnalyzer()->canDetect($serviceName)) {
+                (self::getTraverser())((new Dependency($serviceName)));
             }
         }
+    }
+
+
+    private static function getDependencyConfig(): DependencyConfig
+    {
+        if (self::$dependencyConfig === null) {
+            self::$dependencyConfig = self::$pluginConfig->getDependencyConfig();
+        }
+
+        return self::$dependencyConfig;
+    }
+
+    private static function getTraverser(): Traverser
+    {
+        if (self::$traverser === null) {
+            self::$traverser = new Traverser(
+                self::getDependencyConfig(),
+                new ReflectionBasedFactoryAnalyzer(self::getDependencyConfig())
+            );
+        }
+
+        return self::$traverser;
+    }
+
+    private static function getFactoryAnalyzer(): FactoryAnalyzerInterface
+    {
+        if (self::$factoryAnalyzer === null) {
+            self::$factoryAnalyzer = new ReflectionBasedFactoryAnalyzer(self::getDependencyConfig());
+        }
+
+        return self::$traverser;
     }
 }
