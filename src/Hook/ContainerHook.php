@@ -10,14 +10,9 @@ declare(strict_types=1);
 
 namespace Laminas\PsalmPlugin\Hook;
 
-use Laminas\PsalmPlugin\Analyzer\FactoryAnalyzerInterface;
 use Laminas\PsalmPlugin\Analyzer\ReflectionBasedFactoryAnalyzer;
 use Laminas\PsalmPlugin\DependencyConfig;
-use Laminas\PsalmPlugin\Exception\CircularDependencyException;
-use Laminas\PsalmPlugin\Exception\CyclicAliasException;
 use Laminas\PsalmPlugin\Exception\IssuableInterface;
-use Laminas\PsalmPlugin\Issue\CircularDependencyIssue;
-use Laminas\PsalmPlugin\Issue\CyclicAliasIssue;
 use Laminas\PsalmPlugin\Issue\InvalidConfigIssue;
 use Laminas\PsalmPlugin\PluginConfig;
 use Laminas\PsalmPlugin\Traverser\Dependency;
@@ -34,8 +29,6 @@ use Psalm\Plugin\Hook\AfterMethodCallAnalysisInterface;
 use Psalm\StatementsSource;
 use Psalm\Type\Union;
 use Throwable;
-
-use Zakirullin\Mess\Exception\MessExceptionInterface;
 
 use function is_string;
 
@@ -58,8 +51,6 @@ final class ContainerHook implements AfterMethodCallAnalysisInterface
 
     private static $traverser;
 
-    private static $factoryAnalyzer;
-
     public static function init(PluginConfig $pluginConfig): void
     {
         self::$pluginConfig = $pluginConfig;
@@ -76,7 +67,7 @@ final class ContainerHook implements AfterMethodCallAnalysisInterface
         array &$file_replacements = [],
         Union &$return_type_candidate = null
     ): void {
-        if ($declaring_method_id !== 'Psr\Container\ContainerInterface::get') {
+        if (! in_array($declaring_method_id, self::CONTAINER_CALLS, true)) {
             return;
         }
 
@@ -88,7 +79,7 @@ final class ContainerHook implements AfterMethodCallAnalysisInterface
             if ($arg->name != 'class') {
                 $serviceId = constant(sprintf('%s::%s', $serviceId, $arg->name));
                 if (! is_string($serviceId)) {
-                    // @todo throw an issue
+                    // TODO throw an issue
                 }
             }
         } else {
@@ -123,15 +114,6 @@ final class ContainerHook implements AfterMethodCallAnalysisInterface
         }
 
         return self::$traverser;
-    }
-
-    private static function getFactoryAnalyzer(): FactoryAnalyzerInterface
-    {
-        if (self::$factoryAnalyzer === null) {
-            self::$factoryAnalyzer = new ReflectionBasedFactoryAnalyzer(self::getDependencyConfig());
-        }
-
-        return self::$factoryAnalyzer;
     }
 
     private static function buildIssue(Throwable $e, CodeLocation $codeLocation): PluginIssue

@@ -10,14 +10,21 @@ declare(strict_types=1);
 
 namespace Laminas\PsalmPlugin\Exception;
 
+use Laminas\PsalmPlugin\Issue\UnexpectedScalarTypeIssue;
 use LogicException;
+use Psalm\CodeLocation;
+use Psalm\Issue\PluginIssue;
 use Throwable;
 
 use function sprintf;
 
 // TODO issue
-final class UnexpectedScalarTypeException extends LogicException implements ExceptionInterface
+final class UnexpectedScalarTypeException extends LogicException implements ExceptionInterface, IssuableInterface
 {
+    private $serviceName;
+
+    private $paramName;
+
     /**
      * @param string $serviceName
      * @param string $paramName
@@ -25,6 +32,9 @@ final class UnexpectedScalarTypeException extends LogicException implements Exce
      */
     public function __construct(string $serviceName, string $paramName, Throwable $previous = null)
     {
+        $this->serviceName = $serviceName;
+        $this->paramName = $paramName;
+
         parent::__construct(
             sprintf(
                 "ReflectionBasedAbstractFactory cannot resolve scalar '%s' for '%s' service.",
@@ -34,5 +44,10 @@ final class UnexpectedScalarTypeException extends LogicException implements Exce
             0,
             $previous
         );
+    }
+
+    public function toIssue(CodeLocation $codeLocation): PluginIssue
+    {
+        return new UnexpectedScalarTypeIssue($this->serviceName, $this->paramName, $codeLocation);
     }
 }

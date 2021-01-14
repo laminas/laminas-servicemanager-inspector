@@ -1,7 +1,6 @@
 {
-    "name": "zakirullin/laminas-psalm-plugin",
-    "description": "Psalm plugin for Laminas",
-    "type": "psalm-plugin",
+    "name": "zakirullin/laminas-servicemanager-inspector",
+    "description": "ServiceManager configuration analysis tool",
     "license": "BSD-3-Clause",
     "keywords": [
         "laminas"
@@ -15,13 +14,13 @@
     },
     "require": {
         "php": "^7.3",
-        "vimeo/psalm": "^4.3",
         "zakirullin/mess": "^0.8"
     },
     "require-dev": {
         "laminas/laminas-coding-standard": "~1.0",
         "phpunit/phpunit": "^7.5 || ^8.1",
-        "squizlabs/php_codesniffer": "^2.7"
+        "squizlabs/php_codesniffer": "^2.7",
+        "vimeo/psalm": "^4.3"
     },
     "autoload": {
         "psr-4": {

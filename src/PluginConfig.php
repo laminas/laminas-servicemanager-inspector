@@ -29,9 +29,19 @@ final class PluginConfig
         $this->configKey = $messedPluginConfig['configServiceManagerKey']->getString();
     }
 
+    public function getRelativeDependencyConfigPath(): string
+    {
+        return $this->configPath;
+    }
+
+    public function getDependencyConfigPath(): string
+    {
+        return $this->getBaseDir() . $this->configPath;
+    }
+
     public function getDependencyConfig(): DependencyConfig
     {
-        $config = require $this->getBaseDir() . $this->configPath;
+        $config = require $this->getDependencyConfigPath();
 
         return new DependencyConfig($config[$this->configKey] ?? []);
     }

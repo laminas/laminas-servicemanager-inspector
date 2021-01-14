@@ -24,8 +24,7 @@ final class UnexpectedScalarTypeIssue extends PluginIssue
     {
         parent::__construct(
             sprintf(
-                "%s cannot resolve scalar '%s' for '%s' service.",
-                ReflectionBasedAbstractFactory::class,
+                "ReflectionBasedAbstractFactory cannot resolve scalar '%s' for '%s' service.",
                 $paramName,
                 $serviceName
             ),
