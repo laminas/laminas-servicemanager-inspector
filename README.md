@@ -1,4 +1,4 @@
-# laminas-psalm-plugin
+# laminas-servicemanager-inspector
 
 [![Build Status](https://travis-ci.com/laminas/laminas-servicemanager.svg?branch=master)](https://travis-ci.com/laminas/laminas-{component})
 [![Coverage Status](https://coveralls.io/repos/github/laminas/laminas-servicemanager/badge.svg?branch=master)](https://coveralls.io/github/laminas/laminas-{component}?branch=master)
