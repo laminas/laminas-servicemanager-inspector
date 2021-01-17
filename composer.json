@@ -13,7 +13,7 @@
         "forum": "https://discourse.laminas.dev/"
     },
     "require": {
-        "php": "^7.3",
+        "php": "^7.3|^8.0",
         "zakirullin/mess": "^0.8"
     },
     "require-dev": {
