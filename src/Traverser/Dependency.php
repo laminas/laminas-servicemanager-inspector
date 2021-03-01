@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @license   https://github.com/laminas/laminas-servicemanager/blob/master/LICENSE.md New BSD License
  */
 
-namespace Laminas\PsalmPlugin\Traverser;
+namespace Laminas\ServiceManager\Inspector\Traverser;
 
 final class Dependency
 {

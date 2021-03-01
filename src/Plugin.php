@@ -8,10 +8,10 @@ declare(strict_types=1);
  * @license   https://github.com/laminas/laminas-servicemanager/blob/master/LICENSE.md New BSD License
  */
 
-namespace Laminas\PsalmPlugin;
+namespace Laminas\ServiceManager\Inspector;
 
-use Laminas\PsalmPlugin\Hook\ConfigHook;
-use Laminas\PsalmPlugin\Hook\ContainerHook;
+use Laminas\ServiceManager\Inspector\Hook\ConfigHook;
+use Laminas\ServiceManager\Inspector\Hook\ContainerHook;
 use Psalm\Exception\ConfigException;
 use Psalm\Plugin\PluginEntryPointInterface;
 use Psalm\Plugin\RegistrationInterface;

@@ -8,9 +8,9 @@ declare(strict_types=1);
  * @license   https://github.com/laminas/laminas-servicemanager/blob/master/LICENSE.md New BSD License
  */
 
-namespace Laminas\PsalmPlugin\Traverser;
+namespace Laminas\ServiceManager\Inspector\Traverser;
 
-use Laminas\PsalmPlugin\Exception\CyclicAliasException;
+use Laminas\ServiceManager\Inspector\Exception\CyclicAliasException;
 
 final class AliasResolver
 {

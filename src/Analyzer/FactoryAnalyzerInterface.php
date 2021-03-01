@@ -8,9 +8,9 @@ declare(strict_types=1);
  * @license   https://github.com/laminas/laminas-servicemanager/blob/master/LICENSE.md New BSD License
  */
 
-namespace Laminas\PsalmPlugin\Analyzer;
+namespace Laminas\ServiceManager\Inspector\Analyzer;
 
-use Laminas\PsalmPlugin\Traverser\Dependency;
+use Laminas\ServiceManager\Inspector\Traverser\Dependency;
 
 interface FactoryAnalyzerInterface
 {

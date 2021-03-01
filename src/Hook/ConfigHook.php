@@ -8,16 +8,16 @@ declare(strict_types=1);
  * @license   https://github.com/laminas/laminas-servicemanager/blob/master/LICENSE.md New BSD License
  */
 
-namespace Laminas\PsalmPlugin\Hook;
+namespace Laminas\ServiceManager\Inspector\Hook;
 
-use Laminas\PsalmPlugin\Analyzer\FactoryAnalyzerInterface;
-use Laminas\PsalmPlugin\Analyzer\ReflectionBasedFactoryAnalyzer;
-use Laminas\PsalmPlugin\DependencyConfig;
-use Laminas\PsalmPlugin\Exception\IssuableInterface;
-use Laminas\PsalmPlugin\Issue\InvalidConfigIssue;
-use Laminas\PsalmPlugin\Traverser\Dependency;
-use Laminas\PsalmPlugin\Traverser\Traverser;
-use Laminas\PsalmPlugin\PluginConfig;
+use Laminas\ServiceManager\Inspector\Analyzer\FactoryAnalyzerInterface;
+use Laminas\ServiceManager\Inspector\Analyzer\ReflectionBasedFactoryAnalyzer;
+use Laminas\ServiceManager\Inspector\DependencyConfig;
+use Laminas\ServiceManager\Inspector\Exception\IssuableInterface;
+use Laminas\ServiceManager\Inspector\Issue\InvalidConfigIssue;
+use Laminas\ServiceManager\Inspector\Traverser\Dependency;
+use Laminas\ServiceManager\Inspector\Traverser\Traverser;
+use Laminas\ServiceManager\Inspector\PluginConfig;
 use Psalm\Codebase;
 use Psalm\CodeLocation;
 use Psalm\Context;

@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @license   https://github.com/laminas/laminas-servicemanager/blob/master/LICENSE.md New BSD License
  */
 
-namespace Laminas\PsalmPlugin\Issue;
+namespace Laminas\ServiceManager\Inspector\Issue;
 
 use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 use LogicException;

@@ -23,18 +23,15 @@
     },
     "autoload": {
         "psr-4": {
-            "Laminas\\PsalmPlugin\\": "src//"
+            "Laminas\\ServiceManager\\Inspector\\": "src//"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "LaminasTest\\PsalmPlugin\\": "test/"
+            "LaminasTest\\ServiceManager\\Inspector\\": "test/"
         }
     },
     "extra": {
-        "branch-alias": {
-            "dev-master": "1.0.x-dev"
-        },
         "psalm": {
             "pluginClass": "Laminas\\PsalmPlugin\\Plugin"
         }

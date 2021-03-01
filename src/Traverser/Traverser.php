@@ -8,12 +8,12 @@ declare(strict_types=1);
  * @license   https://github.com/laminas/laminas-servicemanager/blob/master/LICENSE.md New BSD License
  */
 
-namespace Laminas\PsalmPlugin\Traverser;
+namespace Laminas\ServiceManager\Inspector\Traverser;
 
-use Laminas\PsalmPlugin\Analyzer\FactoryAnalyzerInterface;
-use Laminas\PsalmPlugin\DependencyConfig;
-use Laminas\PsalmPlugin\Exception\CircularDependencyException;
-use Laminas\PsalmPlugin\Exception\MissingFactoryException;
+use Laminas\ServiceManager\Inspector\Analyzer\FactoryAnalyzerInterface;
+use Laminas\ServiceManager\Inspector\DependencyConfig;
+use Laminas\ServiceManager\Inspector\Exception\CircularDependencyException;
+use Laminas\ServiceManager\Inspector\Exception\MissingFactoryException;
 use Throwable;
 
 use function in_array;

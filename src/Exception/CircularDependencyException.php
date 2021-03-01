@@ -8,9 +8,9 @@ declare(strict_types=1);
  * @license   https://github.com/laminas/laminas-servicemanager/blob/master/LICENSE.md New BSD License
  */
 
-namespace Laminas\PsalmPlugin\Exception;
+namespace Laminas\ServiceManager\Inspector\Exception;
 
-use Laminas\PsalmPlugin\Issue\CircularDependencyIssue;
+use Laminas\ServiceManager\Inspector\Issue\CircularDependencyIssue;
 use LogicException;
 use Psalm\CodeLocation;
 use Psalm\Issue\PluginIssue;

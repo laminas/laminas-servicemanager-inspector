@@ -8,10 +8,10 @@ declare(strict_types=1);
  * @license   https://github.com/laminas/laminas-servicemanager/blob/master/LICENSE.md New BSD License
  */
 
-namespace Laminas\PsalmPlugin;
+namespace Laminas\ServiceManager\Inspector;
 
-use Laminas\PsalmPlugin\Exception\MissingFactoryException;
-use Laminas\PsalmPlugin\Traverser\AliasResolver;
+use Laminas\ServiceManager\Inspector\Exception\MissingFactoryException;
+use Laminas\ServiceManager\Inspector\Traverser\AliasResolver;
 use Zakirullin\Mess\Mess;
 
 use function class_exists;
