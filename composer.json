@@ -1,5 +1,5 @@
 {
-    "name": "zakirullin/laminas-servicemanager-inspector",
+    "name": "laminas/laminas-servicemanager-inspector",
     "description": "ServiceManager configuration analysis tool",
     "license": "BSD-3-Clause",
     "keywords": [
