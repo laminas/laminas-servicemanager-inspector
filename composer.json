@@ -6,20 +6,19 @@
         "laminas"
     ],
     "support": {
-        "docs": "https://docs.laminas.dev/laminas-{component}/",
-        "issues": "https://github.com/laminas/laminas-{component}/issues",
-        "source": "https://github.com/laminas/laminas-{component}",
-        "rss": "https://github.com/laminas/laminas-{component}/releases.atom",
+        "docs": "https://docs.laminas.dev/laminas-servicemanager-inspector/",
+        "issues": "https://github.com/laminas/laminas-servicemanager-inspector/issues",
+        "source": "https://github.com/laminas/laminas-servicemanager-inspector",
+        "rss": "https://github.com/laminas/laminas-servicemanager-inspector/releases.atom",
         "forum": "https://discourse.laminas.dev/"
     },
     "require": {
-        "php": "^7.3|^8",
+        "php": "^7.3 | ~8.0.0",
         "zakirullin/mess": "^0.8"
     },
     "require-dev": {
-        "laminas/laminas-coding-standard": "~1.0",
-        "phpunit/phpunit": "^7.5 || ^8.1",
-        "squizlabs/php_codesniffer": "^2.7",
+        "laminas/laminas-coding-standard": "~2.1.4",
+        "phpunit/phpunit": "^9.3",
         "vimeo/psalm": "^4.3"
     },
     "autoload": {
@@ -29,15 +28,12 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "LaminasTest\\LaminasPsalmPlugin\\": "test/"
+            "LaminasTest\\PsalmPlugin\\": "test/"
         }
     },
     "extra": {
         "branch-alias": {
             "dev-master": "1.0.x-dev"
-        },
-        "laminas": {
-            "module": "Laminas\\{component-namespace}"
         },
         "psalm": {
             "pluginClass": "Laminas\\PsalmPlugin\\Plugin"
