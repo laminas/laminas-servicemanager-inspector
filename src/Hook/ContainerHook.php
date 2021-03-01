@@ -1,12 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * @see       https://github.com/laminas/laminas-servicemanager-inspector for the canonical source repository
  * @copyright https://github.com/laminas/laminas-servicemanager-inspector/blob/master/COPYRIGHT.md
  * @license   https://github.com/laminas/laminas-servicemanager-inspector/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace Laminas\ServiceManager\Inspector\Hook;
 
@@ -30,7 +30,10 @@ use Psalm\StatementsSource;
 use Psalm\Type\Union;
 use Throwable;
 
+use function constant;
+use function in_array;
 use function is_string;
+use function sprintf;
 
 final class ContainerHook implements AfterMethodCallAnalysisInterface
 {
@@ -42,13 +45,13 @@ final class ContainerHook implements AfterMethodCallAnalysisInterface
         'Zend\ServiceManager\ServiceManager::get',
     ];
 
-    /**
-     * @var PluginConfig
-     */
+    /** @var PluginConfig */
     private static $pluginConfig;
 
+    /** @var null|DependencyConfig */
     private static $dependencyConfig;
 
+    /** @var null|Traverser */
     private static $traverser;
 
     public static function init(PluginConfig $pluginConfig): void
@@ -58,16 +61,16 @@ final class ContainerHook implements AfterMethodCallAnalysisInterface
 
     public static function afterMethodCallAnalysis(
         Expr $expr,
-        string $method_id,
-        string $appearing_method_id,
-        string $declaring_method_id,
+        string $methodId,
+        string $appearingMethodId,
+        string $declaringMethodId,
         Context $context,
-        StatementsSource $statements_source,
+        StatementsSource $statementsSource,
         Codebase $codebase,
-        array &$file_replacements = [],
-        Union &$return_type_candidate = null
+        array &$fileReplacements = [],
+        ?Union &$returnTypeCandidate = null
     ): void {
-        if (! in_array($declaring_method_id, self::CONTAINER_CALLS, true)) {
+        if (! in_array($declaringMethodId, self::CONTAINER_CALLS, true)) {
             return;
         }
 
@@ -75,9 +78,10 @@ final class ContainerHook implements AfterMethodCallAnalysisInterface
         if ($arg instanceof String_) {
             $serviceId = $arg->value;
         } elseif ($arg instanceof ClassConstFetch) {
-            $serviceId = (string)$arg->class->getAttribute('resolvedName');
-            if ($arg->name != 'class') {
+            $serviceId = (string) $arg->class->getAttribute('resolvedName');
+            if ($arg->name !== 'class') {
                 $serviceId = constant(sprintf('%s::%s', $serviceId, $arg->name));
+                // phpcs:ignore
                 if (! is_string($serviceId)) {
                     // TODO throw an issue
                 }
@@ -90,7 +94,7 @@ final class ContainerHook implements AfterMethodCallAnalysisInterface
             (self::getTraverser())(new Dependency($serviceId));
         } catch (Throwable $e) {
             // TODO wrap in an issue
-            $codeLocation = new CodeLocation($statements_source, $expr->args[0]->value);
+            $codeLocation = new CodeLocation($statementsSource, $expr->args[0]->value);
             IssueBuffer::accepts(self::buildIssue($e, $codeLocation));
         }
     }

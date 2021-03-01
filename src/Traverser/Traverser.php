@@ -1,12 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * @see       https://github.com/laminas/laminas-servicemanager-inspector for the canonical source repository
  * @copyright https://github.com/laminas/laminas-servicemanager-inspector/blob/master/COPYRIGHT.md
  * @license   https://github.com/laminas/laminas-servicemanager-inspector/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace Laminas\ServiceManager\Inspector\Traverser;
 
@@ -20,32 +20,22 @@ use function in_array;
 
 final class Traverser
 {
-    /**
-     * @var DependencyConfig
-     */
+    /** @var DependencyConfig */
     private $config;
 
-    /**
-     * @var FactoryAnalyzerInterface
-     */
+    /** @var FactoryAnalyzerInterface */
     private $factoryAnalyzer;
 
-    /**
-     * @param DependencyConfig $config
-     * @param FactoryAnalyzerInterface $factoryAnalyzer
-     */
     public function __construct(
         DependencyConfig $config,
         FactoryAnalyzerInterface $factoryAnalyzer
     ) {
-        $this->config = $config;
+        $this->config          = $config;
         $this->factoryAnalyzer = $factoryAnalyzer;
     }
 
     /**
      * @psalm-var list<string> $instantiationStack
-     *
-     * @param Dependency $dependency
      * @param array $instantiationStack
      * @throws Throwable
      */
@@ -58,18 +48,15 @@ final class Traverser
 
         $dependencies = $this->factoryAnalyzer->detect($dependency->getName());
         foreach ($dependencies as $childDependency) {
-            ($this)($childDependency, $instantiationStack);
+            $this($childDependency, $instantiationStack);
         }
     }
 
-    /**
-     * @param Dependency $dependency
-     */
     private function assertHasFactory(Dependency $dependency): void
     {
         $isInvokable = $this->config->isInvokable($dependency->getName());
-        $hasFactory = $this->config->hasFactory($dependency->getName());
-        $isOptional = $dependency->isOptional();
+        $hasFactory  = $this->config->hasFactory($dependency->getName());
+        $isOptional  = $dependency->isOptional();
         if ($isInvokable || $hasFactory || $isOptional) {
             return;
         }
@@ -79,8 +66,6 @@ final class Traverser
 
     /**
      * @psalm-var list<string> $instantiationStack
-     *
-     * @param Dependency $dependency
      * @param array $instantiationStack
      */
     private function assertNotCircularDependency(Dependency $dependency, array $instantiationStack): void

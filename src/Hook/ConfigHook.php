@@ -1,12 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * @see       https://github.com/laminas/laminas-servicemanager-inspector for the canonical source repository
  * @copyright https://github.com/laminas/laminas-servicemanager-inspector/blob/master/COPYRIGHT.md
  * @license   https://github.com/laminas/laminas-servicemanager-inspector/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace Laminas\ServiceManager\Inspector\Hook;
 
@@ -15,32 +15,31 @@ use Laminas\ServiceManager\Inspector\Analyzer\ReflectionBasedFactoryAnalyzer;
 use Laminas\ServiceManager\Inspector\DependencyConfig;
 use Laminas\ServiceManager\Inspector\Exception\IssuableInterface;
 use Laminas\ServiceManager\Inspector\Issue\InvalidConfigIssue;
+use Laminas\ServiceManager\Inspector\PluginConfig;
 use Laminas\ServiceManager\Inspector\Traverser\Dependency;
 use Laminas\ServiceManager\Inspector\Traverser\Traverser;
-use Laminas\ServiceManager\Inspector\PluginConfig;
 use Psalm\Codebase;
 use Psalm\CodeLocation;
 use Psalm\Context;
-use Psalm\Internal\Scanner\FileScanner;
 use Psalm\Issue\PluginIssue;
 use Psalm\IssueBuffer;
 use Psalm\Plugin\Hook\AfterFileAnalysisInterface;
-use Psalm\SourceControl\SourceControlInfo;
 use Psalm\StatementsSource;
 use Psalm\Storage\FileStorage;
 use Throwable;
 
 final class ConfigHook implements AfterFileAnalysisInterface
 {
-    /**
-     * @var PluginConfig
-     */
+    /** @var PluginConfig */
     private static $pluginConfig;
 
+    /** @var null|DependencyConfig */
     private static $dependencyConfig;
 
+    /** @var null|Traverser */
     private static $traverser;
 
+    /** @var null|FactoryAnalyzerInterface */
     private static $factoryAnalyzer;
 
     public static function init(PluginConfig $pluginConfig): void
@@ -49,19 +48,20 @@ final class ConfigHook implements AfterFileAnalysisInterface
     }
 
     public static function afterAnalyzeFile(
-        StatementsSource $statements_source,
-        Context $file_context,
-        FileStorage $file_storage,
+        StatementsSource $statementsSource,
+        Context $fileContext,
+        FileStorage $fileStorage,
         Codebase $codebase
     ): void {
-        if ($file_storage->file_path !== self::$pluginConfig->getDependencyConfigPath()) {
+        if ($fileStorage->file_path !== self::$pluginConfig->getDependencyConfigPath()) {
             return;
         }
 
+        // phpcs:ignore WebimpressCodingStandard.NamingConventions.ValidVariableName.NotCamelCaps
         foreach (self::getDependencyConfig()->getFactories() as $serviceName => $_) {
             if (self::getFactoryAnalyzer()->canDetect($serviceName)) {
                 try {
-                    (self::getTraverser())((new Dependency($serviceName)));
+                    (self::getTraverser())(new Dependency($serviceName));
                 } catch (Throwable $e) {
                     IssueBuffer::add(self::buildIssue($e));
                 }
@@ -114,6 +114,6 @@ final class ConfigHook implements AfterFileAnalysisInterface
     {
         $path = self::$pluginConfig->getDependencyConfigPath();
 
-        return  new CodeLocation\Raw('', $path, 'config/web/config.php', 0, 0);
+        return new CodeLocation\Raw('', $path, 'config/web/config.php', 0, 0);
     }
 }

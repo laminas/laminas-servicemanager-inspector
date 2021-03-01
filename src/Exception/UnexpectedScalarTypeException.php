@@ -1,12 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * @see       https://github.com/laminas/laminas-servicemanager-inspector for the canonical source repository
  * @copyright https://github.com/laminas/laminas-servicemanager-inspector/blob/master/COPYRIGHT.md
  * @license   https://github.com/laminas/laminas-servicemanager-inspector/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace Laminas\ServiceManager\Inspector\Exception;
 
@@ -21,19 +21,16 @@ use function sprintf;
 // TODO issue
 final class UnexpectedScalarTypeException extends LogicException implements ExceptionInterface, IssuableInterface
 {
+    /** @var string */
     private $serviceName;
 
+    /** @var string */
     private $paramName;
 
-    /**
-     * @param string $serviceName
-     * @param string $paramName
-     * @param Throwable|null $previous
-     */
-    public function __construct(string $serviceName, string $paramName, Throwable $previous = null)
+    public function __construct(string $serviceName, string $paramName, ?Throwable $previous = null)
     {
         $this->serviceName = $serviceName;
-        $this->paramName = $paramName;
+        $this->paramName   = $paramName;
 
         parent::__construct(
             sprintf(

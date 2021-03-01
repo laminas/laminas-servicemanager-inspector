@@ -1,12 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * @see       https://github.com/laminas/laminas-servicemanager-inspector for the canonical source repository
  * @copyright https://github.com/laminas/laminas-servicemanager-inspector/blob/master/COPYRIGHT.md
  * @license   https://github.com/laminas/laminas-servicemanager-inspector/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace Laminas\ServiceManager\Inspector\Exception;
 
@@ -20,16 +20,10 @@ use function sprintf;
 
 final class MissingFactoryException extends LogicException implements ExceptionInterface, IssuableInterface
 {
-    /**
-     * @var
-     */
+    /** @var string */
     private $name;
 
-    /**
-     * @param string $name
-     * @param Throwable|null $previous
-     */
-    public function __construct(string $name, Throwable $previous = null)
+    public function __construct(string $name, ?Throwable $previous = null)
     {
         $this->name = $name;
 

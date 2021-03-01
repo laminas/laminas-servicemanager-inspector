@@ -1,12 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * @see       https://github.com/laminas/laminas-servicemanager-inspector for the canonical source repository
  * @copyright https://github.com/laminas/laminas-servicemanager-inspector/blob/master/COPYRIGHT.md
  * @license   https://github.com/laminas/laminas-servicemanager-inspector/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace Laminas\ServiceManagerInspector\Collector;
 
@@ -17,17 +17,21 @@ use function str_repeat;
 
 final class ConsoleStatsCollector implements StatsCollectorInterface
 {
-    private const COLOR_GREEN = "\e[1;32m";
+    private const COLOR_GREEN  = "\e[1;32m";
     private const COLOR_YELLOW = "\e[33m";
-    private const COLOR_RED = "\e[0;31m";
-    private const COLOR_END = "\e[0m";
+    private const COLOR_RED    = "\e[0;31m";
+    private const COLOR_END    = "\e[0m";
 
+    /** @var int */
     private $maxDeep = 0;
+
+    /** @var int */
     private $customFactoryCount = 0;
+
+    /** @var int */
     private $autowireFactoryCount = 0;
 
     /**
-     * @param string $dependencyName
      * @param array $instantiationStack
      */
     public function collectAutowireFactoryHit(string $dependencyName, array $instantiationStack): void
@@ -45,7 +49,6 @@ final class ConsoleStatsCollector implements StatsCollectorInterface
     }
 
     /**
-     * @param string $dependencyName
      * @param array $instantiationStack
      */
     public function collectCustomFactoryHit(string $dependencyName, array $instantiationStack): void
@@ -54,16 +57,12 @@ final class ConsoleStatsCollector implements StatsCollectorInterface
         $this->customFactoryCount++;
     }
 
-    /**
-     * @param int $deep
-     */
     private function collectDeep(int $deep): void
     {
         $this->maxDeep = max($deep, $this->maxDeep);
     }
 
     /**
-     * @param string $dependencyName
      * @param array $instantiationStack
      */
     public function collectError(string $dependencyName, array $instantiationStack): void

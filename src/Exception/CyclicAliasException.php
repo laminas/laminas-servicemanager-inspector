@@ -1,20 +1,18 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * @see       https://github.com/laminas/laminas-servicemanager-inspector for the canonical source repository
  * @copyright https://github.com/laminas/laminas-servicemanager-inspector/blob/master/COPYRIGHT.md
  * @license   https://github.com/laminas/laminas-servicemanager-inspector/blob/master/LICENSE.md New BSD License
  */
 
+declare(strict_types=1);
+
 namespace Laminas\ServiceManager\Inspector\Exception;
 
 use Laminas\ServiceManager\Inspector\Issue\CyclicAliasIssue;
 use LogicException;
-
 use Psalm\CodeLocation;
-
 use Psalm\Issue\PluginIssue;
 use Throwable;
 
@@ -76,7 +74,7 @@ final class CyclicAliasException extends LogicException implements ExceptionInte
     private static function getCycleFor(array $aliases, $alias): ?array
     {
         $cycleCandidate = [];
-        $targetName = $alias;
+        $targetName     = $alias;
 
         while (isset($aliases[$targetName])) {
             if (isset($cycleCandidate[$targetName])) {
@@ -84,7 +82,7 @@ final class CyclicAliasException extends LogicException implements ExceptionInte
             }
 
             $cycleCandidate[$targetName] = true;
-            $targetName = $aliases[$targetName];
+            $targetName                  = $aliases[$targetName];
         }
 
         return null;
@@ -92,7 +90,6 @@ final class CyclicAliasException extends LogicException implements ExceptionInte
 
     /**
      * @param string[] $aliases
-     * @return string
      */
     private static function printReferencesMap(array $aliases): string
     {
@@ -107,11 +104,10 @@ final class CyclicAliasException extends LogicException implements ExceptionInte
 
     /**
      * @param string[][] $detectedCycles
-     * @return string
      */
     private static function printCycles(array $detectedCycles): string
     {
-        return "[\n" . implode("\n", array_map([__CLASS__, 'printCycle'], $detectedCycles)) . "\n]";
+        return "[\n" . implode("\n", array_map([self::class, 'printCycle'], $detectedCycles)) . "\n]";
     }
 
     /**
@@ -129,9 +125,7 @@ final class CyclicAliasException extends LogicException implements ExceptionInte
 
             $hash = serialize(array_values($cycleAliases));
 
-            $detectedCyclesByHash[$hash] = isset($detectedCyclesByHash[$hash])
-                ? $detectedCyclesByHash[$hash]
-                : $detectedCycle;
+            $detectedCyclesByHash[$hash] = $detectedCyclesByHash[$hash] ?? $detectedCycle;
         }
 
         return array_values($detectedCyclesByHash);
@@ -139,11 +133,10 @@ final class CyclicAliasException extends LogicException implements ExceptionInte
 
     /**
      * @param string[] $detectedCycle
-     * @return string
      */
     private static function printCycle(array $detectedCycle): string
     {
-        $fullCycle = array_keys($detectedCycle);
+        $fullCycle   = array_keys($detectedCycle);
         $fullCycle[] = reset($fullCycle);
 
         return implode(

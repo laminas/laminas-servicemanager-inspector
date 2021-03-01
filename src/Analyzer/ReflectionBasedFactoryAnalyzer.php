@@ -1,18 +1,18 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * @see       https://github.com/laminas/laminas-servicemanager-inspector for the canonical source repository
  * @copyright https://github.com/laminas/laminas-servicemanager-inspector/blob/master/COPYRIGHT.md
  * @license   https://github.com/laminas/laminas-servicemanager-inspector/blob/master/LICENSE.md New BSD License
  */
 
+declare(strict_types=1);
+
 namespace Laminas\ServiceManager\Inspector\Analyzer;
 
 use Laminas\ServiceManager\Inspector\DependencyConfig;
-use Laminas\ServiceManager\Inspector\Traverser\Dependency;
 use Laminas\ServiceManager\Inspector\Exception\UnexpectedScalarTypeIssue;
+use Laminas\ServiceManager\Inspector\Traverser\Dependency;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionParameter;
@@ -26,21 +26,15 @@ final class ReflectionBasedFactoryAnalyzer implements FactoryAnalyzerInterface
         'Zend\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory',
     ];
 
-    /**
-     * @var DependencyConfig
-     */
+    /** @var DependencyConfig */
     private $config;
 
-    /**
-     * @param $config
-     */
     public function __construct(DependencyConfig $config)
     {
         $this->config = $config;
     }
 
     /**
-     * @param string $serviceName
      * @return array
      * @throws ReflectionException
      */
@@ -61,11 +55,6 @@ final class ReflectionBasedFactoryAnalyzer implements FactoryAnalyzerInterface
         return $this->getConstructorParameters($serviceName);
     }
 
-
-    /**
-     * @param string $serviceName
-     * @return bool
-     */
     public function canDetect(string $serviceName): bool
     {
         $class = $this->config->getFactory($serviceName);
@@ -74,14 +63,13 @@ final class ReflectionBasedFactoryAnalyzer implements FactoryAnalyzerInterface
     }
 
     /**
-     * @param string $serviceName
      * @return array
      * @throws ReflectionException
      */
     private function getConstructorParameters(string $serviceName): array
     {
         $reflectionClass = new ReflectionClass($serviceName);
-        $constructor = $reflectionClass->getConstructor();
+        $constructor     = $reflectionClass->getConstructor();
         if ($constructor === null) {
             return [];
         }
@@ -100,10 +88,6 @@ final class ReflectionBasedFactoryAnalyzer implements FactoryAnalyzerInterface
         return $unsatisfiedDependencies;
     }
 
-    /**
-     * @param ReflectionParameter $parameter
-     * @param string $serviceName
-     */
     private function assertHasClassTypeHint(ReflectionParameter $parameter, string $serviceName): void
     {
         if ($parameter->getClass() === null) {
@@ -114,10 +98,6 @@ final class ReflectionBasedFactoryAnalyzer implements FactoryAnalyzerInterface
         }
     }
 
-    /**
-     * @param ReflectionParameter $parameter
-     * @return bool
-     */
     private function isOptional(ReflectionParameter $parameter): bool
     {
         return $parameter->isOptional() || ($parameter->hasType() && $parameter->getType()->allowsNull());
