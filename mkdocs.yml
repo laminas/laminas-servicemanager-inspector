@@ -2,7 +2,13 @@ docs_dir: docs/book
 site_dir: docs/html
 nav:
     - Home: index.md
-    - Introduction: v1/intro.md
-site_name: 'laminas-{component}'
-site_description: ''
-repo_url: 'https://github.com/laminas/laminas-{component}'
+    - v1:
+      - Introduction: v1/intro.md
+site_name: 'laminas-servicemanager-inspector'
+site_description: 'Container inspection and verification tools for laminas-servicemanager.'
+repo_url: 'https://github.com/laminas/laminas-servicemanager-inspector'
+extra:
+    project: Components
+    current_version: v1
+    versions:
+      - v1
