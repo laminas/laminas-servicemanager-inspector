@@ -20,6 +20,7 @@ final class InspectCommand extends Command
 TBD
 EOH;
 
+    /* @var string */
     public static $defaultName = 'servicemanager:inspect';
 
     protected function configure()
