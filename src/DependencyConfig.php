@@ -10,10 +10,11 @@ declare(strict_types=1);
 
 namespace Laminas\ServiceManager\Inspector;
 
+use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\ServiceManager\Inspector\Exception\MissingFactoryException;
-use Laminas\ServiceManager\Inspector\Traverser\AliasResolver;
 use Zakirullin\Mess\Mess;
 
+use function array_merge;
 use function class_exists;
 use function in_array;
 use function is_string;
@@ -21,8 +22,8 @@ use function is_string;
 final class DependencyConfig
 {
     private const INVOKABLE_FACTORIES = [
-        'Laminas\ServiceManager\Factory\InvokableFactory',
-        'Zend\ServiceManager\Factory\InvokableFactory',
+        InvokableFactory::class,
+        \zend\servicemanager\factory\invokablefactory::class,
     ];
 
     private const PREDEFINED_CONTAINER_KEYS = [
@@ -56,7 +57,15 @@ final class DependencyConfig
      */
     private function getValidFactories(array $dependencies): array
     {
-        $factories = (new Mess($dependencies))['factories']->findArrayOfStringToString() ?? [];
+        $invokableFactories = [];
+        $invokables         = (new Mess($dependencies))['invokables']->findArray() ?? [];
+        foreach ($invokables as $name => $class) {
+            if ($name !== $class) {
+                $invokableFactories[$class] = InvokableFactory::class;
+            }
+        }
+
+        $factories = (new Mess($dependencies))['factories']->findArray() ?? [];
         foreach ($factories as $serviceName => $factoryClass) {
             if (in_array($serviceName, self::PREDEFINED_CONTAINER_KEYS, true)) {
                 continue;
@@ -67,7 +76,7 @@ final class DependencyConfig
             }
         }
 
-        return $factories;
+        return array_merge($invokableFactories, $factories);
     }
 
     /**
@@ -92,9 +101,17 @@ final class DependencyConfig
      */
     private function getValidResolvedAliases(array $dependencies): array
     {
-        $aliases = (new Mess($dependencies))['aliases']->findArrayOfStringToString() ?? [];
+        $invokableAliases = [];
+        $invokables       = (new Mess($dependencies))['invokables']->findArray() ?? [];
+        foreach ($invokables as $name => $class) {
+            if ($name !== $class) {
+                $invokableAliases[$name] = $class;
+            }
+        }
 
-        return (new AliasResolver())($aliases);
+        $aliases = (new Mess($dependencies))['aliases']->findArray() ?? [];
+
+        return array_merge($invokableAliases, $aliases);
     }
 
     /**

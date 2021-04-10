@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Laminas\ServiceManager\Inspector\Analyzer;
 
+use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 use Laminas\ServiceManager\Inspector\DependencyConfig;
 use Laminas\ServiceManager\Inspector\Exception\UnexpectedScalarTypeIssue;
 use Laminas\ServiceManager\Inspector\Traverser\Dependency;
@@ -22,8 +23,8 @@ use function in_array;
 final class ReflectionBasedFactoryAnalyzer implements FactoryAnalyzerInterface
 {
     private const SUPPORTED_FACTORIES = [
-        'Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory',
-        'Zend\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory',
+        ReflectionBasedAbstractFactory::class,
+        \zend\servicemanager\abstractfactory\reflectionbasedabstractfactory::class,
     ];
 
     /** @var DependencyConfig */

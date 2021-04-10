@@ -15,6 +15,7 @@
     "require": {
         "php": "^7.3 || ~8.0.0",
         "laminas/laminas-cli": "^1.0",
+        "laminas/laminas-servicemanager": "^3.0",
         "zakirullin/mess": "^0.8"
     },
     "require-dev": {
