@@ -22,8 +22,17 @@ use function is_string;
 final class DependencyConfig
 {
     private const INVOKABLE_FACTORIES = [
-        InvokableFactory::class,
-        \zend\servicemanager\factory\invokablefactory::class,
+        // phpcs:ignore
+        'Laminas\ServiceManager\Factory\InvokableFactory',
+        // phpcs:ignore
+        'Zend\ServiceManager\Factory\InvokableFactory',
+    ];
+
+    private const AUTOWIRE_FACTORIES = [
+        // phpcs:ignore
+        'Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory',
+        // phpcs:ignore
+        'Zend\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory',
     ];
 
     private const PREDEFINED_CONTAINER_KEYS = [
@@ -129,7 +138,7 @@ final class DependencyConfig
     {
         $realServiceName     = $this->getRealName($serviceName);
         $isInvokable         = in_array($realServiceName, $this->invokables, true);
-        $hasInvokableFactory = in_array($this->getFactory($realServiceName), self::INVOKABLE_FACTORIES);
+        $hasInvokableFactory = in_array($this->getFactory($realServiceName), self::INVOKABLE_FACTORIES, true);
 
         return $isInvokable || $hasInvokableFactory;
     }
@@ -144,6 +153,11 @@ final class DependencyConfig
         $realName = $this->getRealName($serviceName);
 
         return $this->factories[$realName] ?? null;
+    }
+
+    public function hasAutowireFactory(string $serviceName): bool
+    {
+        return in_array($this->getFactory($serviceName), self::AUTOWIRE_FACTORIES);
     }
 
     public function hasFactory(string $serviceName): bool

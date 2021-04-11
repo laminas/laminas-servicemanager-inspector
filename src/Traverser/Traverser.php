@@ -14,6 +14,8 @@ use Laminas\ServiceManager\Inspector\Analyzer\FactoryAnalyzerInterface;
 use Laminas\ServiceManager\Inspector\DependencyConfig;
 use Laminas\ServiceManager\Inspector\Exception\CircularDependencyException;
 use Laminas\ServiceManager\Inspector\Exception\MissingFactoryException;
+use Laminas\ServiceManager\Inspector\Visitor\NullStatsVisitor;
+use Laminas\ServiceManager\Inspector\Visitor\StatsVisitorInterface;
 use Throwable;
 
 use function in_array;
@@ -26,12 +28,16 @@ final class Traverser
     /** @var FactoryAnalyzerInterface */
     private $factoryAnalyzer;
 
+    /** @var StatsVisitorInterface */
+    private $visitor;
+
     public function __construct(
         DependencyConfig $config,
         FactoryAnalyzerInterface $factoryAnalyzer
     ) {
         $this->config          = $config;
         $this->factoryAnalyzer = $factoryAnalyzer;
+        $this->visitor = new NullStatsVisitor();
     }
 
     /**
@@ -41,7 +47,7 @@ final class Traverser
      */
     public function __invoke(Dependency $dependency, array $instantiationStack = []): void
     {
-        $this->assertHasFactory($dependency);
+        $this->assertHasFactory($dependency, $instantiationStack);
         $this->assertNotCircularDependency($dependency, $instantiationStack);
 
         $instantiationStack[] = $dependency->getName();
@@ -52,14 +58,34 @@ final class Traverser
         }
     }
 
-    private function assertHasFactory(Dependency $dependency): void
+    public function setVisitor(StatsVisitorInterface $visitor): void
+    {
+        $this->visitor = $visitor;
+    }
+
+    private function assertHasFactory(Dependency $dependency, array $instantiationStack): void
     {
         $isInvokable = $this->config->isInvokable($dependency->getName());
+        if ($isInvokable) {
+            $this->visitor->enterInvokable($dependency->getName(), $instantiationStack);
+        }
+
+        $hasAutowireFactory = $this->config->hasAutowireFactory($dependency->getName());
+        if ($hasAutowireFactory) {
+            $this->visitor->enterAutowireFactory($dependency->getName(), $instantiationStack);
+        }
+
         $hasFactory  = $this->config->hasFactory($dependency->getName());
+        if ($hasFactory && !$isInvokable) {
+            $this->visitor->enterCustomFactory($dependency->getName(), $instantiationStack);
+        }
+
         $isOptional  = $dependency->isOptional();
-        if ($isInvokable || $hasFactory || $isOptional) {
+        if ($isInvokable || $hasAutowireFactory || $hasFactory || $isOptional) {
             return;
         }
+
+        $this->visitor->enterError($dependency->getName(), $instantiationStack);
 
         throw new MissingFactoryException($dependency->getName());
     }
@@ -71,6 +97,8 @@ final class Traverser
     private function assertNotCircularDependency(Dependency $dependency, array $instantiationStack): void
     {
         if (in_array($dependency->getName(), $instantiationStack, true)) {
+            $this->visitor->enterError($dependency->getName(), $instantiationStack);
+
             throw new CircularDependencyException($dependency->getName(), $instantiationStack);
         }
     }

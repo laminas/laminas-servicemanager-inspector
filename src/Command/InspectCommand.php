@@ -14,6 +14,8 @@ use Laminas\ServiceManager\Inspector\Analyzer\FactoryAnalyzerInterface;
 use Laminas\ServiceManager\Inspector\DependencyConfig;
 use Laminas\ServiceManager\Inspector\Traverser\Dependency;
 use Laminas\ServiceManager\Inspector\Traverser\Traverser;
+use Laminas\ServiceManager\Inspector\Visitor\ConsoleStatsVisitor;
+use Laminas\ServiceManager\Inspector\Visitor\UniqueHitsStatsVisitorDecorator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -22,7 +24,7 @@ use Throwable;
 final class InspectCommand extends Command
 {
     public const HELP = <<<'EOH'
-TBD
+TODO
 EOH;
 
     /** @var string $defaultName */
@@ -60,12 +62,17 @@ EOH;
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $visitor = new ConsoleStatsVisitor();
+        $this->traverser->setVisitor($visitor);
+
         foreach ($this->config->getFactories() as $serviceName => $factoryClass) {
             if ($this->factoryAnalyzer->canDetect($serviceName)) {
-                // TODO don't fail here - collect all errors
+                // TODO don't fail here - collect all occuring errors
                 ($this->traverser)(new Dependency($serviceName));
             }
         }
+
+        $visitor->render();
 
         return 0;
     }

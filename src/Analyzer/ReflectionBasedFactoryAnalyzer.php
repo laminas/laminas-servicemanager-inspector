@@ -79,9 +79,6 @@ final class ReflectionBasedFactoryAnalyzer implements FactoryAnalyzerInterface
         foreach ($constructor->getParameters() as $parameter) {
             $this->assertHasClassTypeHint($parameter, $serviceName);
             $realDependencyName = $this->config->getRealName($parameter->getClass()->getName());
-            if ($this->config->isInvokable($realDependencyName)) {
-                continue;
-            }
 
             $unsatisfiedDependencies[] = new Dependency($realDependencyName, $this->isOptional($parameter));
         }

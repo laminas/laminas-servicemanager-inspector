@@ -13,6 +13,8 @@ namespace Laminas\ServiceManager\Inspector;
 use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 use Laminas\ServiceManager\Inspector\Analyzer\FactoryAnalyzerInterface;
 use Laminas\ServiceManager\Inspector\Analyzer\ReflectionBasedFactoryAnalyzer;
+use Laminas\ServiceManager\Inspector\Visitor\ConsoleStatsVisitor;
+use Laminas\ServiceManager\Inspector\Visitor\StatsVisitorInterface;
 use Laminas\ServiceManager\Inspector\Command\InspectCommand;
 use Laminas\ServiceManager\Inspector\Traverser\Traverser;
 
@@ -45,6 +47,7 @@ final class ConfigProvider
             ],
             'aliases'   => [
                 FactoryAnalyzerInterface::class => ReflectionBasedFactoryAnalyzer::class,
+                StatsVisitorInterface::class => ConsoleStatsVisitor::class,
             ],
         ];
     }
