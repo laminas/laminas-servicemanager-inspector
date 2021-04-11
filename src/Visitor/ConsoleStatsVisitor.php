@@ -88,25 +88,25 @@ final class ConsoleStatsVisitor implements StatsVisitorInterface
     public function render(): void
     {
         printf(
-            "\nFound factories: %s%s%s 🏭\n",
+            "\nTotal factories found: %s%s%s 🏭\n",
             self::COLOR_GREEN,
             $this->invokableCount + $this->autowireFactoryCount + $this->customFactoryCount,
             self::COLOR_END
         );
         printf(
-            "Custom factories: %s%s%s 🛠️\n",
+            "Custom factories skipped: %s%s%s 🛠️\n",
             self::COLOR_GREEN,
             $this->customFactoryCount,
             self::COLOR_END
         );
         printf(
-            "Autowire factories: %s%s%s 🔥\n",
+            "Autowire factories analyzed: %s%s%s 🔥\n",
             self::COLOR_GREEN,
             $this->autowireFactoryCount,
             self::COLOR_END
         );
         printf(
-            "Invokables: %s%s%s 📦\n",
+            "Invokables analyzed: %s%s%s 📦\n",
             self::COLOR_GREEN,
             $this->invokableCount,
             self::COLOR_END
