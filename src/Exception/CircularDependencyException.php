@@ -10,20 +10,14 @@ declare(strict_types=1);
 
 namespace Laminas\ServiceManager\Inspector\Exception;
 
-use Laminas\ServiceManager\Inspector\Issue\CircularDependencyIssue;
 use LogicException;
-use Psalm\CodeLocation;
-use Psalm\Issue\PluginIssue;
 use Throwable;
 
 use function implode;
 use function sprintf;
 
-final class CircularDependencyException extends LogicException implements ExceptionInterface, IssuableInterface
+final class CircularDependencyException extends LogicException implements ExceptionInterface
 {
-    /**
-     * @param array $instantiationStack
-     */
     public function __construct(string $name, array $instantiationStack, ?Throwable $previous = null)
     {
         $this->instantiationStack = $instantiationStack;
@@ -35,10 +29,5 @@ final class CircularDependencyException extends LogicException implements Except
         );
 
         parent::__construct($message, 0, $previous);
-    }
-
-    public function toIssue(CodeLocation $codeLocation): PluginIssue
-    {
-        return new CircularDependencyIssue($this->message, $this->instantiationStack, $codeLocation);
     }
 }

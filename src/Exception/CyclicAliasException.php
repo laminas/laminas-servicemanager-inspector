@@ -10,10 +10,7 @@ declare(strict_types=1);
 
 namespace Laminas\ServiceManager\Inspector\Exception;
 
-use Laminas\ServiceManager\Inspector\Issue\CyclicAliasIssue;
 use LogicException;
-use Psalm\CodeLocation;
-use Psalm\Issue\PluginIssue;
 use Throwable;
 
 use function array_filter;
@@ -26,16 +23,11 @@ use function serialize;
 use function sort;
 use function sprintf;
 
-final class CyclicAliasException extends LogicException implements ExceptionInterface, IssuableInterface
+final class CyclicAliasException extends LogicException implements ExceptionInterface
 {
     public function __construct(array $aliases, ?Throwable $previous = null)
     {
         parent::__construct(self::getDetailedMessage($aliases), 0, $previous);
-    }
-
-    public function toIssue(CodeLocation $codeLocation): PluginIssue
-    {
-        return new CyclicAliasIssue($this->message, $codeLocation);
     }
 
     private static function getDetailedMessage(array $aliases): string
