@@ -46,7 +46,7 @@ final class ConsoleStatsVisitor implements StatsVisitorInterface
 
     public function enterInvokable(string $dependencyName, array $instantiationStack): void
     {
-        if (!in_array($dependencyName,$this->invokableDependencies, true)) {
+        if (! in_array($dependencyName, $this->invokableDependencies, true)) {
             $this->invokableCount++;
             $this->collectDeep(count($instantiationStack));
         }
@@ -56,7 +56,7 @@ final class ConsoleStatsVisitor implements StatsVisitorInterface
 
     public function enterAutowireFactory(string $dependencyName, array $instantiationStack): void
     {
-        if (!in_array($dependencyName, $this->autowiredDependencies, true)) {
+        if (! in_array($dependencyName, $this->autowiredDependencies, true)) {
             $this->autowireFactoryCount++;
             $this->collectDeep(count($instantiationStack));
             $this->autowiredDependencies[] = $dependencyName;
@@ -88,7 +88,7 @@ final class ConsoleStatsVisitor implements StatsVisitorInterface
     public function render(): void
     {
         printf(
-            "\nTotal factories: %s%s%s 🏭\n",
+            "\nFound factories: %s%s%s 🏭\n",
             self::COLOR_GREEN,
             $this->invokableCount + $this->autowireFactoryCount + $this->customFactoryCount,
             self::COLOR_END

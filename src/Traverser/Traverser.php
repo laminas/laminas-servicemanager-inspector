@@ -37,7 +37,7 @@ final class Traverser
     ) {
         $this->config          = $config;
         $this->factoryAnalyzer = $factoryAnalyzer;
-        $this->visitor = new NullStatsVisitor();
+        $this->visitor         = new NullStatsVisitor();
     }
 
     /**
@@ -75,12 +75,12 @@ final class Traverser
             $this->visitor->enterAutowireFactory($dependency->getName(), $instantiationStack);
         }
 
-        $hasFactory  = $this->config->hasFactory($dependency->getName());
-        if ($hasFactory && !$isInvokable) {
+        $hasFactory = $this->config->hasFactory($dependency->getName());
+        if ($hasFactory && ! $isInvokable) {
             $this->visitor->enterCustomFactory($dependency->getName(), $instantiationStack);
         }
 
-        $isOptional  = $dependency->isOptional();
+        $isOptional = $dependency->isOptional();
         if ($isInvokable || $hasAutowireFactory || $hasFactory || $isOptional) {
             return;
         }

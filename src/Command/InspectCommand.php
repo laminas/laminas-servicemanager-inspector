@@ -15,7 +15,6 @@ use Laminas\ServiceManager\Inspector\DependencyConfig;
 use Laminas\ServiceManager\Inspector\Traverser\Dependency;
 use Laminas\ServiceManager\Inspector\Traverser\Traverser;
 use Laminas\ServiceManager\Inspector\Visitor\ConsoleStatsVisitor;
-use Laminas\ServiceManager\Inspector\Visitor\UniqueHitsStatsVisitorDecorator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
