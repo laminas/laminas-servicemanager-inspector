@@ -84,7 +84,7 @@ final class ReflectionBasedFactoryAnalyzer implements FactoryAnalyzerInterface
                 throw new UnexpectedScalarTypeException($serviceName, $parameter->getName());
             }
 
-            /** @var ReflectionClass $class */
+            /** @psalm-var ReflectionClass $class */
             $realDependencyName = $this->config->getRealName($class->getName());
 
             $unsatisfiedDependencies[] = new Dependency($realDependencyName, $this->isOptional($parameter));

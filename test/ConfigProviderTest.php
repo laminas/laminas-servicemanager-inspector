@@ -43,7 +43,7 @@ class ConfigProviderTest extends TestCase
      */
     public function testDependenciesIncludesFactoriesForEachCommand(string $commandClass): void
     {
-        $config     = (new ConfigProvider())();
+        $config = (new ConfigProvider())();
         $this->assertArrayHasKey('dependencies', $config);
 
         $dependencies = $config['dependencies'];
