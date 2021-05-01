@@ -21,9 +21,7 @@ use Laminas\ServiceManager\Inspector\Visitor\StatsVisitorInterface;
 final class ConfigProvider
 {
     /**
-     * @psalm-return array{
-     *     laminas-cli:array{commands: array{'servicemanager:inspect': Command\InspectCommand::class}}
-     * }
+     * @psalm-return array<string, mixed>
      */
     public function __invoke(): array
     {
@@ -53,7 +51,7 @@ final class ConfigProvider
     }
 
     /**
-     * @psalm-return array{commands: array{'migration:phpstorm-extended-meta': Command\InspectCommand::class}}
+     * @psalm-return array<string, mixed>
      */
     private function laminasCliConfiguration(): array
     {

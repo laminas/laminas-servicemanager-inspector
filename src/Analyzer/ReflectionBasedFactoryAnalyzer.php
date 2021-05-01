@@ -37,7 +37,7 @@ final class ReflectionBasedFactoryAnalyzer implements FactoryAnalyzerInterface
     }
 
     /**
-     * @return array
+     * @return Dependency[]
      * @throws ReflectionException
      */
     public function detect(string $serviceName): array
@@ -70,6 +70,7 @@ final class ReflectionBasedFactoryAnalyzer implements FactoryAnalyzerInterface
      */
     private function getConstructorParameters(string $serviceName): array
     {
+        /** @psalm-var class-string $serviceName */
         $reflectionClass = new ReflectionClass($serviceName);
         $constructor     = $reflectionClass->getConstructor();
         if ($constructor === null) {
@@ -78,23 +79,18 @@ final class ReflectionBasedFactoryAnalyzer implements FactoryAnalyzerInterface
 
         $unsatisfiedDependencies = [];
         foreach ($constructor->getParameters() as $parameter) {
-            $this->assertHasClassTypeHint($parameter, $serviceName);
-            $realDependencyName = $this->config->getRealName($parameter->getClass()->getName());
+            $class = $parameter->getClass();
+            if ($class === null && ! $this->isOptional($parameter)) {
+                throw new UnexpectedScalarTypeException($serviceName, $parameter->getName());
+            }
+
+            /** @var ReflectionClass $class */
+            $realDependencyName = $this->config->getRealName($class->getName());
 
             $unsatisfiedDependencies[] = new Dependency($realDependencyName, $this->isOptional($parameter));
         }
 
         return $unsatisfiedDependencies;
-    }
-
-    private function assertHasClassTypeHint(ReflectionParameter $parameter, string $serviceName): void
-    {
-        if ($parameter->getClass() === null) {
-            // FIXME config param
-            if (! $this->isOptional($parameter)) {
-                throw new UnexpectedScalarTypeException($serviceName, $parameter->getName());
-            }
-        }
     }
 
     private function isOptional(ReflectionParameter $parameter): bool

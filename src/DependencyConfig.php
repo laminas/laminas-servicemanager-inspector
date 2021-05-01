@@ -42,7 +42,7 @@ final class DependencyConfig
     /** @psalm-var array<string, string> */
     private $factories;
 
-    /** @psalm-var list<string> */
+    /** @psalm-var array<string, string> */
     private $invokables;
 
     /** @psalm-var array<string, string> */
@@ -90,7 +90,7 @@ final class DependencyConfig
 
     /**
      * @psalm-var array<string, string> $dependencies
-     * @psalm-return list<string>|array<string, string>
+     * @psalm-return array<string, string>
      * @param array $dependencies
      * @return array
      */
@@ -98,8 +98,7 @@ final class DependencyConfig
     {
         $messedInvokables = (new Mess($dependencies))['invokables'];
 
-        // FIXME findArrayOfStringToString
-        return $messedInvokables->findArray() ?? [];
+        return $messedInvokables->findArrayOfStringToString() ?? [];
     }
 
     /**

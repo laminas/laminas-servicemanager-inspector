@@ -104,7 +104,6 @@ final class CyclicAliasException extends LogicException implements ExceptionInte
 
     /**
      * @param bool[][] $detectedCycles
-     * @return bool[][] de-duplicated
      */
     private static function deDuplicateDetectedCycles(array $detectedCycles): array
     {
@@ -134,7 +133,7 @@ final class CyclicAliasException extends LogicException implements ExceptionInte
         return implode(
             ' => ',
             array_map(
-                function ($cycle) {
+                function (string $cycle) {
                     return '"' . $cycle . '"';
                 },
                 $fullCycle

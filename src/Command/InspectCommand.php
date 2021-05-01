@@ -26,7 +26,7 @@ final class InspectCommand extends Command
 TODO
 EOH;
 
-    /** @var string $defaultName */
+    /** @var string|null $defaultName */
     public static $defaultName = 'servicemanager:inspect';
 
     /** @var DependencyConfig */
@@ -50,7 +50,7 @@ EOH;
         parent::__construct(self::$defaultName);
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setDescription('ServiceManager inspector');
         $this->setHelp(self::HELP);
@@ -66,7 +66,7 @@ EOH;
 
         foreach ($this->config->getFactories() as $serviceName => $factoryClass) {
             if ($this->factoryAnalyzer->canDetect($serviceName)) {
-                // TODO don't fail here - collect all occuring errors
+                // TODO don't fail here - collect all occurring errors
                 ($this->traverser)(new Dependency($serviceName));
             }
         }

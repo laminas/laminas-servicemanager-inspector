@@ -20,8 +20,6 @@ final class CircularDependencyException extends LogicException implements Except
 {
     public function __construct(string $name, array $instantiationStack, ?Throwable $previous = null)
     {
-        $this->instantiationStack = $instantiationStack;
-
         $message = sprintf(
             'Circular dependency detected: %s -> %s',
             implode(' -> ', $instantiationStack),
