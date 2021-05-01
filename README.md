@@ -1,11 +1,14 @@
 # laminas-servicemanager-inspector
 
-[![Build Status](https://travis-ci.com/laminas/laminas-servicemanager.svg?branch=master)](https://travis-ci.com/laminas/laminas-{component})
-[![Coverage Status](https://coveralls.io/repos/github/laminas/laminas-servicemanager/badge.svg?branch=master)](https://coveralls.io/github/laminas/laminas-{component}?branch=master)
+[![Build Status](https://travis-ci.com/laminas/laminas-servicemanager-inspector.svg?branch=master)](https://travis-ci.com/laminas/laminas-servicemanager-inspector})
+[![Coverage Status](https://coveralls.io/repos/github/laminas/laminas-servicemanager-inspector/badge.svg?branch=master)](https://coveralls.io/github/laminas/laminas-servicemanager-inspector?branch=master)
 
+The purpose of this package is to make autowiring reliable (no `AoT` is involved).
+At the moment it makes sure that `ReflectionBasedAbstractFactory` won't cause any runtime problems.
 
-[WIP]
-The overall workflow around `servicemanager` is quite error prone, especially if one doesn't favor the `AoT`.
+The tool can be added to your favorite `CI` so to make sure there are no defects.
+
+[TSC Proposal](https://github.com/laminas/technical-steering-committee/issues/55)
 
 ## Defects analyzed
 
@@ -13,23 +16,28 @@ The overall workflow around `servicemanager` is quite error prone, especially if
 * Cyclic alias 
 * Missing factory 
 * Factory autoload failure
-* Unresolvable service/scalar
-* Scalar type/name mismatch
-* Many other scenarios of misconfiguration
+* Unresolvable service 
+* Unresolvable scalar (WIP)
+* Scalar type/name mismatch (WIP)
+* Other scenarios of misconfiguration
+
+`Laminas/DI/AutowireFactory` support will be coming soon.
 
 ## Installation
 
 Run the following to install this library:
 
 ```bash
-$ composer require --dev laminas/laminas-psalm-plugin
+$ composer require --dev laminas/servicemanager-inspector
 ```
 
-## Documentation
+## Usage
 
-Browse the documentation online at https://docs.laminas.dev/laminas-servicemanager/
+```bash
+./vendor/bin/laminas servicemanager:inspect
+```
 
 ## Support
 
-* [Issues](https://github.com/laminas/laminas-servicemanager/issues/)
+* [Issues](https://github.com/laminas/laminas-servicemanager-inspector/issues/)
 * [Forum](https://discourse.laminas.dev/)
