@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Laminas\ServiceManager\Inspector\Analyzer;
 
 use Laminas\ServiceManager\Inspector\DependencyConfig;
+use Laminas\ServiceManager\Inspector\Exception\UnexpectedScalarTypeException;
 use Laminas\ServiceManager\Inspector\Traverser\Dependency;
 use ReflectionClass;
 use ReflectionException;
@@ -91,7 +92,7 @@ final class ReflectionBasedFactoryAnalyzer implements FactoryAnalyzerInterface
         if ($parameter->getClass() === null) {
             // FIXME config param
             if (! $this->isOptional($parameter)) {
-                throw new UnexpectedScalarTypeIssue($serviceName, $parameter->getName());
+                throw new UnexpectedScalarTypeException($serviceName, $parameter->getName());
             }
         }
     }

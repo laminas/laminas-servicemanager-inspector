@@ -27,6 +27,9 @@ final class AliasResolver
 
             while (isset($aliases[$name])) {
                 if (isset($visited[$name])) {
+                    // Actually it's never reached - ServiceManager would throw
+                    // an exception upon initialization.
+                    // It might be useful later when we switch to raw config.php analysis
                     throw new CyclicAliasException($aliases);
                 }
 
