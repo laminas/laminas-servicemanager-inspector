@@ -10,16 +10,8 @@ declare(strict_types=1);
 
 namespace LaminasTest\ServiceManager\Inspector;
 
-use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
-use Laminas\ServiceManager\Inspector\Analyzer\FactoryAnalyzerInterface;
-use Laminas\ServiceManager\Inspector\Analyzer\ReflectionBasedFactoryAnalyzer;
 use Laminas\ServiceManager\Inspector\Command\InspectCommand;
 use Laminas\ServiceManager\Inspector\ConfigProvider;
-use Laminas\ServiceManager\Inspector\DependencyConfig;
-use Laminas\ServiceManager\Inspector\MezzioDependencyConfigFactory;
-use Laminas\ServiceManager\Inspector\Traverser\Traverser;
-use Laminas\ServiceManager\Inspector\Visitor\ConsoleStatsVisitor;
-use Laminas\ServiceManager\Inspector\Visitor\StatsVisitorInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 
@@ -30,29 +22,51 @@ class ConfigProviderTest extends TestCase
 {
     use ProphecyTrait;
 
-    public function testGetConfig_Constructed_ReturnsNonEmptyArray(): void
+    public function testProviderHasExpectedTopLevelKeys(): void
     {
-        $expectedConfig = [
-            'dependencies' => [
-                'factories' => [
-                    InspectCommand::class                 => ReflectionBasedAbstractFactory::class,
-                    ReflectionBasedFactoryAnalyzer::class => ReflectionBasedAbstractFactory::class,
-                    DependencyConfig::class               => MezzioDependencyConfigFactory::class,
-                    Traverser::class                      => ReflectionBasedAbstractFactory::class,
-                ],
-                'aliases'   => [
-                    FactoryAnalyzerInterface::class => ReflectionBasedFactoryAnalyzer::class,
-                    StatsVisitorInterface::class    => ConsoleStatsVisitor::class,
-                ],
-            ],
-            'laminas-cli' => [
-                'commands' => [
-                    'servicemanager:inspect' => InspectCommand::class,
-                ],
-            ],
-        ];
-        $actualConfig = (new ConfigProvider())();
+        $provider = new ConfigProvider();
+        $config   = $provider();
 
-        self::assertSame($expectedConfig, $actualConfig);
+        $this->assertArrayHasKey('dependencies', $config);
+        $this->assertArrayHasKey('laminas-cli', $config);
+    }
+
+    public function expectedCommandFactoryKeys(): array
+    {
+        return [
+            'InspectCommand' => [InspectCommand::class, 'servicemanager:inspect'],
+        ];
+    }
+
+    /**
+     * @dataProvider expectedCommandFactoryKeys
+     */
+    public function testDependenciesIncludesFactoriesForEachCommand(string $commandClass): void
+    {
+        $config     = (new ConfigProvider())();
+        $this->assertArrayHasKey('dependencies', $config);
+
+        $dependencies = $config['dependencies'];
+        $this->assertArrayHasKey('factories', $dependencies);
+
+        $factories = $dependencies['factories'];
+        $this->assertArrayHasKey($commandClass, $factories);
+    }
+
+    /**
+     * @dataProvider expectedCommandFactoryKeys
+     */
+    public function tesCommandNamesToCommandClasses(string $commandClass, string $command): void
+    {
+        $provider = new ConfigProvider();
+        $config   = $provider();
+        $this->assertArrayHasKey('laminas-cli', $config);
+
+        $cliConfig = $config['laminas-cli'];
+        $this->assertArrayHasKey('commands', $cliConfig);
+
+        $commands = $cliConfig['commands'];
+        $this->assertArrayHasKey($command, $commands);
+        $this->assertSame($commandClass, $commands[$command]);
     }
 }
