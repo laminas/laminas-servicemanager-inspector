@@ -17,7 +17,7 @@ The tool can be added to your favorite `CI` so to make sure there are no defects
 * Missing factory 
 * Factory autoload failure
 * Unresolvable service 
-* Unresolvable scalar (WIP)
+* Unresolvable scalar
 * Scalar type/name mismatch (WIP)
 * Other scenarios of misconfiguration
 
