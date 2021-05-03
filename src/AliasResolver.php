@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace Laminas\ServiceManager\Inspector\Traverser;
+namespace Laminas\ServiceManager\Inspector;
 
 use Laminas\ServiceManager\Inspector\Exception\CyclicAliasException;
 

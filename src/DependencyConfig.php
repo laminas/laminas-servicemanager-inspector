@@ -12,7 +12,6 @@ namespace Laminas\ServiceManager\Inspector;
 
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\ServiceManager\Inspector\Exception\CannotAutoloadFactoryClassException;
-use Laminas\ServiceManager\Inspector\Traverser\AliasResolver;
 use Zakirullin\Mess\Mess;
 
 use function array_merge;
@@ -68,14 +67,14 @@ final class DependencyConfig implements DependencyConfigInterface
     private function getValidFactories(array $dependencies): array
     {
         $invokableFactories = [];
-        $invokables         = (new Mess($dependencies))['invokables']->findArray() ?? [];
+        $invokables         = (new Mess($dependencies))['invokables']->findArrayOfStringToString() ?? [];
         foreach ($invokables as $name => $class) {
             if ($name !== $class) {
                 $invokableFactories[$class] = InvokableFactory::class;
             }
         }
 
-        $factories = (new Mess($dependencies))['factories']->findArray() ?? [];
+        $factories = (new Mess($dependencies))['factories']->findArrayOfStringToString() ?? [];
         foreach ($factories as $serviceName => $factoryClass) {
             if (in_array($serviceName, self::PREDEFINED_CONTAINER_KEYS, true)) {
                 continue;
@@ -120,7 +119,7 @@ final class DependencyConfig implements DependencyConfigInterface
             }
         }
 
-        $aliases = (new Mess($dependencies))['aliases']->findArray() ?? [];
+        $aliases         = (new Mess($dependencies))['aliases']->findArrayOfStringToString() ?? [];
         $resolvedAliases = (new AliasResolver())($aliases);
 
         return array_merge($invokableAliases, $resolvedAliases);
