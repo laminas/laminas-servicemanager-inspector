@@ -12,7 +12,7 @@ namespace Laminas\ServiceManager\Inspector\Analyzer;
 
 use Laminas\ServiceManager\Inspector\Traverser\Dependency;
 
-interface FactoryAnalyzerInterface
+interface DependencyScannerInterface
 {
     /**
      * @return Dependency[]

@@ -19,7 +19,7 @@ use function class_exists;
 use function in_array;
 use function is_string;
 
-final class DependencyConfig
+final class DependencyConfig implements DependencyConfigInterface
 {
     private const INVOKABLE_FACTORIES = [
         // phpcs:ignore
@@ -123,7 +123,7 @@ final class DependencyConfig
     }
 
     /**
-     * @return array
+     * @psalm-var array<string, string>
      */
     public function getFactories(): array
     {

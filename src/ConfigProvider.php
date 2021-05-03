@@ -15,6 +15,7 @@ use Laminas\ServiceManager\Inspector\Analyzer\FactoryAnalyzerInterface;
 use Laminas\ServiceManager\Inspector\Analyzer\ReflectionBasedFactoryAnalyzer;
 use Laminas\ServiceManager\Inspector\Command\InspectCommand;
 use Laminas\ServiceManager\Inspector\Traverser\Traverser;
+use Laminas\ServiceManager\Inspector\Traverser\TraverserInterface;
 use Laminas\ServiceManager\Inspector\Visitor\ConsoleStatsVisitor;
 use Laminas\ServiceManager\Inspector\Visitor\StatsVisitorInterface;
 
@@ -27,7 +28,7 @@ final class ConfigProvider
     {
         return [
             'dependencies' => $this->getServiceDependencies(),
-            'laminas-cli'  => $this->laminasCliConfiguration(),
+            'laminas-cli' => $this->laminasCliConfiguration(),
         ];
     }
 
@@ -38,14 +39,16 @@ final class ConfigProvider
     {
         return [
             'factories' => [
-                InspectCommand::class                 => ReflectionBasedAbstractFactory::class,
+                InspectCommand::class => ReflectionBasedAbstractFactory::class,
                 ReflectionBasedFactoryAnalyzer::class => ReflectionBasedAbstractFactory::class,
-                DependencyConfig::class               => MezzioDependencyConfigFactory::class,
-                Traverser::class                      => ReflectionBasedAbstractFactory::class,
+                DependencyConfig::class => MezzioDependencyConfigFactory::class,
+                Traverser::class => ReflectionBasedAbstractFactory::class,
             ],
-            'aliases'   => [
+            'aliases' => [
                 FactoryAnalyzerInterface::class => ReflectionBasedFactoryAnalyzer::class,
-                StatsVisitorInterface::class    => ConsoleStatsVisitor::class,
+                StatsVisitorInterface::class => ConsoleStatsVisitor::class,
+                DependencyConfigInterface::class => DependencyConfig::class,
+                TraverserInterface::class => Traverser::class,
             ],
         ];
     }

@@ -11,9 +11,9 @@ declare(strict_types=1);
 namespace Laminas\ServiceManager\Inspector\Command;
 
 use Laminas\ServiceManager\Inspector\Analyzer\FactoryAnalyzerInterface;
-use Laminas\ServiceManager\Inspector\DependencyConfig;
+use Laminas\ServiceManager\Inspector\DependencyConfigInterface;
 use Laminas\ServiceManager\Inspector\Traverser\Dependency;
-use Laminas\ServiceManager\Inspector\Traverser\Traverser;
+use Laminas\ServiceManager\Inspector\Traverser\TraverserInterface;
 use Laminas\ServiceManager\Inspector\Visitor\ConsoleStatsVisitor;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -29,19 +29,19 @@ EOH;
     /** @var string|null $defaultName */
     public static $defaultName = 'servicemanager:inspect';
 
-    /** @var DependencyConfig */
+    /** @var DependencyConfigInterface */
     private $config;
 
     /** @var FactoryAnalyzerInterface */
     private $factoryAnalyzer;
 
-    /** @var Traverser */
+    /** @var TraverserInterface */
     private $traverser;
 
     public function __construct(
-        DependencyConfig $config,
+        DependencyConfigInterface $config,
         FactoryAnalyzerInterface $factoryAnalyzer,
-        Traverser $traverser
+        TraverserInterface $traverser
     ) {
         $this->config          = $config;
         $this->factoryAnalyzer = $factoryAnalyzer;
@@ -61,7 +61,7 @@ EOH;
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $visitor = new ConsoleStatsVisitor();
+        $visitor = new ConsoleStatsVisitor($output);
         $this->traverser->setVisitor($visitor);
 
         foreach ($this->config->getFactories() as $serviceName => $factoryClass) {

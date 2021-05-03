@@ -12,6 +12,7 @@ namespace Laminas\ServiceManager\Inspector\Traverser;
 
 use Laminas\ServiceManager\Inspector\Analyzer\FactoryAnalyzerInterface;
 use Laminas\ServiceManager\Inspector\DependencyConfig;
+use Laminas\ServiceManager\Inspector\DependencyConfigInterface;
 use Laminas\ServiceManager\Inspector\Exception\CircularDependencyException;
 use Laminas\ServiceManager\Inspector\Exception\MissingFactoryException;
 use Laminas\ServiceManager\Inspector\Visitor\NullStatsVisitor;
@@ -20,7 +21,7 @@ use Throwable;
 
 use function in_array;
 
-final class Traverser
+final class Traverser implements TraverserInterface
 {
     /** @var DependencyConfig */
     private $config;
@@ -32,7 +33,7 @@ final class Traverser
     private $visitor;
 
     public function __construct(
-        DependencyConfig $config,
+        DependencyConfigInterface $config,
         FactoryAnalyzerInterface $factoryAnalyzer
     ) {
         $this->config          = $config;

@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Laminas\ServiceManager\Inspector\Analyzer;
 
-use Laminas\ServiceManager\Inspector\DependencyConfig;
+use Laminas\ServiceManager\Inspector\DependencyConfigInterface;
 use Laminas\ServiceManager\Inspector\Exception\UnexpectedScalarTypeException;
 use Laminas\ServiceManager\Inspector\Traverser\Dependency;
 use ReflectionClass;
@@ -28,10 +28,10 @@ final class ReflectionBasedFactoryAnalyzer implements FactoryAnalyzerInterface
         'Zend\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory',
     ];
 
-    /** @var DependencyConfig */
+    /** @var DependencyConfigInterface */
     private $config;
 
-    public function __construct(DependencyConfig $config)
+    public function __construct(DependencyConfigInterface $config)
     {
         $this->config = $config;
     }
