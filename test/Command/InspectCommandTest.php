@@ -12,10 +12,10 @@ namespace LaminasTest\ServiceManager\Inspector\Command;
 
 use Laminas\ServiceManager\Inspector\Command\InspectCommand;
 use Laminas\ServiceManager\Inspector\DependencyConfigInterface;
+use Laminas\ServiceManager\Inspector\EventCollector\ConsoleListener;
 use Laminas\ServiceManager\Inspector\Scanner\DependencyScannerInterface;
 use Laminas\ServiceManager\Inspector\Traverser\Dependency;
 use Laminas\ServiceManager\Inspector\Traverser\TraverserInterface;
-use Laminas\ServiceManager\Inspector\EventCollector\ConsoleListener;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;

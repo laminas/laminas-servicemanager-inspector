@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Laminas\ServiceManager\Inspector\Event;
 
-interface EnterEvent extends EventInterface
+interface EnterEventInterface extends EventInterface
 {
     public function getInstantiationStack(): array;
 }

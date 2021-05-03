@@ -14,9 +14,7 @@ use function sprintf;
 
 final class MissingFactoryDetectedEvent implements TerminalEventInterface
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     private $dependencyName;
 
     public function __construct(string $dependencyName)

@@ -43,13 +43,13 @@ final class ConfigProvider
                 ReflectionBasedDependencyScanner::class => ReflectionBasedAbstractFactory::class,
                 DependencyConfig::class                 => MezzioDependencyConfigFactory::class,
                 Traverser::class                        => ReflectionBasedAbstractFactory::class,
-                ConsoleEventCollector::class => ReflectionBasedAbstractFactory::class,
+                ConsoleEventCollector::class            => ReflectionBasedAbstractFactory::class,
             ],
             'aliases'   => [
                 DependencyScannerInterface::class => ReflectionBasedDependencyScanner::class,
                 DependencyConfigInterface::class  => DependencyConfig::class,
                 TraverserInterface::class         => Traverser::class,
-                EventCollectorInterface::class => ConsoleEventCollector::class,
+                EventCollectorInterface::class    => ConsoleEventCollector::class,
             ],
         ];
     }

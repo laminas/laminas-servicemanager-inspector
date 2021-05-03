@@ -12,10 +12,10 @@ namespace Laminas\ServiceManager\Inspector\Traverser;
 
 use Laminas\ServiceManager\Inspector\DependencyConfig;
 use Laminas\ServiceManager\Inspector\DependencyConfigInterface;
-use Laminas\ServiceManager\Inspector\Event\AutowireFactoryEnteredEvent;
-use Laminas\ServiceManager\Inspector\Event\CustomFactoryEnteredEvent;
-use Laminas\ServiceManager\Inspector\Event\InvokableEnteredEvent;
+use Laminas\ServiceManager\Inspector\Event\AutowireFactoryEnteredEventInterface;
 use Laminas\ServiceManager\Inspector\Event\CircularDependencyDetectedEvent;
+use Laminas\ServiceManager\Inspector\Event\CustomFactoryEnteredEventInterface;
+use Laminas\ServiceManager\Inspector\Event\InvokableEnteredEventInterface;
 use Laminas\ServiceManager\Inspector\Event\MissingFactoryDetectedEvent;
 use Laminas\ServiceManager\Inspector\EventCollector\EventCollectorInterface;
 use Laminas\ServiceManager\Inspector\Scanner\DependencyScannerInterface;
@@ -41,7 +41,7 @@ final class Traverser implements TraverserInterface
     ) {
         $this->config            = $config;
         $this->dependencyScanner = $dependencyScanner;
-        $this->eventCollector = $eventCollector;
+        $this->eventCollector    = $eventCollector;
     }
 
     /**
@@ -51,7 +51,7 @@ final class Traverser implements TraverserInterface
      */
     public function __invoke(Dependency $dependency, array $instantiationStack = []): void
     {
-        if (!$this->hasFactory($dependency, $instantiationStack)) {
+        if (! $this->hasFactory($dependency, $instantiationStack)) {
             return;
         }
 
@@ -71,17 +71,23 @@ final class Traverser implements TraverserInterface
     {
         $isInvokable = $this->config->isInvokable($dependency->getName());
         if ($isInvokable) {
-            $this->eventCollector->collect(new InvokableEnteredEvent($dependency->getName(), $instantiationStack));
+            $this->eventCollector->collect(
+                new InvokableEnteredEventInterface($dependency->getName(), $instantiationStack)
+            );
         }
 
         $hasAutowireFactory = $this->config->hasAutowireFactory($dependency->getName());
         if ($hasAutowireFactory) {
-            $this->eventCollector->collect(new AutowireFactoryEnteredEvent($dependency->getName(), $instantiationStack));
+            $this->eventCollector->collect(
+                new AutowireFactoryEnteredEventInterface($dependency->getName(), $instantiationStack)
+            );
         }
 
         $hasFactory = $this->config->hasFactory($dependency->getName());
         if ($hasFactory && ! $isInvokable) {
-            $this->eventCollector->collect(new CustomFactoryEnteredEvent($dependency->getName(), $instantiationStack));
+            $this->eventCollector->collect(
+                new CustomFactoryEnteredEventInterface($dependency->getName(), $instantiationStack)
+            );
         }
 
         $isOptional = $dependency->isOptional();

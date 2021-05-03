@@ -10,21 +10,17 @@ declare(strict_types=1);
 
 namespace Laminas\ServiceManager\Inspector\Event;
 
-final class AutowireFactoryEnteredEvent implements EnterEvent
+final class AutowireFactoryEnteredEventInterface implements EnterEventInterface
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     private $dependencyName;
 
-    /**
-     * @psalm-var list<string>
-     */
+    /** @psalm-var list<string> */
     private $instantiationStack;
 
     public function __construct(string $dependencyName, array $instantiationStack)
     {
-        $this->dependencyName = $dependencyName;
+        $this->dependencyName     = $dependencyName;
         $this->instantiationStack = $instantiationStack;
     }
 
@@ -40,5 +36,4 @@ final class AutowireFactoryEnteredEvent implements EnterEvent
     {
         return $this->instantiationStack;
     }
-
 }

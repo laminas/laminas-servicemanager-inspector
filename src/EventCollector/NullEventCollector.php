@@ -15,13 +15,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class NullEventCollector implements EventCollectorInterface
 {
-    public function collect(EventInterface $event)
+    public function collect(EventInterface $event): void
     {
-
     }
 
-    public function release(OutputInterface $output)
+    public function release(OutputInterface $output): int
     {
-
+        return 0;
     }
 }

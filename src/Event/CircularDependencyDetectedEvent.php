@@ -15,19 +15,15 @@ use function sprintf;
 
 final class CircularDependencyDetectedEvent implements TerminalEventInterface
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     private $dependencyName;
 
-    /**
-     * @psalm-var list<string>
-     */
+    /** @psalm-var list<string> */
     private $instantiationStack;
 
     public function __construct(string $dependencyName, array $instantiationStack)
     {
-        $this->dependencyName = $dependencyName;
+        $this->dependencyName     = $dependencyName;
         $this->instantiationStack = $instantiationStack;
     }
 

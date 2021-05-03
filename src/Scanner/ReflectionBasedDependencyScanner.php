@@ -32,14 +32,12 @@ final class ReflectionBasedDependencyScanner implements DependencyScannerInterfa
     /** @var DependencyConfigInterface */
     private $config;
 
-    /**
-     * @var EventCollectorInterface
-     */
+    /** @var EventCollectorInterface */
     private $eventCollector;
 
     public function __construct(DependencyConfigInterface $config, EventCollectorInterface $eventCollector)
     {
-        $this->config = $config;
+        $this->config         = $config;
         $this->eventCollector = $eventCollector;
     }
 

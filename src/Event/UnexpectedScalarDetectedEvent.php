@@ -14,20 +14,16 @@ use function sprintf;
 
 final class UnexpectedScalarDetectedEvent implements TerminalEventInterface
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     private $dependencyName;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $paramName;
 
     public function __construct(string $dependencyName, string $paramName)
     {
         $this->dependencyName = $dependencyName;
-        $this->paramName = $paramName;
+        $this->paramName      = $paramName;
     }
 
     public function getDependencyName(): string

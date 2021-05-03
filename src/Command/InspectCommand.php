@@ -50,7 +50,7 @@ EOH;
         $this->config            = $config;
         $this->dependencyScanner = $dependencyScanner;
         $this->traverser         = $traverser;
-        $this->eventCollector = $eventCollector;
+        $this->eventCollector    = $eventCollector;
 
         parent::__construct(self::$defaultName);
     }
