@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace Laminas\ServiceManager\Inspector;
 
 use Laminas\ServiceManager\Factory\InvokableFactory;
-use Laminas\ServiceManager\Inspector\Exception\MissingFactoryException;
+use Laminas\ServiceManager\Inspector\Exception\CannotAutoloadFactoryClass;
 use Zakirullin\Mess\Mess;
 
 use function array_merge;
@@ -82,7 +82,7 @@ final class DependencyConfig implements DependencyConfigInterface
 
             // TODO an exception?
             if (! is_string($factoryClass) || ! class_exists($factoryClass)) {
-                throw new MissingFactoryException($serviceName);
+                throw new CannotAutoloadFactoryClass($serviceName, $factoryClass);
             }
         }
 
@@ -146,6 +146,7 @@ final class DependencyConfig implements DependencyConfigInterface
 
     public function getRealName(string $serviceName): string
     {
+        // TODO Alias resolver
         return $this->resolvedAliases[$serviceName] ?? $serviceName;
     }
 

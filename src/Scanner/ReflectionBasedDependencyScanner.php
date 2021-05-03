@@ -13,7 +13,6 @@ namespace Laminas\ServiceManager\Inspector\Scanner;
 use Laminas\ServiceManager\Inspector\DependencyConfigInterface;
 use Laminas\ServiceManager\Inspector\Event\UnexpectedScalarDetectedEvent;
 use Laminas\ServiceManager\Inspector\EventCollector\EventCollectorInterface;
-use Laminas\ServiceManager\Inspector\Exception\UnexpectedScalarTypeException;
 use Laminas\ServiceManager\Inspector\Traverser\Dependency;
 use ReflectionClass;
 use ReflectionException;

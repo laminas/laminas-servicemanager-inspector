@@ -73,10 +73,6 @@ EOH;
             }
         }
 
-        $this->eventCollector->release($output);
-
-        // TerminalEvent
-
-        return 0;
+        return $this->eventCollector->release($output);
     }
 }

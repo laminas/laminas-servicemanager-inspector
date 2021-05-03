@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace Laminas\ServiceManager\Inspector\Traverser;
 
-use Laminas\ServiceManager\Inspector\EventCollector\ListenerInterface;
 use Throwable;
 
 interface TraverserInterface

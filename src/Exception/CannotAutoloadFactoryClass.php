@@ -13,19 +13,12 @@ namespace Laminas\ServiceManager\Inspector\Exception;
 use LogicException;
 use Throwable;
 
-use function implode;
 use function sprintf;
 
-final class CircularDependencyException extends LogicException implements ExceptionInterface
+final class CannotAutoloadFactoryClass extends LogicException implements ExceptionInterface
 {
-    public function __construct(string $name, array $instantiationStack, ?Throwable $previous = null)
+    public function __construct(string $serviceName, string $factoryClass, ?Throwable $previous = null)
     {
-        $message = sprintf(
-            'Circular dependency detected: %s -> %s',
-            implode(' -> ', $instantiationStack),
-            $name
-        );
-
-        parent::__construct($message, 0, $previous);
+        parent::__construct(sprintf('Cannot autoload factory class "%s" for service %s.', $factoryClass, $serviceName), 0, $previous);
     }
 }

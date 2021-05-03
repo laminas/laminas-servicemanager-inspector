@@ -16,6 +16,7 @@ use Laminas\ServiceManager\Inspector\Event\AutowireFactoryEnteredEvent;
 use Laminas\ServiceManager\Inspector\Event\CustomFactoryEnteredEvent;
 use Laminas\ServiceManager\Inspector\Event\InvokableEnteredEvent;
 use Laminas\ServiceManager\Inspector\Event\CircularDependencyDetectedEvent;
+use Laminas\ServiceManager\Inspector\Event\MissingFactoryDetectedEvent;
 use Laminas\ServiceManager\Inspector\EventCollector\EventCollectorInterface;
 use Laminas\ServiceManager\Inspector\Scanner\DependencyScannerInterface;
 use Throwable;
@@ -88,7 +89,7 @@ final class Traverser implements TraverserInterface
             return true;
         }
 
-        $event = new CircularDependencyDetectedEvent($dependency->getName(), $instantiationStack);
+        $event = new MissingFactoryDetectedEvent($dependency->getName(), $instantiationStack);
         $this->eventCollector->collect($event);
 
         return false;
