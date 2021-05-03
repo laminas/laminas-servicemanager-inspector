@@ -12,7 +12,7 @@ namespace LaminasTest\ServiceManager\Inspector\Command;
 
 use Laminas\ServiceManager\Inspector\Command\InspectCommand;
 use Laminas\ServiceManager\Inspector\DependencyConfigInterface;
-use Laminas\ServiceManager\Inspector\EventCollector\ConsoleListener;
+use Laminas\ServiceManager\Inspector\EventCollector\EventCollectorInterface;
 use Laminas\ServiceManager\Inspector\Scanner\DependencyScannerInterface;
 use Laminas\ServiceManager\Inspector\Traverser\Dependency;
 use Laminas\ServiceManager\Inspector\Traverser\TraverserInterface;
@@ -29,7 +29,7 @@ class InspectCommandTest extends TestCase
 {
     use ProphecyTrait;
 
-    public function testExecuteBeginsAnalysisWhenScannableDependenciesAreProvided(): void
+    public function testBeginsAnalysisWhenScannableDependenciesAreProvided(): void
     {
         $config = $this->prophesize(DependencyConfigInterface::class);
         $config->getFactories()->shouldBeCalled()->willReturn(
@@ -39,17 +39,20 @@ class InspectCommandTest extends TestCase
             ]
         );
 
-        $analyzer = $this->prophesize(DependencyScannerInterface::class);
-        $analyzer->canScan(Argument::any())->willReturn(true);
+        $scanner = $this->prophesize(DependencyScannerInterface::class);
+        $scanner->canScan(Argument::any())->willReturn(true);
 
         $traverser = $this->prophesize(TraverserInterface::class);
-        $traverser->setVisitor(Argument::type(ConsoleListener::class))->shouldBeCalled();
         $traverser->__invoke(Argument::type(Dependency::class))->shouldBeCalled(2);
+
+        $eventCollector = $this->prophesize(EventCollectorInterface::class);
+        $eventCollector->release(Argument::type(OutputInterface::class))->shouldBeCalled();
 
         $command = new InspectCommand(
             $config->reveal(),
-            $analyzer->reveal(),
+            $scanner->reveal(),
             $traverser->reveal(),
+            $eventCollector->reveal(),
         );
 
         $command->run(
@@ -58,7 +61,7 @@ class InspectCommandTest extends TestCase
         );
     }
 
-    public function testExecuteSkipAnalysisWhenNonScannableDependenciesAreProvided(): void
+    public function testSkipAnalysisWhenNonScannableDependenciesAreProvided(): void
     {
         $config = $this->prophesize(DependencyConfigInterface::class);
         $config->getFactories()->shouldBeCalled()->willReturn(
@@ -68,17 +71,20 @@ class InspectCommandTest extends TestCase
             ]
         );
 
-        $analyzer = $this->prophesize(DependencyScannerInterface::class);
-        $analyzer->canScan(Argument::any())->willReturn(false);
+        $scanner = $this->prophesize(DependencyScannerInterface::class);
+        $scanner->canScan(Argument::any())->willReturn(false);
 
         $traverser = $this->prophesize(TraverserInterface::class);
-        $traverser->setVisitor(Argument::type(ConsoleListener::class))->shouldBeCalled();
         $traverser->__invoke(Argument::type(Dependency::class))->shouldNotBeCalled();
+
+        $eventCollector = $this->prophesize(EventCollectorInterface::class);
+        $eventCollector->release(Argument::type(OutputInterface::class))->shouldBeCalled();
 
         $command = new InspectCommand(
             $config->reveal(),
-            $analyzer->reveal(),
+            $scanner->reveal(),
             $traverser->reveal(),
+            $eventCollector->reveal(),
         );
 
         $command->run(

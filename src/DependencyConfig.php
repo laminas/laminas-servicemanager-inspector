@@ -12,6 +12,7 @@ namespace Laminas\ServiceManager\Inspector;
 
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\ServiceManager\Inspector\Exception\CannotAutoloadFactoryClassException;
+use Laminas\ServiceManager\Inspector\Traverser\AliasResolver;
 use Zakirullin\Mess\Mess;
 
 use function array_merge;
@@ -80,7 +81,7 @@ final class DependencyConfig implements DependencyConfigInterface
                 continue;
             }
 
-            // TODO an exception?
+            // TODO throw an event instead of exception?
             if (! is_string($factoryClass) || ! class_exists($factoryClass)) {
                 throw new CannotAutoloadFactoryClassException($serviceName, $factoryClass);
             }
@@ -120,8 +121,9 @@ final class DependencyConfig implements DependencyConfigInterface
         }
 
         $aliases = (new Mess($dependencies))['aliases']->findArray() ?? [];
+        $resolvedAliases = (new AliasResolver())($aliases);
 
-        return array_merge($invokableAliases, $aliases);
+        return array_merge($invokableAliases, $resolvedAliases);
     }
 
     /**
