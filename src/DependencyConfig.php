@@ -80,6 +80,7 @@ final class DependencyConfig implements DependencyConfigInterface
                 continue;
             }
 
+            // TODO an exception?
             if (! is_string($factoryClass) || ! class_exists($factoryClass)) {
                 throw new MissingFactoryException($serviceName);
             }
@@ -98,7 +99,8 @@ final class DependencyConfig implements DependencyConfigInterface
     {
         $messedInvokables = (new Mess($dependencies))['invokables'];
 
-        return $messedInvokables->findArrayOfStringToString() ?? [];
+        // FIXME string
+        return $messedInvokables->findArray() ?? [];
     }
 
     /**

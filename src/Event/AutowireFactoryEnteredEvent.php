@@ -10,10 +10,7 @@ declare(strict_types=1);
 
 namespace Laminas\ServiceManager\Inspector\Event;
 
-use function implode;
-use function sprintf;
-
-final class CircularDependencyDetectedEvent implements TerminalEventInterface
+final class AutowireFactoryEnteredEvent implements EnterEvent
 {
     /**
      * @var string
@@ -36,12 +33,12 @@ final class CircularDependencyDetectedEvent implements TerminalEventInterface
         return $this->dependencyName;
     }
 
-    public function getError(): string
+    /**
+     * @psalm-return list<string>
+     */
+    public function getInstantiationStack(): array
     {
-        return sprintf(
-            'Circular dependency detected: %s -> %s',
-            implode(' -> ', $this->instantiationStack),
-            $this->dependencyName
-        );
+        return $this->instantiationStack;
     }
+
 }

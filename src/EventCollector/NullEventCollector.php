@@ -10,17 +10,18 @@ declare(strict_types=1);
 
 namespace Laminas\ServiceManager\Inspector\EventCollector;
 
+use Laminas\ServiceManager\Inspector\Event\EventInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-interface ListenerInterface
+final class NullEventCollector implements EventCollectorInterface
 {
-    public function enterInvokable(string $dependencyName, array $instantiationStack): void;
+    public function collect(EventInterface $event)
+    {
 
-    public function enterAutowireFactory(string $dependencyName, array $instantiationStack): void;
+    }
 
-    public function enterCustomFactory(string $dependencyName, array $instantiationStack): void;
+    public function release(OutputInterface $output)
+    {
 
-    public function enterError(string $dependencyName, array $instantiationStack): void;
-
-    public function render(): void;
+    }
 }

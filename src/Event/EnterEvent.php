@@ -8,15 +8,9 @@
 
 declare(strict_types=1);
 
-namespace Laminas\ServiceManager\Inspector\EventCollector;
+namespace Laminas\ServiceManager\Inspector\Event;
 
-use Laminas\ServiceManager\Inspector\Event\EventInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
-final class EventCollector
+interface EnterEvent extends EventInterface
 {
-    public function collect(EventInterface $event);
-
-    public function release(OutputInterface $output);
+    public function getInstantiationStack(): array;
 }
-

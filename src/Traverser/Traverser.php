@@ -12,12 +12,12 @@ namespace Laminas\ServiceManager\Inspector\Traverser;
 
 use Laminas\ServiceManager\Inspector\DependencyConfig;
 use Laminas\ServiceManager\Inspector\DependencyConfigInterface;
+use Laminas\ServiceManager\Inspector\Event\AutowireFactoryEnteredEvent;
+use Laminas\ServiceManager\Inspector\Event\CustomFactoryEnteredEvent;
+use Laminas\ServiceManager\Inspector\Event\InvokableEnteredEvent;
+use Laminas\ServiceManager\Inspector\Event\CircularDependencyDetectedEvent;
 use Laminas\ServiceManager\Inspector\EventCollector\EventCollectorInterface;
-use Laminas\ServiceManager\Inspector\Exception\CircularDependencyException;
-use Laminas\ServiceManager\Inspector\Exception\MissingFactoryException;
 use Laminas\ServiceManager\Inspector\Scanner\DependencyScannerInterface;
-use Laminas\ServiceManager\Inspector\EventCollector\NullListener;
-use Laminas\ServiceManager\Inspector\EventCollector\ListenerInterface;
 use Throwable;
 
 use function in_array;
@@ -50,8 +50,13 @@ final class Traverser implements TraverserInterface
      */
     public function __invoke(Dependency $dependency, array $instantiationStack = []): void
     {
-        $this->assertHasFactory($dependency, $instantiationStack);
-        $this->assertNotCircularDependency($dependency, $instantiationStack);
+        if (!$this->hasFactory($dependency, $instantiationStack)) {
+            return;
+        }
+
+        if ($this->hasCircularDependency($dependency, $instantiationStack)) {
+            return;
+        }
 
         $instantiationStack[] = $dependency->getName();
 
@@ -61,49 +66,47 @@ final class Traverser implements TraverserInterface
         }
     }
 
-    public function setVisitor(ListenerInterface $visitor): void
-    {
-        $this->visitor = $visitor;
-    }
-
-    private function assertHasFactory(Dependency $dependency, array $instantiationStack): void
+    private function hasFactory(Dependency $dependency, array $instantiationStack): bool
     {
         $isInvokable = $this->config->isInvokable($dependency->getName());
         if ($isInvokable) {
-
-            $this->visitor->enterInvokable($dependency->getName(), $instantiationStack);
+            $this->eventCollector->collect(new InvokableEnteredEvent($dependency->getName(), $instantiationStack));
         }
 
         $hasAutowireFactory = $this->config->hasAutowireFactory($dependency->getName());
         if ($hasAutowireFactory) {
-            $this->visitor->enterAutowireFactory($dependency->getName(), $instantiationStack);
+            $this->eventCollector->collect(new AutowireFactoryEnteredEvent($dependency->getName(), $instantiationStack));
         }
 
         $hasFactory = $this->config->hasFactory($dependency->getName());
         if ($hasFactory && ! $isInvokable) {
-            $this->visitor->enterCustomFactory($dependency->getName(), $instantiationStack);
+            $this->eventCollector->collect(new CustomFactoryEnteredEvent($dependency->getName(), $instantiationStack));
         }
 
         $isOptional = $dependency->isOptional();
         if ($isInvokable || $hasAutowireFactory || $hasFactory || $isOptional) {
-            return;
+            return true;
         }
 
-        $this->visitor->enterError($dependency->getName(), $instantiationStack);
+        $event = new CircularDependencyDetectedEvent($dependency->getName(), $instantiationStack);
+        $this->eventCollector->collect($event);
 
-        throw new MissingFactoryException($dependency->getName());
+        return false;
     }
 
     /**
      * @psalm-var list<string> $instantiationStack
      * @param array            $instantiationStack
      */
-    private function assertNotCircularDependency(Dependency $dependency, array $instantiationStack): void
+    private function hasCircularDependency(Dependency $dependency, array $instantiationStack): bool
     {
         if (in_array($dependency->getName(), $instantiationStack, true)) {
-            $this->visitor->enterError($dependency->getName(), $instantiationStack);
+            $event = new CircularDependencyDetectedEvent($dependency->getName(), $instantiationStack);
+            $this->eventCollector->collect($event);
 
-            throw new CircularDependencyException($dependency->getName(), $instantiationStack);
+            return true;
         }
+
+        return false;
     }
 }

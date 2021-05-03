@@ -11,11 +11,10 @@ declare(strict_types=1);
 namespace Laminas\ServiceManager\Inspector\Command;
 
 use Laminas\ServiceManager\Inspector\DependencyConfigInterface;
+use Laminas\ServiceManager\Inspector\EventCollector\EventCollectorInterface;
 use Laminas\ServiceManager\Inspector\Scanner\DependencyScannerInterface;
 use Laminas\ServiceManager\Inspector\Traverser\Dependency;
 use Laminas\ServiceManager\Inspector\Traverser\TraverserInterface;
-use Laminas\ServiceManager\Inspector\EventCollector\ConsoleListener;
-use Laminas\ServiceManager\Inspector\EventCollector\ListenerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -39,19 +38,19 @@ EOH;
     /** @var TraverserInterface */
     private $traverser;
 
-    /** @var ListenerInterface */
-    private $statsVisitor;
+    /** @var EventCollectorInterface */
+    private $eventCollector;
 
     public function __construct(
         DependencyConfigInterface $config,
         DependencyScannerInterface $dependencyScanner,
         TraverserInterface $traverser,
-        ListenerInterface $statsVisitor
+        EventCollectorInterface $eventCollector
     ) {
         $this->config            = $config;
         $this->dependencyScanner = $dependencyScanner;
         $this->traverser         = $traverser;
-        $this->statsVisitor = $statsVisitor;
+        $this->eventCollector = $eventCollector;
 
         parent::__construct(self::$defaultName);
     }
@@ -67,9 +66,6 @@ EOH;
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $visitor = new ConsoleListener($output);
-        $this->traverser->setVisitor($visitor);
-
         foreach ($this->config->getFactories() as $serviceName => $factoryClass) {
             if ($this->dependencyScanner->canScan($serviceName)) {
                 // TODO don't fail here - collect all occurring errors
@@ -77,8 +73,9 @@ EOH;
             }
         }
 
-        // render $output
-        $visitor->render();
+        $this->eventCollector->release($output);
+
+        // TerminalEvent
 
         return 0;
     }

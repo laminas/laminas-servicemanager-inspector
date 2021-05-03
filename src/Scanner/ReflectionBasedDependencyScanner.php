@@ -11,6 +11,8 @@ declare(strict_types=1);
 namespace Laminas\ServiceManager\Inspector\Scanner;
 
 use Laminas\ServiceManager\Inspector\DependencyConfigInterface;
+use Laminas\ServiceManager\Inspector\Event\UnexpectedScalarDetectedEvent;
+use Laminas\ServiceManager\Inspector\EventCollector\EventCollectorInterface;
 use Laminas\ServiceManager\Inspector\Exception\UnexpectedScalarTypeException;
 use Laminas\ServiceManager\Inspector\Traverser\Dependency;
 use ReflectionClass;
@@ -31,9 +33,15 @@ final class ReflectionBasedDependencyScanner implements DependencyScannerInterfa
     /** @var DependencyConfigInterface */
     private $config;
 
-    public function __construct(DependencyConfigInterface $config)
+    /**
+     * @var EventCollectorInterface
+     */
+    private $eventCollector;
+
+    public function __construct(DependencyConfigInterface $config, EventCollectorInterface $eventCollector)
     {
         $this->config = $config;
+        $this->eventCollector = $eventCollector;
     }
 
     /**
@@ -46,7 +54,7 @@ final class ReflectionBasedDependencyScanner implements DependencyScannerInterfa
             return [];
         }
 
-        // TODO throw an exception on interface
+        // TODO throw an event on interface
 
         $realServiceName = $this->config->getRealName($serviceName);
         // TODO Check if invokable has zero params
@@ -81,7 +89,8 @@ final class ReflectionBasedDependencyScanner implements DependencyScannerInterfa
         foreach ($constructor->getParameters() as $parameter) {
             $class = $parameter->getClass();
             if ($class === null && ! $this->isOptional($parameter)) {
-                throw new UnexpectedScalarTypeException($serviceName, $parameter->getName());
+                $this->eventCollector->collect(new UnexpectedScalarDetectedEvent($serviceName, $parameter->getName()));
+                return [];
             }
 
             /** @psalm-var ReflectionClass $class */

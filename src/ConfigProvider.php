@@ -12,6 +12,8 @@ namespace Laminas\ServiceManager\Inspector;
 
 use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 use Laminas\ServiceManager\Inspector\Command\InspectCommand;
+use Laminas\ServiceManager\Inspector\EventCollector\ConsoleEventCollector;
+use Laminas\ServiceManager\Inspector\EventCollector\EventCollectorInterface;
 use Laminas\ServiceManager\Inspector\Scanner\DependencyScannerInterface;
 use Laminas\ServiceManager\Inspector\Scanner\ReflectionBasedDependencyScanner;
 use Laminas\ServiceManager\Inspector\Traverser\Traverser;
@@ -43,12 +45,14 @@ final class ConfigProvider
                 ReflectionBasedDependencyScanner::class => ReflectionBasedAbstractFactory::class,
                 DependencyConfig::class                 => MezzioDependencyConfigFactory::class,
                 Traverser::class                        => ReflectionBasedAbstractFactory::class,
+                ConsoleEventCollector::class => ReflectionBasedAbstractFactory::class,
             ],
             'aliases'   => [
                 DependencyScannerInterface::class => ReflectionBasedDependencyScanner::class,
                 ListenerInterface::class      => ConsoleListener::class,
                 DependencyConfigInterface::class  => DependencyConfig::class,
                 TraverserInterface::class         => Traverser::class,
+                EventCollectorInterface::class => ConsoleEventCollector::class,
             ],
         ];
     }

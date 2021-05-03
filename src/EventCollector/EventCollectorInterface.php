@@ -15,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 interface EventCollectorInterface
 {
-    public function collect(EventInterface $event);
+    public function collect(EventInterface $event): void;
 
-    public function release(OutputInterface $output);
+    public function release(OutputInterface $output): int;
 }

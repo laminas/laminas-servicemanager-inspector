@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Laminas\ServiceManager\Inspector\Event;
 
-interface EventInterface
+interface TerminalEventInterface extends EventInterface
 {
-    public function getDependencyName(): string;
+    public function getError(): string;
 }

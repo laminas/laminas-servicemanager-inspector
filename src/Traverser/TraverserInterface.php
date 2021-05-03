@@ -21,6 +21,4 @@ interface TraverserInterface
      * @throws Throwable
      */
     public function __invoke(Dependency $dependency, array $instantiationStack = []): void;
-
-    public function setVisitor(ListenerInterface $visitor): void;
 }
