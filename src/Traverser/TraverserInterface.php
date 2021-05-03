@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Laminas\ServiceManager\Inspector\Traverser;
 
-use Laminas\ServiceManager\Inspector\Visitor\StatsVisitorInterface;
+use Laminas\ServiceManager\Inspector\EventCollector\ListenerInterface;
 use Throwable;
 
 interface TraverserInterface
@@ -22,5 +22,5 @@ interface TraverserInterface
      */
     public function __invoke(Dependency $dependency, array $instantiationStack = []): void;
 
-    public function setVisitor(StatsVisitorInterface $visitor): void;
+    public function setVisitor(ListenerInterface $visitor): void;
 }

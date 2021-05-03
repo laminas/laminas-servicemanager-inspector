@@ -16,8 +16,8 @@ use Laminas\ServiceManager\Inspector\Scanner\DependencyScannerInterface;
 use Laminas\ServiceManager\Inspector\Scanner\ReflectionBasedDependencyScanner;
 use Laminas\ServiceManager\Inspector\Traverser\Traverser;
 use Laminas\ServiceManager\Inspector\Traverser\TraverserInterface;
-use Laminas\ServiceManager\Inspector\Visitor\ConsoleStatsVisitor;
-use Laminas\ServiceManager\Inspector\Visitor\StatsVisitorInterface;
+use Laminas\ServiceManager\Inspector\EventCollector\ConsoleListener;
+use Laminas\ServiceManager\Inspector\EventCollector\ListenerInterface;
 
 final class ConfigProvider
 {
@@ -46,7 +46,7 @@ final class ConfigProvider
             ],
             'aliases'   => [
                 DependencyScannerInterface::class => ReflectionBasedDependencyScanner::class,
-                StatsVisitorInterface::class      => ConsoleStatsVisitor::class,
+                ListenerInterface::class      => ConsoleListener::class,
                 DependencyConfigInterface::class  => DependencyConfig::class,
                 TraverserInterface::class         => Traverser::class,
             ],

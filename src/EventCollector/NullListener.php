@@ -8,9 +8,9 @@
 
 declare(strict_types=1);
 
-namespace Laminas\ServiceManager\Inspector\Visitor;
+namespace Laminas\ServiceManager\Inspector\EventCollector;
 
-final class NullStatsVisitor implements StatsVisitorInterface
+final class NullListener implements ListenerInterface
 {
     public function enterInvokable(string $dependencyName, array $instantiationStack): void
     {

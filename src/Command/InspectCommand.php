@@ -14,7 +14,8 @@ use Laminas\ServiceManager\Inspector\DependencyConfigInterface;
 use Laminas\ServiceManager\Inspector\Scanner\DependencyScannerInterface;
 use Laminas\ServiceManager\Inspector\Traverser\Dependency;
 use Laminas\ServiceManager\Inspector\Traverser\TraverserInterface;
-use Laminas\ServiceManager\Inspector\Visitor\ConsoleStatsVisitor;
+use Laminas\ServiceManager\Inspector\EventCollector\ConsoleListener;
+use Laminas\ServiceManager\Inspector\EventCollector\ListenerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -38,14 +39,19 @@ EOH;
     /** @var TraverserInterface */
     private $traverser;
 
+    /** @var ListenerInterface */
+    private $statsVisitor;
+
     public function __construct(
         DependencyConfigInterface $config,
         DependencyScannerInterface $dependencyScanner,
-        TraverserInterface $traverser
+        TraverserInterface $traverser,
+        ListenerInterface $statsVisitor
     ) {
         $this->config            = $config;
         $this->dependencyScanner = $dependencyScanner;
         $this->traverser         = $traverser;
+        $this->statsVisitor = $statsVisitor;
 
         parent::__construct(self::$defaultName);
     }
@@ -61,7 +67,7 @@ EOH;
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $visitor = new ConsoleStatsVisitor($output);
+        $visitor = new ConsoleListener($output);
         $this->traverser->setVisitor($visitor);
 
         foreach ($this->config->getFactories() as $serviceName => $factoryClass) {
@@ -71,6 +77,7 @@ EOH;
             }
         }
 
+        // render $output
         $visitor->render();
 
         return 0;

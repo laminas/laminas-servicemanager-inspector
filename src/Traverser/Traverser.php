@@ -12,11 +12,12 @@ namespace Laminas\ServiceManager\Inspector\Traverser;
 
 use Laminas\ServiceManager\Inspector\DependencyConfig;
 use Laminas\ServiceManager\Inspector\DependencyConfigInterface;
+use Laminas\ServiceManager\Inspector\EventCollector\EventCollectorInterface;
 use Laminas\ServiceManager\Inspector\Exception\CircularDependencyException;
 use Laminas\ServiceManager\Inspector\Exception\MissingFactoryException;
 use Laminas\ServiceManager\Inspector\Scanner\DependencyScannerInterface;
-use Laminas\ServiceManager\Inspector\Visitor\NullStatsVisitor;
-use Laminas\ServiceManager\Inspector\Visitor\StatsVisitorInterface;
+use Laminas\ServiceManager\Inspector\EventCollector\NullListener;
+use Laminas\ServiceManager\Inspector\EventCollector\ListenerInterface;
 use Throwable;
 
 use function in_array;
@@ -29,16 +30,17 @@ final class Traverser implements TraverserInterface
     /** @var DependencyScannerInterface */
     private $dependencyScanner;
 
-    /** @var StatsVisitorInterface */
-    private $visitor;
+    /** @var EventCollectorInterface */
+    private $eventCollector;
 
     public function __construct(
         DependencyConfigInterface $config,
-        DependencyScannerInterface $dependencyScanner
+        DependencyScannerInterface $dependencyScanner,
+        EventCollectorInterface $eventCollector
     ) {
         $this->config            = $config;
         $this->dependencyScanner = $dependencyScanner;
-        $this->visitor           = new NullStatsVisitor();
+        $this->eventCollector = $eventCollector;
     }
 
     /**
@@ -59,7 +61,7 @@ final class Traverser implements TraverserInterface
         }
     }
 
-    public function setVisitor(StatsVisitorInterface $visitor): void
+    public function setVisitor(ListenerInterface $visitor): void
     {
         $this->visitor = $visitor;
     }
@@ -68,6 +70,7 @@ final class Traverser implements TraverserInterface
     {
         $isInvokable = $this->config->isInvokable($dependency->getName());
         if ($isInvokable) {
+
             $this->visitor->enterInvokable($dependency->getName(), $instantiationStack);
         }
 

@@ -15,7 +15,7 @@ use Laminas\ServiceManager\Inspector\DependencyConfigInterface;
 use Laminas\ServiceManager\Inspector\Scanner\DependencyScannerInterface;
 use Laminas\ServiceManager\Inspector\Traverser\Dependency;
 use Laminas\ServiceManager\Inspector\Traverser\TraverserInterface;
-use Laminas\ServiceManager\Inspector\Visitor\ConsoleStatsVisitor;
+use Laminas\ServiceManager\Inspector\EventCollector\ConsoleListener;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
@@ -43,7 +43,7 @@ class InspectCommandTest extends TestCase
         $analyzer->canScan(Argument::any())->willReturn(true);
 
         $traverser = $this->prophesize(TraverserInterface::class);
-        $traverser->setVisitor(Argument::type(ConsoleStatsVisitor::class))->shouldBeCalled();
+        $traverser->setVisitor(Argument::type(ConsoleListener::class))->shouldBeCalled();
         $traverser->__invoke(Argument::type(Dependency::class))->shouldBeCalled(2);
 
         $command = new InspectCommand(
@@ -72,7 +72,7 @@ class InspectCommandTest extends TestCase
         $analyzer->canScan(Argument::any())->willReturn(false);
 
         $traverser = $this->prophesize(TraverserInterface::class);
-        $traverser->setVisitor(Argument::type(ConsoleStatsVisitor::class))->shouldBeCalled();
+        $traverser->setVisitor(Argument::type(ConsoleListener::class))->shouldBeCalled();
         $traverser->__invoke(Argument::type(Dependency::class))->shouldNotBeCalled();
 
         $command = new InspectCommand(

@@ -8,8 +8,9 @@
 
 declare(strict_types=1);
 
-namespace Laminas\ServiceManager\Inspector\Visitor;
+namespace Laminas\ServiceManager\Inspector\EventCollector;
 
+use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use function count;
@@ -18,7 +19,7 @@ use function max;
 use function sprintf;
 use function str_repeat;
 
-final class ConsoleStatsVisitor implements StatsVisitorInterface
+final class ConsoleListener implements ListenerInterface
 {
     private const COLOR_GREEN = "\e[1;32m";
 
@@ -52,9 +53,9 @@ final class ConsoleStatsVisitor implements StatsVisitorInterface
     /** @var array */
     private $wiredDependencies = [];
 
-    public function __construct(OutputInterface $output)
+    public function __construct()
     {
-        $this->output = $output;
+        $this->output = new NullOutput();
     }
 
     public function enterInvokable(string $dependencyName, array $instantiationStack): void

@@ -8,9 +8,11 @@
 
 declare(strict_types=1);
 
-namespace Laminas\ServiceManager\Inspector\Visitor;
+namespace Laminas\ServiceManager\Inspector\EventCollector;
 
-interface StatsVisitorInterface
+use Symfony\Component\Console\Output\OutputInterface;
+
+interface ListenerInterface
 {
     public function enterInvokable(string $dependencyName, array $instantiationStack): void;
 
