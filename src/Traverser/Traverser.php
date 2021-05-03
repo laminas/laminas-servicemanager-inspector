@@ -10,11 +10,11 @@ declare(strict_types=1);
 
 namespace Laminas\ServiceManager\Inspector\Traverser;
 
-use Laminas\ServiceManager\Inspector\Analyzer\FactoryAnalyzerInterface;
 use Laminas\ServiceManager\Inspector\DependencyConfig;
 use Laminas\ServiceManager\Inspector\DependencyConfigInterface;
 use Laminas\ServiceManager\Inspector\Exception\CircularDependencyException;
 use Laminas\ServiceManager\Inspector\Exception\MissingFactoryException;
+use Laminas\ServiceManager\Inspector\Scanner\DependencyScannerInterface;
 use Laminas\ServiceManager\Inspector\Visitor\NullStatsVisitor;
 use Laminas\ServiceManager\Inspector\Visitor\StatsVisitorInterface;
 use Throwable;
@@ -26,24 +26,24 @@ final class Traverser implements TraverserInterface
     /** @var DependencyConfig */
     private $config;
 
-    /** @var FactoryAnalyzerInterface */
-    private $factoryAnalyzer;
+    /** @var DependencyScannerInterface */
+    private $dependencyScanner;
 
     /** @var StatsVisitorInterface */
     private $visitor;
 
     public function __construct(
         DependencyConfigInterface $config,
-        FactoryAnalyzerInterface $factoryAnalyzer
+        DependencyScannerInterface $dependencyScanner
     ) {
-        $this->config          = $config;
-        $this->factoryAnalyzer = $factoryAnalyzer;
-        $this->visitor         = new NullStatsVisitor();
+        $this->config            = $config;
+        $this->dependencyScanner = $dependencyScanner;
+        $this->visitor           = new NullStatsVisitor();
     }
 
     /**
      * @psalm-var list<string> $instantiationStack
-     * @param array $instantiationStack
+     * @param array            $instantiationStack
      * @throws Throwable
      */
     public function __invoke(Dependency $dependency, array $instantiationStack = []): void
@@ -53,7 +53,7 @@ final class Traverser implements TraverserInterface
 
         $instantiationStack[] = $dependency->getName();
 
-        $dependencies = $this->factoryAnalyzer->detect($dependency->getName());
+        $dependencies = $this->dependencyScanner->scan($dependency->getName());
         foreach ($dependencies as $childDependency) {
             $this($childDependency, $instantiationStack);
         }
@@ -93,7 +93,7 @@ final class Traverser implements TraverserInterface
 
     /**
      * @psalm-var list<string> $instantiationStack
-     * @param array $instantiationStack
+     * @param array            $instantiationStack
      */
     private function assertNotCircularDependency(Dependency $dependency, array $instantiationStack): void
     {

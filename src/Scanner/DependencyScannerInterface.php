@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace Laminas\ServiceManager\Inspector\Analyzer;
+namespace Laminas\ServiceManager\Inspector\Scanner;
 
 use Laminas\ServiceManager\Inspector\Traverser\Dependency;
 
@@ -17,7 +17,7 @@ interface DependencyScannerInterface
     /**
      * @return Dependency[]
      */
-    public function detect(string $serviceName): array;
+    public function scan(string $serviceName): array;
 
-    public function canDetect(string $serviceName): bool;
+    public function canScan(string $serviceName): bool;
 }

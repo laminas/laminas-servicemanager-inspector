@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace Laminas\ServiceManager\Inspector\Analyzer;
+namespace Laminas\ServiceManager\Inspector\Scanner;
 
 use Laminas\ServiceManager\Inspector\DependencyConfigInterface;
 use Laminas\ServiceManager\Inspector\Exception\UnexpectedScalarTypeException;
@@ -19,7 +19,7 @@ use ReflectionParameter;
 
 use function in_array;
 
-final class ReflectionBasedFactoryAnalyzer implements FactoryAnalyzerInterface
+final class ReflectionBasedDependencyScanner implements DependencyScannerInterface
 {
     private const SUPPORTED_FACTORIES = [
         // phpcs:ignore
@@ -40,9 +40,9 @@ final class ReflectionBasedFactoryAnalyzer implements FactoryAnalyzerInterface
      * @return Dependency[]
      * @throws ReflectionException
      */
-    public function detect(string $serviceName): array
+    public function scan(string $serviceName): array
     {
-        if (! $this->canDetect($serviceName)) {
+        if (! $this->canScan($serviceName)) {
             return [];
         }
 
@@ -57,7 +57,7 @@ final class ReflectionBasedFactoryAnalyzer implements FactoryAnalyzerInterface
         return $this->getConstructorParameters($serviceName);
     }
 
-    public function canDetect(string $serviceName): bool
+    public function canScan(string $serviceName): bool
     {
         $class = $this->config->getFactory($serviceName);
 

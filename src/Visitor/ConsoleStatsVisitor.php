@@ -11,9 +11,11 @@ declare(strict_types=1);
 namespace Laminas\ServiceManager\Inspector\Visitor;
 
 use Symfony\Component\Console\Output\OutputInterface;
+
 use function count;
 use function in_array;
 use function max;
+use function sprintf;
 use function str_repeat;
 
 final class ConsoleStatsVisitor implements StatsVisitorInterface
@@ -26,9 +28,7 @@ final class ConsoleStatsVisitor implements StatsVisitorInterface
 
     private const COLOR_END = "\e[0m";
 
-    /**
-     * @var OutputInterface
-     */
+    /** @var OutputInterface */
     private $output;
 
     /** @var int */
@@ -59,7 +59,7 @@ final class ConsoleStatsVisitor implements StatsVisitorInterface
 
     public function enterInvokable(string $dependencyName, array $instantiationStack): void
     {
-        if (!in_array($dependencyName, $this->invokableDependencies, true)) {
+        if (! in_array($dependencyName, $this->invokableDependencies, true)) {
             $this->invokableCount++;
             $this->collectDeep(count($instantiationStack));
         }
@@ -69,7 +69,7 @@ final class ConsoleStatsVisitor implements StatsVisitorInterface
 
     public function enterAutowireFactory(string $dependencyName, array $instantiationStack): void
     {
-        if (!in_array($dependencyName, $this->autowiredDependencies, true)) {
+        if (! in_array($dependencyName, $this->autowiredDependencies, true)) {
             $this->autowireFactoryCount++;
             $this->collectDeep(count($instantiationStack));
             $this->autowiredDependencies[] = $dependencyName;
@@ -132,8 +132,21 @@ final class ConsoleStatsVisitor implements StatsVisitorInterface
                 self::COLOR_END
             )
         );
-        $this->output->write(sprintf("\nMaximum instantiation deep: %s%s%s 🏊\n\n", self::COLOR_GREEN, $this->maxDeep, self::COLOR_END));
-        $this->output->write(sprintf("As far as I can tell, %sit's all good%s 🚀\n", self::COLOR_GREEN, self::COLOR_END));
+        $this->output->write(
+            sprintf(
+                "\nMaximum instantiation deep: %s%s%s 🏊\n\n",
+                self::COLOR_GREEN,
+                $this->maxDeep,
+                self::COLOR_END
+            )
+        );
+        $this->output->write(
+            sprintf(
+                "As far as I can tell, %sit's all good%s 🚀\n",
+                self::COLOR_GREEN,
+                self::COLOR_END
+            )
+        );
     }
 
     private function collectDeep(int $deep): void

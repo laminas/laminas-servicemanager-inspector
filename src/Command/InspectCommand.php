@@ -10,8 +10,8 @@ declare(strict_types=1);
 
 namespace Laminas\ServiceManager\Inspector\Command;
 
-use Laminas\ServiceManager\Inspector\Analyzer\FactoryAnalyzerInterface;
 use Laminas\ServiceManager\Inspector\DependencyConfigInterface;
+use Laminas\ServiceManager\Inspector\Scanner\DependencyScannerInterface;
 use Laminas\ServiceManager\Inspector\Traverser\Dependency;
 use Laminas\ServiceManager\Inspector\Traverser\TraverserInterface;
 use Laminas\ServiceManager\Inspector\Visitor\ConsoleStatsVisitor;
@@ -32,20 +32,20 @@ EOH;
     /** @var DependencyConfigInterface */
     private $config;
 
-    /** @var FactoryAnalyzerInterface */
-    private $factoryAnalyzer;
+    /** @var DependencyScannerInterface */
+    private $dependencyScanner;
 
     /** @var TraverserInterface */
     private $traverser;
 
     public function __construct(
         DependencyConfigInterface $config,
-        FactoryAnalyzerInterface $factoryAnalyzer,
+        DependencyScannerInterface $dependencyScanner,
         TraverserInterface $traverser
     ) {
-        $this->config          = $config;
-        $this->factoryAnalyzer = $factoryAnalyzer;
-        $this->traverser       = $traverser;
+        $this->config            = $config;
+        $this->dependencyScanner = $dependencyScanner;
+        $this->traverser         = $traverser;
 
         parent::__construct(self::$defaultName);
     }
@@ -65,7 +65,7 @@ EOH;
         $this->traverser->setVisitor($visitor);
 
         foreach ($this->config->getFactories() as $serviceName => $factoryClass) {
-            if ($this->factoryAnalyzer->canDetect($serviceName)) {
+            if ($this->dependencyScanner->canScan($serviceName)) {
                 // TODO don't fail here - collect all occurring errors
                 ($this->traverser)(new Dependency($serviceName));
             }
