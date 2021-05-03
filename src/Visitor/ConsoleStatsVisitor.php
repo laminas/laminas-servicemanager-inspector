@@ -10,18 +10,26 @@ declare(strict_types=1);
 
 namespace Laminas\ServiceManager\Inspector\Visitor;
 
+use Symfony\Component\Console\Output\OutputInterface;
 use function count;
 use function in_array;
 use function max;
-use function printf;
 use function str_repeat;
 
 final class ConsoleStatsVisitor implements StatsVisitorInterface
 {
-    private const COLOR_GREEN  = "\e[1;32m";
+    private const COLOR_GREEN = "\e[1;32m";
+
     private const COLOR_YELLOW = "\e[33m";
-    private const COLOR_RED    = "\e[0;31m";
-    private const COLOR_END    = "\e[0m";
+
+    private const COLOR_RED = "\e[0;31m";
+
+    private const COLOR_END = "\e[0m";
+
+    /**
+     * @var OutputInterface
+     */
+    private $output;
 
     /** @var int */
     private $maxDeep = 0;
@@ -44,9 +52,14 @@ final class ConsoleStatsVisitor implements StatsVisitorInterface
     /** @var array */
     private $wiredDependencies = [];
 
+    public function __construct(OutputInterface $output)
+    {
+        $this->output = $output;
+    }
+
     public function enterInvokable(string $dependencyName, array $instantiationStack): void
     {
-        if (! in_array($dependencyName, $this->invokableDependencies, true)) {
+        if (!in_array($dependencyName, $this->invokableDependencies, true)) {
             $this->invokableCount++;
             $this->collectDeep(count($instantiationStack));
         }
@@ -56,7 +69,7 @@ final class ConsoleStatsVisitor implements StatsVisitorInterface
 
     public function enterAutowireFactory(string $dependencyName, array $instantiationStack): void
     {
-        if (! in_array($dependencyName, $this->autowiredDependencies, true)) {
+        if (!in_array($dependencyName, $this->autowiredDependencies, true)) {
             $this->autowireFactoryCount++;
             $this->collectDeep(count($instantiationStack));
             $this->autowiredDependencies[] = $dependencyName;
@@ -81,38 +94,46 @@ final class ConsoleStatsVisitor implements StatsVisitorInterface
      */
     public function enterError(string $dependencyName, array $instantiationStack): void
     {
-        printf(str_repeat('  ', count($instantiationStack)));
-        printf("└─%s%s%s\n", self::COLOR_RED, $dependencyName, self::COLOR_END);
+        $this->output->write(sprintf(str_repeat('  ', count($instantiationStack))));
+        $this->output->write(sprintf("└─%s%s%s\n", self::COLOR_RED, $dependencyName, self::COLOR_END));
     }
 
     public function render(): void
     {
-        printf(
-            "\nTotal factories found: %s%s%s 🏭\n",
-            self::COLOR_GREEN,
-            $this->invokableCount + $this->autowireFactoryCount + $this->customFactoryCount,
-            self::COLOR_END
+        $this->output->write(
+            sprintf(
+                "\nTotal factories found: %s%s%s 🏭\n",
+                self::COLOR_GREEN,
+                $this->invokableCount + $this->autowireFactoryCount + $this->customFactoryCount,
+                self::COLOR_END
+            )
         );
-        printf(
-            "Custom factories skipped: %s%s%s 🛠️\n",
-            self::COLOR_GREEN,
-            $this->customFactoryCount,
-            self::COLOR_END
+        $this->output->write(
+            sprintf(
+                "Custom factories skipped: %s%s%s 🛠️\n",
+                self::COLOR_GREEN,
+                $this->customFactoryCount,
+                self::COLOR_END
+            )
         );
-        printf(
-            "Autowire factories analyzed: %s%s%s 🔥\n",
-            self::COLOR_GREEN,
-            $this->autowireFactoryCount,
-            self::COLOR_END
+        $this->output->write(
+            sprintf(
+                "Autowire factories analyzed: %s%s%s 🔥\n",
+                self::COLOR_GREEN,
+                $this->autowireFactoryCount,
+                self::COLOR_END
+            )
         );
-        printf(
-            "Invokables analyzed: %s%s%s 📦\n",
-            self::COLOR_GREEN,
-            $this->invokableCount,
-            self::COLOR_END
+        $this->output->write(
+            sprintf(
+                "Invokables analyzed: %s%s%s 📦\n",
+                self::COLOR_GREEN,
+                $this->invokableCount,
+                self::COLOR_END
+            )
         );
-        printf("\nMaximum instantiation deep: %s%s%s 🏊\n\n", self::COLOR_GREEN, $this->maxDeep, self::COLOR_END);
-        printf("As far as I can tell, %sit's all good%s 🚀\n", self::COLOR_GREEN, self::COLOR_END);
+        $this->output->write(sprintf("\nMaximum instantiation deep: %s%s%s 🏊\n\n", self::COLOR_GREEN, $this->maxDeep, self::COLOR_END));
+        $this->output->write(sprintf("As far as I can tell, %sit's all good%s 🚀\n", self::COLOR_GREEN, self::COLOR_END));
     }
 
     private function collectDeep(int $deep): void
@@ -127,7 +148,7 @@ final class ConsoleStatsVisitor implements StatsVisitorInterface
             $prefix = self::COLOR_YELLOW;
             $suffix = self::COLOR_END;
         }
-        printf(str_repeat('  ', count($instantiationStack)));
-        printf("└─%s%s%s\n", $prefix, $dependencyName, $suffix);
+        $this->output->write(sprintf(str_repeat('  ', count($instantiationStack))));
+        $this->output->write(sprintf("└─%s%s%s\n", $prefix, $dependencyName, $suffix));
     }
 }
