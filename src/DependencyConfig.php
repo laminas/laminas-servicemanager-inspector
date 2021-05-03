@@ -11,13 +11,13 @@ declare(strict_types=1);
 namespace Laminas\ServiceManager\Inspector;
 
 use Laminas\ServiceManager\Factory\InvokableFactory;
-use Laminas\ServiceManager\Inspector\Exception\CannotAutoloadFactoryClassException;
+use Laminas\ServiceManager\Inspector\Event\AutoloadProblemDetectedEvent;
+use Laminas\ServiceManager\Inspector\EventCollector\EventCollectorInterface;
 use Zakirullin\Mess\Mess;
 
 use function array_merge;
 use function class_exists;
 use function in_array;
-use function is_string;
 
 final class DependencyConfig implements DependencyConfigInterface
 {
@@ -39,6 +39,9 @@ final class DependencyConfig implements DependencyConfigInterface
         'config',
     ];
 
+    /** @var EventCollectorInterface */
+    private $eventCollector;
+
     /** @psalm-var array<string, string> */
     private $factories;
 
@@ -51,8 +54,9 @@ final class DependencyConfig implements DependencyConfigInterface
     /**
      * @psalm-var array<string, string> $dependencies
      */
-    public function __construct(array $dependencies)
+    public function __construct(EventCollectorInterface $eventCollector, array $dependencies)
     {
+        $this->eventCollector = $eventCollector;
         $this->factories       = $this->getValidFactories($dependencies);
         $this->invokables      = $this->getValidInvokables($dependencies);
         $this->resolvedAliases = $this->getValidResolvedAliases($dependencies);
@@ -60,14 +64,15 @@ final class DependencyConfig implements DependencyConfigInterface
 
     /**
      * @psalm-var array<string, string> $dependencies
-     * @psalm-return array<string, string>
+     * @psalm-return array<string, class-string>
      * @param array $dependencies
      * @return array
      */
     private function getValidFactories(array $dependencies): array
     {
         $invokableFactories = [];
-        $invokables         = (new Mess($dependencies))['invokables']->findArrayOfStringToString() ?? [];
+        // FIXME stringToString
+        $invokables         = (new Mess($dependencies))['invokables']->findArray() ?? [];
         foreach ($invokables as $name => $class) {
             if ($name !== $class) {
                 $invokableFactories[$class] = InvokableFactory::class;
@@ -80,9 +85,8 @@ final class DependencyConfig implements DependencyConfigInterface
                 continue;
             }
 
-            // TODO throw an event instead of exception?
-            if (! is_string($factoryClass) || ! class_exists($factoryClass)) {
-                throw new CannotAutoloadFactoryClassException($serviceName, $factoryClass);
+            if (! class_exists($factoryClass)) {
+                $this->eventCollector->collect(new AutoloadProblemDetectedEvent($serviceName, $factoryClass));
             }
         }
 

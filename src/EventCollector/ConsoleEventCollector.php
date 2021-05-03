@@ -24,6 +24,7 @@ use function count;
 use function in_array;
 use function sprintf;
 use function str_repeat;
+use function var_dump;
 
 final class ConsoleEventCollector implements EventCollectorInterface
 {
@@ -45,9 +46,8 @@ final class ConsoleEventCollector implements EventCollectorInterface
     /** @var Color */
     private $failedResultColor;
 
-    public function collect(EventInterface $event): void
+    public function __construct()
     {
-        $this->events[]              = $event;
         $this->rootDependencyColor   = new Color('yellow');
         $this->dependencyColor       = new Color('white');
         $this->errorColor            = new Color('white', 'red');
@@ -55,12 +55,26 @@ final class ConsoleEventCollector implements EventCollectorInterface
         $this->failedResultColor     = new Color('red');
     }
 
+    public function collect(EventInterface $event): void
+    {
+        $this->events[] = $event;
+    }
+
     public function release(OutputInterface $output): int
     {
+        $alreadyPrintedDependency = [];
         foreach ($this->events as $event) {
+            if (in_array($event->getDependencyName(), $alreadyPrintedDependency, true)) {
+                continue;
+            }
+
             if ($event instanceof EnterEventInterface) {
                 $this->printEnterEvent($event, $output);
+                $alreadyPrintedDependency[] = $event->getDependencyName();
             }
+        }
+
+        foreach ($this->events as $event) {
             if ($event instanceof TerminalEventInterface) {
                 $this->printTerminalEvent($event, $output);
             }
@@ -91,7 +105,7 @@ final class ConsoleEventCollector implements EventCollectorInterface
 
     private function printResult(OutputInterface $output): int
     {
-        $totalFactoriesCount = $this->count(
+        $totalFactoriesCount = $this->countEnterEvent(
             [
                 InvokableEnteredEventInterface::class,
                 AutowireFactoryEnteredEventInterface::class,
@@ -105,7 +119,7 @@ final class ConsoleEventCollector implements EventCollectorInterface
             )
         );
 
-        $customFactoriesCount = $this->count([CustomFactoryEnteredEventInterface::class]);
+        $customFactoriesCount = $this->countEnterEvent([CustomFactoryEnteredEventInterface::class]);
         $output->write(
             sprintf(
                 "Custom factories skipped: %s 🛠️\n",
@@ -113,7 +127,7 @@ final class ConsoleEventCollector implements EventCollectorInterface
             )
         );
 
-        $autowireFactoriesCount = $this->count([AutowireFactoryEnteredEventInterface::class]);
+        $autowireFactoriesCount = $this->countEnterEvent([AutowireFactoryEnteredEventInterface::class]);
         $output->write(
             sprintf(
                 "Autowire factories analyzed: %s 🔥\n",
@@ -123,7 +137,7 @@ final class ConsoleEventCollector implements EventCollectorInterface
             )
         );
 
-        $invokablesCount = $this->count([InvokableEnteredEventInterface::class]);
+        $invokablesCount = $this->countEnterEvent([InvokableEnteredEventInterface::class]);
         $output->write(
             sprintf(
                 "Invokables analyzed: %s 📦\n",
@@ -165,35 +179,30 @@ final class ConsoleEventCollector implements EventCollectorInterface
     /**
      * @psalm-var list<class-string> $desiredEvents
      */
-    private function count(array $desiredEvents): int
+    private function countEnterEvent(array $desiredEvents): int
     {
-        $dependencies = [];
-        $uniqueEvents = array_filter(
-            $this->events,
-            static function (EventInterface $event) use ($dependencies) {
-                if (in_array($event->getDependencyName(), $dependencies, true)) {
-                    return false;
-                }
-                $dependencies[] = $event->getDependencyName();
-
-                return true;
+        $uniqueEvents = [];
+        $uniqueDependencies = [];
+        foreach ($this->events as $event) {
+            if ($event instanceof TerminalEventInterface) {
+                continue;
             }
-        );
 
-        $desiredEvents = array_filter(
-            $uniqueEvents,
-            static function (EventInterface $event) use ($desiredEvents) {
-                foreach ($desiredEvents as $desiredEvent) {
-                    if ($event instanceof $desiredEvent) {
-                        return true;
-                    }
-                }
-
-                return false;
+            if (! in_array($event->getDependencyName(), $uniqueDependencies, true)) {
+                $uniqueEvents[] = $event;
             }
-        );
+        }
 
-        return count($desiredEvents);
+        $foundEventCount = 0;
+        foreach ($uniqueEvents as $event) {
+            foreach ($desiredEvents as $desiredEvent) {
+                if ($event instanceof $desiredEvent) {
+                    $foundEventCount++;
+                }
+            }
+        }
+
+        return $foundEventCount;
     }
 
     private function countMaxInstantiationDeep(): int

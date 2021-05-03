@@ -74,6 +74,7 @@ final class Traverser implements TraverserInterface
             $this->eventCollector->collect(
                 new InvokableEnteredEventInterface($dependency->getName(), $instantiationStack)
             );
+            return true;
         }
 
         $hasAutowireFactory = $this->config->hasAutowireFactory($dependency->getName());
@@ -81,6 +82,7 @@ final class Traverser implements TraverserInterface
             $this->eventCollector->collect(
                 new AutowireFactoryEnteredEventInterface($dependency->getName(), $instantiationStack)
             );
+            return true;
         }
 
         $hasFactory = $this->config->hasFactory($dependency->getName());
@@ -88,10 +90,11 @@ final class Traverser implements TraverserInterface
             $this->eventCollector->collect(
                 new CustomFactoryEnteredEventInterface($dependency->getName(), $instantiationStack)
             );
+            return true;
         }
 
         $isOptional = $dependency->isOptional();
-        if ($isInvokable || $hasAutowireFactory || $hasFactory || $isOptional) {
+        if ($isOptional) {
             return true;
         }
 

@@ -11,16 +11,22 @@ declare(strict_types=1);
 namespace Laminas\ServiceManager\Inspector\EventCollector;
 
 use Laminas\ServiceManager\Inspector\Event\EventInterface;
+use Laminas\ServiceManager\Inspector\Event\TerminalEventInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 final class NullEventCollector implements EventCollectorInterface
 {
+    private $returnCode = 0;
+
     public function collect(EventInterface $event): void
     {
+        if ($event instanceof TerminalEventInterface) {
+            $this->returnCode = 1;
+        }
     }
 
     public function release(OutputInterface $output): int
     {
-        return 0;
+        return $this->returnCode;
     }
 }

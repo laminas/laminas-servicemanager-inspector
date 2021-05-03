@@ -12,6 +12,7 @@ namespace Laminas\ServiceManager\Inspector;
 
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use Laminas\ServiceManager\Inspector\EventCollector\EventCollectorInterface;
 use Zakirullin\Mess\Mess;
 
 final class MezzioDependencyConfigFactory implements FactoryInterface
@@ -21,9 +22,11 @@ final class MezzioDependencyConfigFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): DependencyConfig
     {
+        $eventCollector = $container->get(EventCollectorInterface::class);
+
         $config       = $container->get('config');
         $dependencies = (new Mess($config))['dependencies']->getArrayOfStringToMixed();
 
-        return new DependencyConfig($dependencies);
+        return new DependencyConfig($eventCollector, $dependencies);
     }
 }
