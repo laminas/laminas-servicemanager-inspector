@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace Laminas\ServiceManager\Inspector\Traverser;
+namespace Laminas\ServiceManager\Inspector\Dependency;
 
 final class Dependency
 {

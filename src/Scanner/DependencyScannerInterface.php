@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Laminas\ServiceManager\Inspector\Scanner;
 
-use Laminas\ServiceManager\Inspector\Traverser\Dependency;
+use Laminas\ServiceManager\Inspector\Dependency\Dependency;
 
 interface DependencyScannerInterface
 {

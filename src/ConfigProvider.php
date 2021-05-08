@@ -12,6 +12,9 @@ namespace Laminas\ServiceManager\Inspector;
 
 use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 use Laminas\ServiceManager\Inspector\Command\InspectCommand;
+use Laminas\ServiceManager\Inspector\DependencyConfig\DependencyConfig;
+use Laminas\ServiceManager\Inspector\DependencyConfig\DependencyConfigInterface;
+use Laminas\ServiceManager\Inspector\DependencyConfig\MezzioDependencyConfigFactory;
 use Laminas\ServiceManager\Inspector\EventCollector\ConsoleEventCollector;
 use Laminas\ServiceManager\Inspector\EventCollector\EventCollectorInterface;
 use Laminas\ServiceManager\Inspector\Scanner\DependencyScannerInterface;

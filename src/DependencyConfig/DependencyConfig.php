@@ -8,9 +8,10 @@
 
 declare(strict_types=1);
 
-namespace Laminas\ServiceManager\Inspector;
+namespace Laminas\ServiceManager\Inspector\DependencyConfig;
 
 use Laminas\ServiceManager\Factory\InvokableFactory;
+use Laminas\ServiceManager\Inspector\AliasResolver\AliasResolver;
 use Laminas\ServiceManager\Inspector\Event\AutoloadProblemDetectedEvent;
 use Laminas\ServiceManager\Inspector\Event\EventInterface;
 use Zakirullin\Mess\Mess;

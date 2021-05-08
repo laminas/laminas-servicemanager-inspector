@@ -8,11 +8,10 @@
 
 declare(strict_types=1);
 
-namespace LaminasTest\ServiceManager\Inspector;
+namespace LaminasTest\ServiceManager\Inspector\DependencyConfig;
 
 use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 use Laminas\ServiceManager\Inspector\DependencyConfig;
-use Laminas\ServiceManager\Inspector\EventCollector\NullEventCollector;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Zakirullin\Mess\Exception\UnexpectedTypeException;

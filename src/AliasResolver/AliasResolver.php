@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace Laminas\ServiceManager\Inspector;
+namespace Laminas\ServiceManager\Inspector\AliasResolver;
 
 use Laminas\ServiceManager\Inspector\Exception\CyclicAliasException;
 
