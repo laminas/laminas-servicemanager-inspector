@@ -20,6 +20,7 @@ use Laminas\ServiceManager\Inspector\Event\InvokableEnteredEvent;
 use Laminas\ServiceManager\Inspector\Event\MissingFactoryDetectedEvent;
 use Laminas\ServiceManager\Inspector\EventCollector\EventCollectorInterface;
 use Laminas\ServiceManager\Inspector\EventCollector\NullEventCollector;
+use Laminas\ServiceManager\Inspector\LaminasDependecyConfigFactory;
 use Laminas\ServiceManager\Inspector\Scanner\DependencyScannerInterface;
 use Laminas\ServiceManager\Inspector\Traverser\Dependency;
 use Laminas\ServiceManager\Inspector\Traverser\Traverser;
@@ -59,9 +60,11 @@ class TraverserTest extends TestCase
 
     public function testEmitsAutowireFactoryEventWhenDependencyWithAutowireFactoryIsProvided()
     {
-        $config = $this->prophesize(DependencyConfigInterface::class);
-        $config->isInvokable(Argument::type('string'))->willReturn(false);
-        $config->hasAutowireFactory(Argument::type('string'))->willReturn(true);
+        $config = new DependencyConfig(new NullEventCollector(), [
+            'factories' => [
+                'a' => 'Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory',
+            ],
+        ]);
 
         $scanner = $this->prophesize(DependencyScannerInterface::class);
         $scanner->scan(Argument::type('string'))->willReturn([]);
@@ -80,10 +83,11 @@ class TraverserTest extends TestCase
 
     public function testEmitsCustomFactoryEventWhenDependencyWithCustomFactoryIsProvided()
     {
-        $config = $this->prophesize(DependencyConfigInterface::class);
-        $config->isInvokable(Argument::type('string'))->willReturn(false);
-        $config->hasAutowireFactory(Argument::type('string'))->willReturn(false);
-        $config->hasFactory(Argument::type('string'))->willReturn(true);
+        $config = new DependencyConfig(new NullEventCollector(), [
+            'factories' => [
+                'a' => LaminasDependecyConfigFactory::class,
+            ],
+        ]);
 
         $scanner = $this->prophesize(DependencyScannerInterface::class);
         $scanner->scan(Argument::type('string'))->willReturn([]);
