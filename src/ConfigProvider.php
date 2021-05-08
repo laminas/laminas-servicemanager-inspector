@@ -49,14 +49,14 @@ final class ConfigProvider
                 DependencyConfig::class                 => MezzioDependencyConfigFactory::class,
                 Traverser::class                        => ReflectionBasedAbstractFactory::class,
                 ConsoleEventCollector::class            => ReflectionBasedAbstractFactory::class,
-                ConsoleColor::class => ReflectionBasedAbstractFactory::class,
+                ConsoleColor::class                     => ReflectionBasedAbstractFactory::class,
             ],
             'aliases'   => [
                 DependencyScannerInterface::class => ReflectionBasedDependencyScanner::class,
                 DependencyConfigInterface::class  => DependencyConfig::class,
                 TraverserInterface::class         => Traverser::class,
                 EventCollectorInterface::class    => ConsoleEventCollector::class,
-                ConsoleColorInterface::class => ConsoleColor::class,
+                ConsoleColorInterface::class      => ConsoleColor::class,
             ],
         ];
     }

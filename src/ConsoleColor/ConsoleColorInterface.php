@@ -13,8 +13,12 @@ namespace Laminas\ServiceManager\Inspector\ConsoleColor;
 interface ConsoleColorInterface
 {
     public function success(string $text): string;
+
     public function normal(string $text): string;
+
     public function warning(string $text): string;
+
     public function error(string $text): string;
+
     public function critical(string $text): string;
 }

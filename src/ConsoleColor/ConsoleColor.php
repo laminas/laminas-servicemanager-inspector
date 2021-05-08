@@ -15,10 +15,10 @@ use function sprintf;
 
 final class ConsoleColor implements ConsoleColorInterface
 {
-    private const RED_COLOR = 1;
-    private const GREEN_COLOR = 2;
+    private const RED_COLOR    = 1;
+    private const GREEN_COLOR  = 2;
     private const YELLOW_COLOR = 3;
-    private const WHITE_COLOR = 7;
+    private const WHITE_COLOR  = 7;
 
     public function success(string $text): string
     {
