@@ -12,10 +12,10 @@ namespace Laminas\ServiceManager\Inspector\Traverser;
 
 use Laminas\ServiceManager\Inspector\DependencyConfig;
 use Laminas\ServiceManager\Inspector\DependencyConfigInterface;
-use Laminas\ServiceManager\Inspector\Event\AutowireFactoryEnteredEventInterface;
+use Laminas\ServiceManager\Inspector\Event\AutowireFactoryEnteredEvent;
 use Laminas\ServiceManager\Inspector\Event\CircularDependencyDetectedEvent;
-use Laminas\ServiceManager\Inspector\Event\CustomFactoryEnteredEventInterface;
-use Laminas\ServiceManager\Inspector\Event\InvokableEnteredEventInterface;
+use Laminas\ServiceManager\Inspector\Event\CustomFactoryEnteredEvent;
+use Laminas\ServiceManager\Inspector\Event\InvokableEnteredEvent;
 use Laminas\ServiceManager\Inspector\Event\MissingFactoryDetectedEvent;
 use Laminas\ServiceManager\Inspector\EventCollector\EventCollectorInterface;
 use Laminas\ServiceManager\Inspector\Scanner\DependencyScannerInterface;
@@ -72,24 +72,27 @@ final class Traverser implements TraverserInterface
         $isInvokable = $this->config->isInvokable($dependency->getName());
         if ($isInvokable) {
             $this->eventCollector->collect(
-                new InvokableEnteredEventInterface($dependency->getName(), $instantiationStack)
+                new InvokableEnteredEvent($dependency->getName(), $instantiationStack)
             );
+
             return true;
         }
 
         $hasAutowireFactory = $this->config->hasAutowireFactory($dependency->getName());
         if ($hasAutowireFactory) {
             $this->eventCollector->collect(
-                new AutowireFactoryEnteredEventInterface($dependency->getName(), $instantiationStack)
+                new AutowireFactoryEnteredEvent($dependency->getName(), $instantiationStack)
             );
+
             return true;
         }
 
         $hasFactory = $this->config->hasFactory($dependency->getName());
-        if ($hasFactory && ! $isInvokable) {
+        if ($hasFactory) {
             $this->eventCollector->collect(
-                new CustomFactoryEnteredEventInterface($dependency->getName(), $instantiationStack)
+                new CustomFactoryEnteredEvent($dependency->getName(), $instantiationStack)
             );
+
             return true;
         }
 
@@ -98,7 +101,7 @@ final class Traverser implements TraverserInterface
             return true;
         }
 
-        $event = new MissingFactoryDetectedEvent($dependency->getName(), $instantiationStack);
+        $event = new MissingFactoryDetectedEvent($dependency->getName());
         $this->eventCollector->collect($event);
 
         return false;

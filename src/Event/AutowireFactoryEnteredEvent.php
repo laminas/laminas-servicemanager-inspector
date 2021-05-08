@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Laminas\ServiceManager\Inspector\Event;
 
-final class InvokableEnteredEventInterface implements EnterEventInterface
+final class AutowireFactoryEnteredEvent implements EnterEventInterface
 {
     /** @var string */
     private $dependencyName;

@@ -12,6 +12,7 @@ namespace LaminasTest\ServiceManager\Inspector;
 
 use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 use Laminas\ServiceManager\Inspector\DependencyConfig;
+use Laminas\ServiceManager\Inspector\EventCollector\NullEventCollector;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Zakirullin\Mess\Exception\UnexpectedTypeException;
@@ -28,14 +29,14 @@ class DependencyConfigTest extends TestCase
      */
     public function testThrowsNoExceptionOnEmptyDependencies()
     {
-        new DependencyConfig([]);
+        new DependencyConfig(new NullEventCollector(), []);
     }
 
     public function testThrowsExceptionOnInvalidFactories()
     {
         $this->expectException(UnexpectedTypeException::class);
 
-        new DependencyConfig([
+        new DependencyConfig(new NullEventCollector(), [
             'factories' => ['a'],
         ]);
     }
@@ -44,7 +45,7 @@ class DependencyConfigTest extends TestCase
     {
         $this->expectException(UnexpectedTypeException::class);
 
-        new DependencyConfig([
+        new DependencyConfig(new NullEventCollector(), [
             'invokables' => ['a'],
         ]);
     }
@@ -53,7 +54,7 @@ class DependencyConfigTest extends TestCase
     {
         $this->expectException(UnexpectedTypeException::class);
 
-        new DependencyConfig([
+        new DependencyConfig(new NullEventCollector(), [
             'aliases' => ['a'],
         ]);
     }
@@ -66,7 +67,7 @@ class DependencyConfigTest extends TestCase
             ],
         ];
 
-        $config = new DependencyConfig($depenencies);
+        $config = new DependencyConfig(new NullEventCollector(), $depenencies);
 
         $this->assertSame(
             [

@@ -10,11 +10,11 @@ declare(strict_types=1);
 
 namespace Laminas\ServiceManager\Inspector\EventCollector;
 
-use Laminas\ServiceManager\Inspector\Event\AutowireFactoryEnteredEventInterface;
-use Laminas\ServiceManager\Inspector\Event\CustomFactoryEnteredEventInterface;
+use Laminas\ServiceManager\Inspector\Event\AutowireFactoryEnteredEvent;
+use Laminas\ServiceManager\Inspector\Event\CustomFactoryEnteredEvent;
 use Laminas\ServiceManager\Inspector\Event\EnterEventInterface;
 use Laminas\ServiceManager\Inspector\Event\EventInterface;
-use Laminas\ServiceManager\Inspector\Event\InvokableEnteredEventInterface;
+use Laminas\ServiceManager\Inspector\Event\InvokableEnteredEvent;
 use Laminas\ServiceManager\Inspector\Event\TerminalEventInterface;
 use Symfony\Component\Console\Color;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -108,9 +108,9 @@ final class ConsoleEventCollector implements EventCollectorInterface
     {
         $totalFactoriesCount = $this->countEnterEvent(
             [
-                InvokableEnteredEventInterface::class,
-                AutowireFactoryEnteredEventInterface::class,
-                CustomFactoryEnteredEventInterface::class,
+                InvokableEnteredEvent::class,
+                AutowireFactoryEnteredEvent::class,
+                CustomFactoryEnteredEvent::class,
             ]
         );
         $output->write(
@@ -120,7 +120,7 @@ final class ConsoleEventCollector implements EventCollectorInterface
             )
         );
 
-        $customFactoriesCount = $this->countEnterEvent([CustomFactoryEnteredEventInterface::class]);
+        $customFactoriesCount = $this->countEnterEvent([CustomFactoryEnteredEvent::class]);
         $output->write(
             sprintf(
                 "Custom factories skipped: %s 🛠️\n",
@@ -128,7 +128,7 @@ final class ConsoleEventCollector implements EventCollectorInterface
             )
         );
 
-        $autowireFactoriesCount = $this->countEnterEvent([AutowireFactoryEnteredEventInterface::class]);
+        $autowireFactoriesCount = $this->countEnterEvent([AutowireFactoryEnteredEvent::class]);
         $output->write(
             sprintf(
                 "Autowire factories analyzed: %s 🔥\n",
@@ -138,7 +138,7 @@ final class ConsoleEventCollector implements EventCollectorInterface
             )
         );
 
-        $invokablesCount = $this->countEnterEvent([InvokableEnteredEventInterface::class]);
+        $invokablesCount = $this->countEnterEvent([InvokableEnteredEvent::class]);
         $output->write(
             sprintf(
                 "Invokables analyzed: %s 📦\n",
