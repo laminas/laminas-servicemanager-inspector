@@ -34,9 +34,9 @@ final class AutoloadProblemDetectedEvent implements TerminalEventInterface
     public function getError(): string
     {
         return sprintf(
-            'Cannot autoload factory class "%s" for service %s.',
+            "Cannot autoload factory class '%s' for service '%s'",
+            $this->factoryClass,
             $this->dependencyName,
-            $this->factoryClass
         );
     }
 }

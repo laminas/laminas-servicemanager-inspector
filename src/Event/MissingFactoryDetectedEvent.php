@@ -29,6 +29,6 @@ final class MissingFactoryDetectedEvent implements TerminalEventInterface
 
     public function getError(): string
     {
-        return sprintf("No factory is provided for '%s' service.", $this->dependencyName);
+        return sprintf("No factory is provided for '%s' service", $this->dependencyName);
     }
 }
