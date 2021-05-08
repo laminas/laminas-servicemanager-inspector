@@ -26,7 +26,7 @@ use function str_repeat;
 final class ConsoleEventCollector implements EventCollectorInterface
 {
     /** @var EventInterface[] */
-    private $events;
+    private $events = [];
 
     /** @var Color */
     private $rootDependencyColor;

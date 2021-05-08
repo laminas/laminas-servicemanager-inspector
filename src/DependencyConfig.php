@@ -13,7 +13,6 @@ namespace Laminas\ServiceManager\Inspector;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\ServiceManager\Inspector\Event\AutoloadProblemDetectedEvent;
 use Laminas\ServiceManager\Inspector\Event\EventInterface;
-use Laminas\ServiceManager\Inspector\EventCollector\EventCollectorInterface;
 use Zakirullin\Mess\Mess;
 
 use function array_merge;

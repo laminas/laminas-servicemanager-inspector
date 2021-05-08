@@ -37,6 +37,11 @@ $ composer require --dev laminas/servicemanager-inspector
 ./vendor/bin/laminas servicemanager:inspect
 ```
 
+## Future plans
+
+- Analyze `AutowireFactory` (from `laminas-di`)
+- Check if each and every app's root entrypoint (e.g. a class implementing `RequestHandlerInterface`) has a proper factory
+
 ## Support
 
 * [Issues](https://github.com/laminas/laminas-servicemanager-inspector/issues/)
