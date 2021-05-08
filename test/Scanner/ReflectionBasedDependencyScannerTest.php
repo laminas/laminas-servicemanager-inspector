@@ -28,7 +28,7 @@ class ReflectionBasedDependencyScannerTest extends TestCase
      */
     public function testCanScanWhenSupportedFactoriesAreProvided(string $factory)
     {
-        $config = new DependencyConfig(new NullEventCollector(), [
+        $config = new DependencyConfig([
             'factories' => [
                 'a' => $factory,
             ],

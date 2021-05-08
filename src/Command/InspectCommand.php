@@ -73,6 +73,10 @@ EOH;
             }
         }
 
+        foreach ($this->config->releaseEvents() as $event) {
+            $this->eventCollector->collect($event);
+        }
+
         return $this->eventCollector->release($output);
     }
 }

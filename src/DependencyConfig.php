@@ -12,6 +12,7 @@ namespace Laminas\ServiceManager\Inspector;
 
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\ServiceManager\Inspector\Event\AutoloadProblemDetectedEvent;
+use Laminas\ServiceManager\Inspector\Event\EventInterface;
 use Laminas\ServiceManager\Inspector\EventCollector\EventCollectorInterface;
 use Zakirullin\Mess\Mess;
 
@@ -39,8 +40,8 @@ final class DependencyConfig implements DependencyConfigInterface
         'config',
     ];
 
-    /** @var EventCollectorInterface */
-    private $eventCollector;
+    /** @psalm-var list<EventInterface> */
+    private $events = [];
 
     /** @psalm-var array<string, string> */
     private $factories;
@@ -54,9 +55,8 @@ final class DependencyConfig implements DependencyConfigInterface
     /**
      * @psalm-var array<string, string> $dependencies
      */
-    public function __construct(EventCollectorInterface $eventCollector, array $dependencies)
+    public function __construct(array $dependencies)
     {
-        $this->eventCollector = $eventCollector;
         $this->factories       = $this->getValidFactories($dependencies);
         $this->invokables      = $this->getValidInvokables($dependencies);
         $this->resolvedAliases = $this->getValidResolvedAliases($dependencies);
@@ -86,7 +86,7 @@ final class DependencyConfig implements DependencyConfigInterface
             }
 
             if (! class_exists($factoryClass)) {
-                $this->eventCollector->collect(new AutoloadProblemDetectedEvent($serviceName, $factoryClass));
+                $this->events[] = new AutoloadProblemDetectedEvent($serviceName, $factoryClass);
             }
         }
 
@@ -175,5 +175,17 @@ final class DependencyConfig implements DependencyConfigInterface
         }
 
         return $this->getFactory($serviceName) !== null;
+    }
+
+    /**
+     * @psalm-return list<EventInterface>
+     */
+    public function releaseEvents(): array
+    {
+        $events = $this->events;
+
+        $this->events = [];
+
+        return $events;
     }
 }

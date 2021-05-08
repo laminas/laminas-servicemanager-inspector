@@ -29,14 +29,14 @@ class DependencyConfigTest extends TestCase
      */
     public function testThrowsNoExceptionOnEmptyDependencies()
     {
-        new DependencyConfig(new NullEventCollector(), []);
+        new DependencyConfig([]);
     }
 
     public function testThrowsExceptionOnInvalidFactories()
     {
         $this->expectException(UnexpectedTypeException::class);
 
-        new DependencyConfig(new NullEventCollector(), [
+        new DependencyConfig([
             'factories' => ['a'],
         ]);
     }
@@ -45,7 +45,7 @@ class DependencyConfigTest extends TestCase
     {
         $this->expectException(UnexpectedTypeException::class);
 
-        new DependencyConfig(new NullEventCollector(), [
+        new DependencyConfig([
             'invokables' => ['a'],
         ]);
     }
@@ -54,12 +54,12 @@ class DependencyConfigTest extends TestCase
     {
         $this->expectException(UnexpectedTypeException::class);
 
-        new DependencyConfig(new NullEventCollector(), [
+        new DependencyConfig([
             'aliases' => ['a'],
         ]);
     }
 
-    public function testReturnsSameFacotriesWhenValidFactoriesAreProvided()
+    public function testReturnsSameFactoriesWhenValidFactoriesAreProvided()
     {
         $depenencies = [
             'factories' => [
@@ -67,7 +67,7 @@ class DependencyConfigTest extends TestCase
             ],
         ];
 
-        $config = new DependencyConfig(new NullEventCollector(), $depenencies);
+        $config = new DependencyConfig($depenencies);
 
         $this->assertSame(
             [

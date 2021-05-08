@@ -11,8 +11,9 @@ declare(strict_types=1);
 namespace LaminasTest\ServiceManager\Inspector\Command;
 
 use Laminas\ServiceManager\Inspector\Command\InspectCommand;
-use Laminas\ServiceManager\Inspector\DependencyConfigInterface;
+use Laminas\ServiceManager\Inspector\DependencyConfig;
 use Laminas\ServiceManager\Inspector\EventCollector\EventCollectorInterface;
+use Laminas\ServiceManager\Inspector\LaminasDependecyConfigFactory;
 use Laminas\ServiceManager\Inspector\Scanner\DependencyScannerInterface;
 use Laminas\ServiceManager\Inspector\Traverser\Dependency;
 use Laminas\ServiceManager\Inspector\Traverser\TraverserInterface;
@@ -31,13 +32,12 @@ class InspectCommandTest extends TestCase
 
     public function testBeginsAnalysisWhenScannableDependenciesAreProvided(): void
     {
-        $config = $this->prophesize(DependencyConfigInterface::class);
-        $config->getFactories()->shouldBeCalled()->willReturn(
-            [
-                'service'  => 'factory1',
-                'service2' => 'factory2',
-            ]
-        );
+        $config = new DependencyConfig([
+            'factories' => [
+                'service'  => LaminasDependecyConfigFactory::class,
+                'service2' => LaminasDependecyConfigFactory::class,
+            ],
+        ]);
 
         $scanner = $this->prophesize(DependencyScannerInterface::class);
         $scanner->canScan(Argument::any())->willReturn(true);
@@ -49,7 +49,7 @@ class InspectCommandTest extends TestCase
         $eventCollector->release(Argument::type(OutputInterface::class))->shouldBeCalled();
 
         $command = new InspectCommand(
-            $config->reveal(),
+            $config,
             $scanner->reveal(),
             $traverser->reveal(),
             $eventCollector->reveal(),
@@ -63,13 +63,12 @@ class InspectCommandTest extends TestCase
 
     public function testSkipAnalysisWhenNonScannableDependenciesAreProvided(): void
     {
-        $config = $this->prophesize(DependencyConfigInterface::class);
-        $config->getFactories()->shouldBeCalled()->willReturn(
-            [
-                'service'  => 'factory1',
-                'service2' => 'factory2',
-            ]
-        );
+        $config = new DependencyConfig([
+            'factories' => [
+                'service'  => LaminasDependecyConfigFactory::class,
+                'service2' => LaminasDependecyConfigFactory::class,
+            ],
+        ]);
 
         $scanner = $this->prophesize(DependencyScannerInterface::class);
         $scanner->canScan(Argument::any())->willReturn(false);
@@ -81,7 +80,7 @@ class InspectCommandTest extends TestCase
         $eventCollector->release(Argument::type(OutputInterface::class))->shouldBeCalled();
 
         $command = new InspectCommand(
-            $config->reveal(),
+            $config,
             $scanner->reveal(),
             $traverser->reveal(),
             $eventCollector->reveal(),

@@ -37,7 +37,7 @@ class TraverserTest extends TestCase
 
     public function testEmitsInvokableEventWhenInvokableDependencyIsProvided()
     {
-        $config = new DependencyConfig(new NullEventCollector(), [
+        $config = new DependencyConfig([
             'invokables' => [
                 'a' => Dependency::class,
             ],
@@ -60,7 +60,7 @@ class TraverserTest extends TestCase
 
     public function testEmitsAutowireFactoryEventWhenDependencyWithAutowireFactoryIsProvided()
     {
-        $config = new DependencyConfig(new NullEventCollector(), [
+        $config = new DependencyConfig([
             'factories' => [
                 'a' => 'Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory',
             ],
@@ -73,7 +73,7 @@ class TraverserTest extends TestCase
         $events->collect(Argument::type(AutowireFactoryEnteredEvent::class))->shouldBeCalled();
 
         $traverser = new Traverser(
-            $config->reveal(),
+            $config,
             $scanner->reveal(),
             $events->reveal(),
         );
@@ -83,7 +83,7 @@ class TraverserTest extends TestCase
 
     public function testEmitsCustomFactoryEventWhenDependencyWithCustomFactoryIsProvided()
     {
-        $config = new DependencyConfig(new NullEventCollector(), [
+        $config = new DependencyConfig([
             'factories' => [
                 'a' => LaminasDependecyConfigFactory::class,
             ],
@@ -96,7 +96,7 @@ class TraverserTest extends TestCase
         $events->collect(Argument::type(CustomFactoryEnteredEvent::class))->shouldBeCalled();
 
         $traverser = new Traverser(
-            $config->reveal(),
+            $config,
             $scanner->reveal(),
             $events->reveal(),
         );
@@ -106,10 +106,7 @@ class TraverserTest extends TestCase
 
     public function testEmitsNoEventsWhenTravelIntoOptionalDependency()
     {
-        $config = $this->prophesize(DependencyConfigInterface::class);
-        $config->isInvokable(Argument::type('string'))->willReturn(false);
-        $config->hasAutowireFactory(Argument::type('string'))->willReturn(false);
-        $config->hasFactory(Argument::type('string'))->willReturn(false);
+        $config = new DependencyConfig([]);
 
         $scanner = $this->prophesize(DependencyScannerInterface::class);
         $scanner->scan(Argument::type('string'))->willReturn([]);
@@ -118,7 +115,7 @@ class TraverserTest extends TestCase
         $events->collect(Argument::type(MissingFactoryDetectedEvent::class))->shouldNotBeCalled();
 
         $traverser = new Traverser(
-            $config->reveal(),
+            $config,
             $scanner->reveal(),
             $events->reveal(),
         );
@@ -128,10 +125,7 @@ class TraverserTest extends TestCase
 
     public function testEmitsMissingFactoryEventWhenTravelIntoDependencyWithoutFactory()
     {
-        $config = $this->prophesize(DependencyConfigInterface::class);
-        $config->isInvokable(Argument::type('string'))->willReturn(false);
-        $config->hasAutowireFactory(Argument::type('string'))->willReturn(false);
-        $config->hasFactory(Argument::type('string'))->willReturn(false);
+        $config = new DependencyConfig([]);
 
         $scanner = $this->prophesize(DependencyScannerInterface::class);
         $scanner->scan(Argument::type('string'))->willReturn([]);
@@ -140,7 +134,7 @@ class TraverserTest extends TestCase
         $events->collect(Argument::type(MissingFactoryDetectedEvent::class))->shouldBeCalled();
 
         $traverser = new Traverser(
-            $config->reveal(),
+            $config,
             $scanner->reveal(),
             $events->reveal(),
         );
@@ -150,20 +144,21 @@ class TraverserTest extends TestCase
 
     public function testEmitsCircularDependencyEventWhenCircularDependencyIsProvided()
     {
-        $config = $this->prophesize(DependencyConfigInterface::class);
-        $config->isInvokable(Argument::type('string'))->willReturn(false);
-        $config->hasAutowireFactory(Argument::type('string'))->willReturn(false);
-        $config->hasFactory(Argument::type('string'))->willReturn(true);
+        $config = new DependencyConfig([
+            'factories' => [
+                'a' => 'Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory',
+            ],
+        ]);
 
         $scanner = $this->prophesize(DependencyScannerInterface::class);
         $scanner->scan(Argument::type('string'))->willReturn([new Dependency('a')]);
 
         $events = $this->prophesize(EventCollectorInterface::class);
-        $events->collect(Argument::type(CustomFactoryEnteredEvent::class))->shouldBeCalled();
+        $events->collect(Argument::type(AutowireFactoryEnteredEvent::class))->shouldBeCalled();
         $events->collect(Argument::type(CircularDependencyDetectedEvent::class))->shouldBeCalled();
 
         $traverser = new Traverser(
-            $config->reveal(),
+            $config,
             $scanner->reveal(),
             $events->reveal(),
         );
