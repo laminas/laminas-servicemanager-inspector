@@ -10,10 +10,10 @@ declare(strict_types=1);
 
 namespace Laminas\ServiceManager\Inspector\Command;
 
+use Laminas\ServiceManager\Inspector\Dependency\Dependency;
 use Laminas\ServiceManager\Inspector\DependencyConfig\DependencyConfigInterface;
 use Laminas\ServiceManager\Inspector\EventCollector\EventCollectorInterface;
 use Laminas\ServiceManager\Inspector\Scanner\DependencyScannerInterface;
-use Laminas\ServiceManager\Inspector\Dependency\Dependency;
 use Laminas\ServiceManager\Inspector\Traverser\TraverserInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

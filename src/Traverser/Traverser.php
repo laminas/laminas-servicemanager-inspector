@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace Laminas\ServiceManager\Inspector\Traverser;
 
 use Laminas\ServiceManager\Inspector\Dependency\Dependency;
-use Laminas\ServiceManager\Inspector\DependencyConfig\DependencyConfig;
 use Laminas\ServiceManager\Inspector\DependencyConfig\DependencyConfigInterface;
 use Laminas\ServiceManager\Inspector\Event\AutowireFactoryEnteredEvent;
 use Laminas\ServiceManager\Inspector\Event\CircularDependencyDetectedEvent;
@@ -26,7 +25,7 @@ use function in_array;
 
 final class Traverser implements TraverserInterface
 {
-    /** @var DependencyConfig */
+    /** @var DependencyConfigInterface */
     private $config;
 
     /** @var DependencyScannerInterface */

@@ -16,6 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class NullEventCollector implements EventCollectorInterface
 {
+    /** @var int */
     private $returnCode = 0;
 
     public function collect(EventInterface $event): void

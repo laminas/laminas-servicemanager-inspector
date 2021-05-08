@@ -23,7 +23,7 @@ final class AutoloadProblemDetectedEvent implements TerminalEventInterface
     public function __construct(string $dependencyName, string $factoryClass)
     {
         $this->dependencyName = $dependencyName;
-        $this->factoryClass = $factoryClass;
+        $this->factoryClass   = $factoryClass;
     }
 
     public function getDependencyName(): string

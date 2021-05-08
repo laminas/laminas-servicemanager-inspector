@@ -10,10 +10,10 @@ declare(strict_types=1);
 
 namespace Laminas\ServiceManager\Inspector\Scanner;
 
+use Laminas\ServiceManager\Inspector\Dependency\Dependency;
 use Laminas\ServiceManager\Inspector\DependencyConfig\DependencyConfigInterface;
 use Laminas\ServiceManager\Inspector\Event\UnexpectedScalarDetectedEvent;
 use Laminas\ServiceManager\Inspector\EventCollector\EventCollectorInterface;
-use Laminas\ServiceManager\Inspector\Dependency\Dependency;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionParameter;

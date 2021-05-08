@@ -12,7 +12,6 @@ namespace Laminas\ServiceManager\Inspector\DependencyConfig;
 
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
-use Laminas\ServiceManager\Inspector\EventCollector\EventCollectorInterface;
 use Zakirullin\Mess\Mess;
 
 final class MezzioDependencyConfigFactory implements FactoryInterface

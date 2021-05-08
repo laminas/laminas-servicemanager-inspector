@@ -11,11 +11,11 @@ declare(strict_types=1);
 namespace LaminasTest\ServiceManager\Inspector\Command;
 
 use Laminas\ServiceManager\Inspector\Command\InspectCommand;
-use Laminas\ServiceManager\Inspector\DependencyConfig;
+use Laminas\ServiceManager\Inspector\Dependency\Dependency;
+use Laminas\ServiceManager\Inspector\DependencyConfig\DependencyConfig;
+use Laminas\ServiceManager\Inspector\DependencyConfig\LaminasDependecyConfigFactory;
 use Laminas\ServiceManager\Inspector\EventCollector\EventCollectorInterface;
-use Laminas\ServiceManager\Inspector\LaminasDependecyConfigFactory;
 use Laminas\ServiceManager\Inspector\Scanner\DependencyScannerInterface;
-use Laminas\ServiceManager\Inspector\Traverser\Dependency;
 use Laminas\ServiceManager\Inspector\Traverser\TraverserInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;

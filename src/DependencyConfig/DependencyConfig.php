@@ -71,8 +71,7 @@ final class DependencyConfig implements DependencyConfigInterface
     private function getValidFactories(array $dependencies): array
     {
         $invokableFactories = [];
-        // FIXME stringToString
-        $invokables         = (new Mess($dependencies))['invokables']->findArray() ?? [];
+        $invokables         = (new Mess($dependencies))['invokables']->findArrayOfStringToString() ?? [];
         foreach ($invokables as $name => $class) {
             if ($name !== $class) {
                 $invokableFactories[$class] = InvokableFactory::class;

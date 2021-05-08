@@ -30,7 +30,7 @@ interface DependencyConfigInterface
     public function hasFactory(string $serviceName): bool;
 
     /**
-     * @psalm-return list<EventInterface
+     * @psalm-return list<EventInterface>
      */
     public function releaseEvents(): array;
 }

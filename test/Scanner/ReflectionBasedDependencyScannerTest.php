@@ -10,12 +10,13 @@ declare(strict_types=1);
 
 namespace LaminasTest\ServiceManager\Inspector\Scanner;
 
-use Laminas\ServiceManager\Inspector\DependencyConfig;
+use Laminas\ServiceManager\Inspector\DependencyConfig\DependencyConfig;
 use Laminas\ServiceManager\Inspector\EventCollector\NullEventCollector;
 use Laminas\ServiceManager\Inspector\Scanner\ReflectionBasedDependencyScanner;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use stdClass;
+
 use function get_class;
 
 /**
@@ -47,8 +48,14 @@ class ReflectionBasedDependencyScannerTest extends TestCase
     public function providerSupportedFactories(): array
     {
         return [
-            'LaminasReflectionBasedAbstractFactory' => ['Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory'],
-            'ZendReflectionBasedAbstractFactory' => ['Zend\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory'],
+            'LaminasReflectionBasedAbstractFactory' => [
+                // phpcs:ignore
+                'Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory'
+            ],
+            'ZendReflectionBasedAbstractFactory'    => [
+                // phpcs:ignore
+                'Zend\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory'
+            ],
         ];
     }
 
@@ -66,7 +73,7 @@ class ReflectionBasedDependencyScannerTest extends TestCase
 
     public function testDetectsAllDependenciesRequiredInConstructor()
     {
-        $obj = new class(new stdClass()) {
+        $obj = new class (new stdClass()) {
             public function __construct(stdClass $dependency)
             {
             }
@@ -74,6 +81,7 @@ class ReflectionBasedDependencyScannerTest extends TestCase
 
         $config = new DependencyConfig([
             'factories' => [
+                // phpcs:ignore
                 get_class($obj) => 'Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory',
             ],
         ]);
@@ -85,10 +93,8 @@ class ReflectionBasedDependencyScannerTest extends TestCase
 
         $dependencies = $scanner->scan(get_class($obj));
 
-
         $this->assertArrayHasKey(0, $dependencies);
         $this->assertSame(stdClass::class, $dependencies[0]->getName());
         $this->assertFalse($dependencies[0]->isOptional());
     }
-
 }
