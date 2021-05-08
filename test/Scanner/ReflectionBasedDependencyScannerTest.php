@@ -15,6 +15,8 @@ use Laminas\ServiceManager\Inspector\EventCollector\NullEventCollector;
 use Laminas\ServiceManager\Inspector\Scanner\ReflectionBasedDependencyScanner;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
+use stdClass;
+use function get_class;
 
 /**
  * @covers \Laminas\ServiceManager\Inspector\Scanner\ReflectionBasedDependencyScanner
@@ -49,4 +51,44 @@ class ReflectionBasedDependencyScannerTest extends TestCase
             'ZendReflectionBasedAbstractFactory' => ['Zend\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory'],
         ];
     }
+
+    public function testDetectsZeroDependenciesOnEmptyConstructor()
+    {
+        $scanner = new ReflectionBasedDependencyScanner(
+            new DependencyConfig([]),
+            new NullEventCollector(),
+        );
+
+        $dependencies = $scanner->scan(stdClass::class);
+
+        $this->assertEmpty($dependencies);
+    }
+
+    public function testDetectsAllDependenciesRequiredInConstructor()
+    {
+        $obj = new class(new stdClass()) {
+            public function __construct(stdClass $dependency)
+            {
+            }
+        };
+
+        $config = new DependencyConfig([
+            'factories' => [
+                get_class($obj) => 'Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory',
+            ],
+        ]);
+
+        $scanner = new ReflectionBasedDependencyScanner(
+            $config,
+            new NullEventCollector(),
+        );
+
+        $dependencies = $scanner->scan(get_class($obj));
+
+
+        $this->assertArrayHasKey(0, $dependencies);
+        $this->assertSame(stdClass::class, $dependencies[0]->getName());
+        $this->assertFalse($dependencies[0]->isOptional());
+    }
+
 }
