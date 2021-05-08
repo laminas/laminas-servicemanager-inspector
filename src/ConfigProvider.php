@@ -12,6 +12,8 @@ namespace Laminas\ServiceManager\Inspector;
 
 use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 use Laminas\ServiceManager\Inspector\Command\InspectCommand;
+use Laminas\ServiceManager\Inspector\ConsoleColor\ConsoleColor;
+use Laminas\ServiceManager\Inspector\ConsoleColor\ConsoleColorInterface;
 use Laminas\ServiceManager\Inspector\DependencyConfig\DependencyConfig;
 use Laminas\ServiceManager\Inspector\DependencyConfig\DependencyConfigInterface;
 use Laminas\ServiceManager\Inspector\DependencyConfig\MezzioDependencyConfigFactory;
@@ -47,12 +49,14 @@ final class ConfigProvider
                 DependencyConfig::class                 => MezzioDependencyConfigFactory::class,
                 Traverser::class                        => ReflectionBasedAbstractFactory::class,
                 ConsoleEventCollector::class            => ReflectionBasedAbstractFactory::class,
+                ConsoleColor::class => ReflectionBasedAbstractFactory::class,
             ],
             'aliases'   => [
                 DependencyScannerInterface::class => ReflectionBasedDependencyScanner::class,
                 DependencyConfigInterface::class  => DependencyConfig::class,
                 TraverserInterface::class         => Traverser::class,
                 EventCollectorInterface::class    => ConsoleEventCollector::class,
+                ConsoleColorInterface::class => ConsoleColor::class,
             ],
         ];
     }

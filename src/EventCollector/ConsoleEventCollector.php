@@ -10,13 +10,13 @@ declare(strict_types=1);
 
 namespace Laminas\ServiceManager\Inspector\EventCollector;
 
+use Laminas\ServiceManager\Inspector\ConsoleColor\ConsoleColorInterface;
 use Laminas\ServiceManager\Inspector\Event\AutowireFactoryEnteredEvent;
 use Laminas\ServiceManager\Inspector\Event\CustomFactoryEnteredEvent;
 use Laminas\ServiceManager\Inspector\Event\EnterEventInterface;
 use Laminas\ServiceManager\Inspector\Event\EventInterface;
 use Laminas\ServiceManager\Inspector\Event\InvokableEnteredEvent;
 use Laminas\ServiceManager\Inspector\Event\TerminalEventInterface;
-use Symfony\Component\Console\Color;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use function count;
@@ -28,28 +28,12 @@ final class ConsoleEventCollector implements EventCollectorInterface
     /** @var EventInterface[] */
     private $events = [];
 
-    /** @var Color */
-    private $rootDependencyColor;
+    /** @var ConsoleColorInterface */
+    private $consoleColor;
 
-    /** @var Color */
-    private $dependencyColor;
-
-    /** @var Color */
-    private $errorColor;
-
-    /** @var Color */
-    private $successfulResultColor;
-
-    /** @var Color */
-    private $failedResultColor;
-
-    public function __construct()
+    public function __construct(ConsoleColorInterface $consoleColor)
     {
-        $this->rootDependencyColor   = new Color('yellow');
-        $this->dependencyColor       = new Color('white');
-        $this->errorColor            = new Color('white', 'red');
-        $this->successfulResultColor = new Color('green');
-        $this->failedResultColor     = new Color('red');
+        $this->consoleColor = $consoleColor;
     }
 
     /**
@@ -90,18 +74,18 @@ final class ConsoleEventCollector implements EventCollectorInterface
 
     public function printTerminalEvent(TerminalEventInterface $event, OutputInterface $output): void
     {
-        $output->write(sprintf("%s\n\n", $this->errorColor->apply("\n\n  " . $event->getError() . "\n")));
+        $output->write(sprintf("%s\n\n", $this->consoleColor->critical("\n\n  " . $event->getError() . "\n")));
     }
 
     private function printEnterEvent(EnterEventInterface $event, OutputInterface $output): void
     {
-        $color = $this->dependencyColor;
+        $text = $this->consoleColor->normal($event->getDependencyName());
         if (count($event->getInstantiationStack()) === 0) {
-            $color = $this->rootDependencyColor;
+            $text = $this->consoleColor->warning($event->getDependencyName());
         }
 
         $output->write(sprintf(str_repeat('  ', count($event->getInstantiationStack()))));
-        $output->write(sprintf("└─%s\n", $color->apply($event->getDependencyName())));
+        $output->write(sprintf("└─%s\n", $text));
     }
 
     private function printResult(OutputInterface $output): int
@@ -116,7 +100,7 @@ final class ConsoleEventCollector implements EventCollectorInterface
         $output->write(
             sprintf(
                 "\nTotal factories found: %s 🏭\n",
-                $this->successfulResultColor->apply((string) $totalFactoriesCount),
+                $this->consoleColor->success((string) $totalFactoriesCount),
             )
         );
 
@@ -124,7 +108,7 @@ final class ConsoleEventCollector implements EventCollectorInterface
         $output->write(
             sprintf(
                 "Custom factories skipped: %s 🛠️\n",
-                $this->successfulResultColor->apply((string) $customFactoriesCount)
+                $this->consoleColor->success((string) $customFactoriesCount)
             )
         );
 
@@ -132,42 +116,35 @@ final class ConsoleEventCollector implements EventCollectorInterface
         $output->write(
             sprintf(
                 "Autowire factories analyzed: %s 🔥\n",
-                $this->successfulResultColor->apply(
+                $this->consoleColor->success(
                     (string) $autowireFactoriesCount
                 ),
             )
         );
 
-        $invokablesCount = $this->countEnterEvent([InvokableEnteredEvent::class]);
+        $invokableCount = $this->countEnterEvent([InvokableEnteredEvent::class]);
         $output->write(
             sprintf(
                 "Invokables analyzed: %s 📦\n",
-                $this->successfulResultColor->apply(
-                    (string) $invokablesCount
+                $this->consoleColor->success(
+                    (string) $invokableCount
                 ),
             )
         );
 
-        $output->write(
-            sprintf(
-                "Maximum instantiation deep: %s 🏊\n",
-                $this->successfulResultColor->apply(
-                    (string) $this->countMaxInstantiationDeep()
-                ),
-            )
-        );
+        $maxDeep = $this->consoleColor->success((string) $this->countMaxInstantiationDeep());
+        $output->write(sprintf("Maximum instantiation deep: %s 🏊\n", $maxDeep));
 
         $terminalEventsCount = $this->countTerminalEvents();
         if ($terminalEventsCount > 0) {
-            $output->write(
-                sprintf("\nTotal errors found: %s 😕\n", $this->failedResultColor->apply((string) $terminalEventsCount))
-            );
+            $errorCounter = $this->consoleColor->error((string) $terminalEventsCount);
+            $output->write(sprintf("\nTotal errors found: %s 😕\n", $errorCounter));
 
             return 1;
         }
 
         $output->write(
-            $this->successfulResultColor->apply(
+            $this->consoleColor->success(
                 sprintf(
                     "\nAs far as I can tell, it's all good 🚀\n",
                 )
