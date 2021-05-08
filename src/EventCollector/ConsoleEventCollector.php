@@ -19,12 +19,9 @@ use Laminas\ServiceManager\Inspector\Event\TerminalEventInterface;
 use Symfony\Component\Console\Color;
 use Symfony\Component\Console\Output\OutputInterface;
 
-use function array_filter;
 use function count;
-use function in_array;
 use function sprintf;
 use function str_repeat;
-use function var_dump;
 
 final class ConsoleEventCollector implements EventCollectorInterface
 {
@@ -55,22 +52,26 @@ final class ConsoleEventCollector implements EventCollectorInterface
         $this->failedResultColor     = new Color('red');
     }
 
+    /**
+     * TODO preserve number of occurred events per dependency
+     * TODO preserve the events with the longest instantiation deep only
+     */
     public function collect(EventInterface $event): void
     {
+        foreach ($this->events as $existingEvent) {
+            if ($existingEvent->getDependencyName() === $event->getDependencyName()) {
+                return;
+            }
+        }
+
         $this->events[] = $event;
     }
 
     public function release(OutputInterface $output): int
     {
-        $alreadyPrintedDependency = [];
         foreach ($this->events as $event) {
-            if (in_array($event->getDependencyName(), $alreadyPrintedDependency, true)) {
-                continue;
-            }
-
             if ($event instanceof EnterEventInterface) {
                 $this->printEnterEvent($event, $output);
-                $alreadyPrintedDependency[] = $event->getDependencyName();
             }
         }
 
@@ -181,20 +182,12 @@ final class ConsoleEventCollector implements EventCollectorInterface
      */
     private function countEnterEvent(array $desiredEvents): int
     {
-        $uniqueEvents = [];
-        $uniqueDependencies = [];
+        $foundEventCount = 0;
         foreach ($this->events as $event) {
             if ($event instanceof TerminalEventInterface) {
                 continue;
             }
 
-            if (! in_array($event->getDependencyName(), $uniqueDependencies, true)) {
-                $uniqueEvents[] = $event;
-            }
-        }
-
-        $foundEventCount = 0;
-        foreach ($uniqueEvents as $event) {
             foreach ($desiredEvents as $desiredEvent) {
                 if ($event instanceof $desiredEvent) {
                     $foundEventCount++;
