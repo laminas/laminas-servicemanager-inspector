@@ -23,11 +23,18 @@ class NullEventCollectorTest extends TestCase
 {
     use ProphecyTrait;
 
-    public function testReturnsUnsuccessfulReturnCodeOnTerminalEvent()
+    public function testHasTerminalEventsReturnsFalseOnNoEventsProvided()
+    {
+        $collector = new NullEventCollector();
+
+        $this->assertFalse($collector->hasTerminalEvent());
+    }
+
+    public function testHasTerminalEventsReturnsFalseOnTerminalEventProvided()
     {
         $collector = new NullEventCollector();
         $collector->collect($this->prophesize(TerminalEventInterface::class)->reveal());
 
-        $this->assertSame(1, $collector->release(new NullOutput()));
+        $this->assertFalse($collector->hasTerminalEvent());
     }
 }

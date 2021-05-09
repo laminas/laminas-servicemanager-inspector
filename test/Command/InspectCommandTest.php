@@ -15,6 +15,9 @@ use Laminas\ServiceManager\Inspector\Dependency\Dependency;
 use Laminas\ServiceManager\Inspector\DependencyConfig\DependencyConfig;
 use Laminas\ServiceManager\Inspector\DependencyConfig\LaminasDependecyConfigFactory;
 use Laminas\ServiceManager\Inspector\EventCollector\EventCollectorInterface;
+use Laminas\ServiceManager\Inspector\EventCollector\NullEventCollector;
+use Laminas\ServiceManager\Inspector\EventReporter\EventReporterInterface;
+use Laminas\ServiceManager\Inspector\EventReporter\NullEventReporter;
 use Laminas\ServiceManager\Inspector\Scanner\DependencyScannerInterface;
 use Laminas\ServiceManager\Inspector\Traverser\TraverserInterface;
 use PHPUnit\Framework\TestCase;
@@ -45,14 +48,12 @@ class InspectCommandTest extends TestCase
         $traverser = $this->prophesize(TraverserInterface::class);
         $traverser->__invoke(Argument::type(Dependency::class))->shouldBeCalled(2);
 
-        $eventCollector = $this->prophesize(EventCollectorInterface::class);
-        $eventCollector->release(Argument::type(OutputInterface::class))->shouldBeCalled();
-
         $command = new InspectCommand(
             $config,
             $scanner->reveal(),
             $traverser->reveal(),
-            $eventCollector->reveal(),
+            new NullEventCollector(),
+            new NullEventReporter(),
         );
 
         $command->run(
@@ -76,14 +77,12 @@ class InspectCommandTest extends TestCase
         $traverser = $this->prophesize(TraverserInterface::class);
         $traverser->__invoke(Argument::type(Dependency::class))->shouldNotBeCalled();
 
-        $eventCollector = $this->prophesize(EventCollectorInterface::class);
-        $eventCollector->release(Argument::type(OutputInterface::class))->shouldBeCalled();
-
         $command = new InspectCommand(
             $config,
             $scanner->reveal(),
             $traverser->reveal(),
-            $eventCollector->reveal(),
+            new NullEventCollector(),
+            new NullEventReporter(),
         );
 
         $command->run(

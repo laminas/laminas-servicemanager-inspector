@@ -73,16 +73,11 @@ EOH;
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->scan();
-
-        foreach ($this->config->releaseEvents() as $event) {
-            $this->eventCollector->collect($event);
-        }
+        $this->collectEventsFromConfig();
 
         $exitCode = $this->eventCollector->hasTerminalEvent() ? 1 : 0;
 
-        $events = $this->eventCollector->release();
-
-        ($this->eventReporter)($events, $output);
+        ($this->eventReporter)($this->eventCollector->release(), $output);
 
         return $exitCode;
     }
@@ -94,6 +89,13 @@ EOH;
                 // TODO don't fail here - collect all occurring errors
                 ($this->traverser)(new Dependency($serviceName));
             }
+        }
+    }
+
+    private function collectEventsFromConfig()
+    {
+        foreach ($this->config->releaseEvents() as $event) {
+            $this->eventCollector->collect($event);
         }
     }
 }

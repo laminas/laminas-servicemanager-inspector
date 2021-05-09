@@ -12,10 +12,8 @@ namespace LaminasTest\ServiceManager\Inspector\EventCollector;
 
 use Laminas\ServiceManager\Inspector\Event\CustomFactoryEnteredEvent;
 use Laminas\ServiceManager\Inspector\Event\MissingFactoryDetectedEvent;
-use Laminas\ServiceManager\Inspector\EventCollector\ConsoleColor\NullConsoleColor;
 use Laminas\ServiceManager\Inspector\EventCollector\EventCollector;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Console\Output\NullOutput;
 
 /**
  * @covers \Laminas\ServiceManager\Inspector\EventCollector\EventCollector
@@ -24,21 +22,17 @@ class ConsoleEventCollectorTest extends TestCase
 {
     public function testReturnsErrorExitCodeReturnedWhenTerminalEventIsProvided()
     {
-        $collector = new EventCollector(new NullConsoleColor());
+        $collector = new EventCollector();
         $collector->collect(new MissingFactoryDetectedEvent('a'));
 
-        $exitCode = $collector->release(new NullOutput());
-
-        $this->assertSame(1, $exitCode);
+        $this->assertTrue($collector->hasTerminalEvent());
     }
 
     public function testReturnsSuccessExitCodeReturnedWhenNoTerminalEventIsProvided()
     {
-        $collector = new EventCollector(new NullConsoleColor());
+        $collector = new EventCollector();
         $collector->collect(new CustomFactoryEnteredEvent('a', []));
 
-        $exitCode = $collector->release(new NullOutput());
-
-        $this->assertSame(0, $exitCode);
+        $this->assertfalse($collector->hasTerminalEvent());
     }
 }
