@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Laminas\ServiceManager\Inspector\EventCollector;
 
-use Laminas\ServiceManager\Inspector\ConsoleColor\ConsoleColorInterface;
+use Laminas\ServiceManager\Inspector\Command\ConsoleColor\ConsoleColorInterface;
 use Laminas\ServiceManager\Inspector\Event\AutowireFactoryEnteredEvent;
 use Laminas\ServiceManager\Inspector\Event\CustomFactoryEnteredEvent;
 use Laminas\ServiceManager\Inspector\Event\EnterEventInterface;
@@ -18,7 +18,6 @@ use Laminas\ServiceManager\Inspector\Event\EventInterface;
 use Laminas\ServiceManager\Inspector\Event\InvokableEnteredEvent;
 use Laminas\ServiceManager\Inspector\Event\TerminalEventInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-
 use function count;
 use function sprintf;
 use function str_repeat;

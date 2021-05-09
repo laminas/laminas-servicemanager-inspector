@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace Laminas\ServiceManager\Inspector\ConsoleColor;
+namespace Laminas\ServiceManager\Inspector\Command\ConsoleColor;
 
 use function implode;
 use function sprintf;
@@ -42,7 +42,7 @@ final class ConsoleColor implements ConsoleColorInterface
 
     public function critical(string $text): string
     {
-        return $this->open(self::WHITE_COLOR, self::RED_COLOR) . $text . $this->close(true);
+        return $this->open(self::WHITE_COLOR, self::RED_COLOR) . $text . $this->closeWithBackground();
     }
 
     private function open(int $foreground, ?int $background = null): string
@@ -61,6 +61,13 @@ final class ConsoleColor implements ConsoleColorInterface
         if ($resetBackground) {
             $resetCodes[] = 49;
         }
+
+        return sprintf("\033[%sm", implode(';', $resetCodes));
+    }
+
+    private function closeWithBackground(): string
+    {
+        $resetCodes = [39, 49];
 
         return sprintf("\033[%sm", implode(';', $resetCodes));
     }

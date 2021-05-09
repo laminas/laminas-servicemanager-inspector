@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace LaminasTest\ServiceManager\Inspector\EventCollector;
 
-use Laminas\ServiceManager\Inspector\ConsoleColor\NullConsoleColor;
+use Laminas\ServiceManager\Inspector\Command\ConsoleColor\NullConsoleColor;
 use Laminas\ServiceManager\Inspector\Event\CustomFactoryEnteredEvent;
 use Laminas\ServiceManager\Inspector\Event\MissingFactoryDetectedEvent;
 use Laminas\ServiceManager\Inspector\EventCollector\ConsoleEventCollector;

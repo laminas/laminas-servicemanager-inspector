@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace Laminas\ServiceManager\Inspector\ConsoleColor;
+namespace Laminas\ServiceManager\Inspector\Command\ConsoleColor;
 
 final class NullConsoleColor implements ConsoleColorInterface
 {
