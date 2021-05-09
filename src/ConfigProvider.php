@@ -21,7 +21,8 @@ use Laminas\ServiceManager\Inspector\EventCollector\NullEventCollector;
 use Laminas\ServiceManager\Inspector\EventReporter\ConsoleColor\ConsoleColor;
 use Laminas\ServiceManager\Inspector\EventReporter\ConsoleColor\ConsoleColorInterface;
 use Laminas\ServiceManager\Inspector\EventReporter\ConsoleColor\NullConsoleColor;
-use Laminas\ServiceManager\Inspector\EventReporter\ConsoleEventReporter;
+use Laminas\ServiceManager\Inspector\EventReporter\ConsoleDetailedEventReporter;
+use Laminas\ServiceManager\Inspector\EventReporter\ConsoleSummaryEventReporter;
 use Laminas\ServiceManager\Inspector\EventReporter\EventReporterInterface;
 use Laminas\ServiceManager\Inspector\EventReporter\NullEventReporter;
 use Laminas\ServiceManager\Inspector\Scanner\DependencyScannerInterface;
@@ -55,7 +56,8 @@ final class ConfigProvider
                 Traverser::class                        => ReflectionBasedAbstractFactory::class,
                 EventCollector::class                   => ReflectionBasedAbstractFactory::class,
                 NullEventCollector::class               => ReflectionBasedAbstractFactory::class,
-                ConsoleEventReporter::class             => ReflectionBasedAbstractFactory::class,
+                ConsoleDetailedEventReporter::class     => ReflectionBasedAbstractFactory::class,
+                ConsoleSummaryEventReporter::class      => ReflectionBasedAbstractFactory::class,
                 NullEventReporter::class                => ReflectionBasedAbstractFactory::class,
                 ConsoleColor::class                     => ReflectionBasedAbstractFactory::class,
                 NullConsoleColor::class                 => ReflectionBasedAbstractFactory::class,
@@ -65,7 +67,7 @@ final class ConfigProvider
                 DependencyConfigInterface::class  => DependencyConfig::class,
                 TraverserInterface::class         => Traverser::class,
                 EventCollectorInterface::class    => EventCollector::class,
-                EventReporterInterface::class     => ConsoleEventReporter::class,
+                EventReporterInterface::class     => ConsoleDetailedEventReporter::class,
                 ConsoleColorInterface::class      => ConsoleColor::class,
             ],
         ];
