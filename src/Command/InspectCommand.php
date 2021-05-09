@@ -13,6 +13,7 @@ namespace Laminas\ServiceManager\Inspector\Command;
 use Laminas\ServiceManager\Inspector\Dependency\Dependency;
 use Laminas\ServiceManager\Inspector\DependencyConfig\DependencyConfigInterface;
 use Laminas\ServiceManager\Inspector\EventCollector\EventCollectorInterface;
+use Laminas\ServiceManager\Inspector\EventReporter\EventReporterInterface;
 use Laminas\ServiceManager\Inspector\Scanner\DependencyScannerInterface;
 use Laminas\ServiceManager\Inspector\Traverser\TraverserInterface;
 use Symfony\Component\Console\Command\Command;
@@ -41,16 +42,21 @@ EOH;
     /** @var EventCollectorInterface */
     private $eventCollector;
 
+    /** @var EventReporterInterface */
+    private $eventReporter;
+
     public function __construct(
         DependencyConfigInterface $config,
         DependencyScannerInterface $dependencyScanner,
         TraverserInterface $traverser,
-        EventCollectorInterface $eventCollector
+        EventCollectorInterface $eventCollector,
+        EventReporterInterface $eventReporter
     ) {
         $this->config            = $config;
         $this->dependencyScanner = $dependencyScanner;
         $this->traverser         = $traverser;
         $this->eventCollector    = $eventCollector;
+        $this->eventReporter     = $eventReporter;
 
         parent::__construct(self::$defaultName);
     }
@@ -66,17 +72,28 @@ EOH;
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $this->scan();
+
+        foreach ($this->config->releaseEvents() as $event) {
+            $this->eventCollector->collect($event);
+        }
+
+        $exitCode = $this->eventCollector->hasTerminalEvent() ? 1 : 0;
+
+        $events = $this->eventCollector->release();
+
+        ($this->eventReporter)($events, $output);
+
+        return $exitCode;
+    }
+
+    private function scan(): void
+    {
         foreach ($this->config->getFactories() as $serviceName => $factoryClass) {
             if ($this->dependencyScanner->canScan($serviceName)) {
                 // TODO don't fail here - collect all occurring errors
                 ($this->traverser)(new Dependency($serviceName));
             }
         }
-
-        foreach ($this->config->releaseEvents() as $event) {
-            $this->eventCollector->collect($event);
-        }
-
-        return $this->eventCollector->release($output);
     }
 }

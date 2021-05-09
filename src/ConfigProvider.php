@@ -11,15 +11,19 @@ declare(strict_types=1);
 namespace Laminas\ServiceManager\Inspector;
 
 use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
-use Laminas\ServiceManager\Inspector\Command\ConsoleColor\ConsoleColor;
-use Laminas\ServiceManager\Inspector\Command\ConsoleColor\ConsoleColorInterface;
-use Laminas\ServiceManager\Inspector\Command\ConsoleColor\NullConsoleColor;
 use Laminas\ServiceManager\Inspector\Command\InspectCommand;
 use Laminas\ServiceManager\Inspector\DependencyConfig\DependencyConfig;
 use Laminas\ServiceManager\Inspector\DependencyConfig\DependencyConfigInterface;
 use Laminas\ServiceManager\Inspector\DependencyConfig\MezzioDependencyConfigFactory;
-use Laminas\ServiceManager\Inspector\EventCollector\ConsoleEventCollector;
+use Laminas\ServiceManager\Inspector\EventCollector\EventCollector;
 use Laminas\ServiceManager\Inspector\EventCollector\EventCollectorInterface;
+use Laminas\ServiceManager\Inspector\EventCollector\NullEventCollector;
+use Laminas\ServiceManager\Inspector\EventReporter\ConsoleColor\ConsoleColor;
+use Laminas\ServiceManager\Inspector\EventReporter\ConsoleColor\ConsoleColorInterface;
+use Laminas\ServiceManager\Inspector\EventReporter\ConsoleColor\NullConsoleColor;
+use Laminas\ServiceManager\Inspector\EventReporter\ConsoleEventReporter;
+use Laminas\ServiceManager\Inspector\EventReporter\EventReporterInterface;
+use Laminas\ServiceManager\Inspector\EventReporter\NullEventReporter;
 use Laminas\ServiceManager\Inspector\Scanner\DependencyScannerInterface;
 use Laminas\ServiceManager\Inspector\Scanner\ReflectionBasedDependencyScanner;
 use Laminas\ServiceManager\Inspector\Traverser\Traverser;
@@ -49,7 +53,10 @@ final class ConfigProvider
                 ReflectionBasedDependencyScanner::class => ReflectionBasedAbstractFactory::class,
                 DependencyConfig::class                 => MezzioDependencyConfigFactory::class,
                 Traverser::class                        => ReflectionBasedAbstractFactory::class,
-                ConsoleEventCollector::class            => ReflectionBasedAbstractFactory::class,
+                EventCollector::class                   => ReflectionBasedAbstractFactory::class,
+                NullEventCollector::class               => ReflectionBasedAbstractFactory::class,
+                ConsoleEventReporter::class             => ReflectionBasedAbstractFactory::class,
+                NullEventReporter::class                => ReflectionBasedAbstractFactory::class,
                 ConsoleColor::class                     => ReflectionBasedAbstractFactory::class,
                 NullConsoleColor::class                 => ReflectionBasedAbstractFactory::class,
             ],
@@ -57,8 +64,9 @@ final class ConfigProvider
                 DependencyScannerInterface::class => ReflectionBasedDependencyScanner::class,
                 DependencyConfigInterface::class  => DependencyConfig::class,
                 TraverserInterface::class         => Traverser::class,
-                EventCollectorInterface::class    => ConsoleEventCollector::class,
-                ConsoleColorInterface::class      => NullConsoleColor::class,
+                EventCollectorInterface::class    => EventCollector::class,
+                EventReporterInterface::class     => ConsoleEventReporter::class,
+                ConsoleColorInterface::class      => ConsoleColor::class,
             ],
         ];
     }

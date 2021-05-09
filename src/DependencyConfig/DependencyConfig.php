@@ -72,7 +72,7 @@ final class DependencyConfig implements DependencyConfigInterface
     {
         $invokableFactories = [];
         // FIXME string of string
-        $invokables = (new Mess($dependencies))['invokables']->findArrayOfStringToString() ?? [];
+        $invokables = (new Mess($dependencies))['invokables']->findArray() ?? [];
         foreach ($invokables as $name => $class) {
             if ($name !== $class) {
                 $invokableFactories[$class] = InvokableFactory::class;

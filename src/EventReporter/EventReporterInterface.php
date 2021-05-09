@@ -8,19 +8,16 @@
 
 declare(strict_types=1);
 
-namespace Laminas\ServiceManager\Inspector\EventCollector;
+namespace Laminas\ServiceManager\Inspector\EventReporter;
 
 use Laminas\ServiceManager\Inspector\Event\EventInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
-interface EventCollectorInterface
+interface EventReporterInterface
 {
-    public function collect(EventInterface $event): void;
-
     /**
-     * @psalm-return list<EventInterface>
-     * @return EventInterface[]
+     * @psalm-param list<EventInterface>           $events
+     * @param EventInterface[] $events
      */
-    public function release(): array;
-
-    public function hasTerminalEvent(): bool;
+    public function __invoke(array $events, OutputInterface $output): void;
 }
