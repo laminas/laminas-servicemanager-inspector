@@ -23,7 +23,7 @@ class MezzioDependencyConfigFactoryTest extends TestCase
 {
     public function testConstructsServiceWhenContainerWithDependenciesConfigKeyIsProvided()
     {
-        $config = [
+        $config    = [
             'dependencies' => [
                 'factories' => [],
             ],

@@ -29,7 +29,7 @@ final class ConsoleDetailedEventReporter implements EventReporterInterface
 
     public function __construct(ConsoleColorInterface $consoleColor, ConsoleSummaryEventReporter $summaryReporter)
     {
-        $this->consoleColor = $consoleColor;
+        $this->consoleColor    = $consoleColor;
         $this->summaryReporter = $summaryReporter;
     }
 

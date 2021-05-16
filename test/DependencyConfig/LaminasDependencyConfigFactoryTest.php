@@ -23,7 +23,7 @@ class LaminasDependencyConfigFactoryTest extends TestCase
 {
     public function testConstructsServiceWhenContainerWithServiceManagerConfigKeyIsProvided()
     {
-        $config = [
+        $config    = [
             'service_manager' => [
                 'factories' => [],
             ],

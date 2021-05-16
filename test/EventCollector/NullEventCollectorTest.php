@@ -14,7 +14,6 @@ use Laminas\ServiceManager\Inspector\Event\TerminalEventInterface;
 use Laminas\ServiceManager\Inspector\EventCollector\NullEventCollector;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
-use Symfony\Component\Console\Output\NullOutput;
 
 /**
  * @covers \Laminas\ServiceManager\Inspector\EventCollector\NullEventCollector
