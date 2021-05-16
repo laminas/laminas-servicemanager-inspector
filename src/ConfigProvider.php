@@ -44,7 +44,7 @@ final class ConfigProvider
     }
 
     /**
-     * @psalm-return array{factories:array<string,mixed>,aliases:array<string,string>}
+     * @psalm-return array{factories:array<string,class-string>,aliases:array<string,string>}
      */
     public function getServiceDependencies(): array
     {
@@ -52,6 +52,7 @@ final class ConfigProvider
             'factories' => [
                 InspectCommand::class                   => ReflectionBasedAbstractFactory::class,
                 ReflectionBasedDependencyScanner::class => ReflectionBasedAbstractFactory::class,
+                // TODO laminas config
                 DependencyConfig::class                 => MezzioDependencyConfigFactory::class,
                 Traverser::class                        => ReflectionBasedAbstractFactory::class,
                 EventCollector::class                   => ReflectionBasedAbstractFactory::class,
