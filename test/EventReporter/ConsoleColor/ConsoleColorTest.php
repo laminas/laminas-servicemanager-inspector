@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
  */
 class ConsoleColorTest extends TestCase
 {
-    public function testSuccessWrapsTextInGreenColor()
+    public function testSuccessWrapsStringInGreenColor()
     {
         $color = new ConsoleColor();
         $colored = $color->success('a');
@@ -26,7 +26,7 @@ class ConsoleColorTest extends TestCase
         $this->assertSame("\033[32ma\033[39m", $colored);
     }
 
-    public function testNormalWrapsTextInWhiteColor()
+    public function testNormalWrapsStringInWhiteColor()
     {
         $color = new ConsoleColor();
         $colored = $color->normal('a');
@@ -34,7 +34,7 @@ class ConsoleColorTest extends TestCase
         $this->assertSame("\033[37ma\033[39m", $colored);
     }
 
-    public function testWarningWrapsTextInYellownColor()
+    public function testWarningWrapsStringInYellownColor()
     {
         $color = new ConsoleColor();
         $colored = $color->warning('a');
@@ -42,7 +42,7 @@ class ConsoleColorTest extends TestCase
         $this->assertSame("\033[33ma\033[39m", $colored);
     }
 
-    public function testErrorWrapsTextInREdColor()
+    public function testErrorWrapsStringInREdColor()
     {
         $color = new ConsoleColor();
         $colored = $color->error('a');
@@ -50,7 +50,7 @@ class ConsoleColorTest extends TestCase
         $this->assertSame("\033[31ma\033[39m", $colored);
     }
 
-    public function testCriticalWrapsTextInWhiteColorWithRedBackground()
+    public function testCriticalWrapsStringInWhiteColorWithRedBackground()
     {
         $color = new ConsoleColor();
         $colored = $color->critical('a');
