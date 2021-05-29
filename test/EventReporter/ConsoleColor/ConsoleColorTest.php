@@ -20,7 +20,7 @@ class ConsoleColorTest extends TestCase
 {
     public function testSuccessWrapsStringInGreenColor()
     {
-        $color = new ConsoleColor();
+        $color   = new ConsoleColor();
         $colored = $color->success('a');
 
         $this->assertSame("\033[32ma\033[39m", $colored);
@@ -28,7 +28,7 @@ class ConsoleColorTest extends TestCase
 
     public function testNormalWrapsStringInWhiteColor()
     {
-        $color = new ConsoleColor();
+        $color   = new ConsoleColor();
         $colored = $color->normal('a');
 
         $this->assertSame("\033[37ma\033[39m", $colored);
@@ -36,7 +36,7 @@ class ConsoleColorTest extends TestCase
 
     public function testWarningWrapsStringInYellownColor()
     {
-        $color = new ConsoleColor();
+        $color   = new ConsoleColor();
         $colored = $color->warning('a');
 
         $this->assertSame("\033[33ma\033[39m", $colored);
@@ -44,7 +44,7 @@ class ConsoleColorTest extends TestCase
 
     public function testErrorWrapsStringInREdColor()
     {
-        $color = new ConsoleColor();
+        $color   = new ConsoleColor();
         $colored = $color->error('a');
 
         $this->assertSame("\033[31ma\033[39m", $colored);
@@ -52,7 +52,7 @@ class ConsoleColorTest extends TestCase
 
     public function testCriticalWrapsStringInWhiteColorWithRedBackground()
     {
-        $color = new ConsoleColor();
+        $color   = new ConsoleColor();
         $colored = $color->critical('a');
 
         $this->assertSame("\033[37;41ma\033[39;49m", $colored);

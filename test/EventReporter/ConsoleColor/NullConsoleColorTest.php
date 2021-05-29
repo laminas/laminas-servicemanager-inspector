@@ -20,7 +20,7 @@ class NullConsoleColorTest extends TestCase
 {
     public function testSuccessReturnsUnchangedString()
     {
-        $color = new NullConsoleColor();
+        $color   = new NullConsoleColor();
         $colored = $color->success('a');
 
         $this->assertSame('a', $colored);
@@ -28,7 +28,7 @@ class NullConsoleColorTest extends TestCase
 
     public function testNormalreturnUnchangedString()
     {
-        $color = new NullConsoleColor();
+        $color   = new NullConsoleColor();
         $colored = $color->normal('a');
 
         $this->assertSame('a', $colored);
@@ -36,7 +36,7 @@ class NullConsoleColorTest extends TestCase
 
     public function testWarningReturnsUnchangedString()
     {
-        $color = new NullConsoleColor();
+        $color   = new NullConsoleColor();
         $colored = $color->warning('a');
 
         $this->assertSame('a', $colored);
@@ -44,7 +44,7 @@ class NullConsoleColorTest extends TestCase
 
     public function testErrorReturnUnchangedString()
     {
-        $color = new NullConsoleColor();
+        $color   = new NullConsoleColor();
         $colored = $color->error('a');
 
         $this->assertSame('a', $colored);
@@ -52,7 +52,7 @@ class NullConsoleColorTest extends TestCase
 
     public function testCriticalReturnsUnchangedString()
     {
-        $color = new NullConsoleColor();
+        $color   = new NullConsoleColor();
         $colored = $color->critical('a');
 
         $this->assertSame('a', $colored);

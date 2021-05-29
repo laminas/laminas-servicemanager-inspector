@@ -33,10 +33,11 @@ class ConsoleSummaryEventReporterTest extends TestCase
         ];
 
         $reporter = new ConsoleSummaryEventReporter(new NullConsoleColor());
-        $buffer = new BufferedOutput();
+        $buffer   = new BufferedOutput();
         $reporter($events, $buffer);
 
-        $this->assertSame('
+        $this->assertSame(
+            '
 Total factories found: 3 🏭
 Custom factories skipped: 1 🛠️
 Autowire factories analyzed: 1 🔥
@@ -45,7 +46,8 @@ Maximum instantiation deep: 2 🏊
 
 As far as I can tell, it\'s all good 🚀
 ',
-            $buffer->fetch());
+            $buffer->fetch()
+        );
     }
 
     public function testPrintsNegativeReportWhenTerminalEventsAreProvided()
@@ -58,10 +60,11 @@ As far as I can tell, it\'s all good 🚀
         ];
 
         $reporter = new ConsoleSummaryEventReporter(new NullConsoleColor());
-        $buffer = new BufferedOutput();
+        $buffer   = new BufferedOutput();
         $reporter($events, $buffer);
 
-        $this->assertSame('
+        $this->assertSame(
+            '
 Total factories found: 3 🏭
 Custom factories skipped: 1 🛠️
 Autowire factories analyzed: 1 🔥
@@ -70,6 +73,7 @@ Maximum instantiation deep: 2 🏊
 
 Total errors found: 1 😕
 ',
-            $buffer->fetch());
+            $buffer->fetch()
+        );
     }
 }
