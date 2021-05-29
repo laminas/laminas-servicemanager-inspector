@@ -27,7 +27,7 @@ final class ConsoleDetailedEventReporter implements EventReporterInterface
     /** @var ConsoleSummaryEventReporter */
     private $summaryReporter;
 
-    public function __construct(ConsoleColorInterface $consoleColor, ConsoleSummaryEventReporter $summaryReporter)
+    public function __construct(ConsoleColorInterface $consoleColor, EventReporterInterface $summaryReporter)
     {
         $this->consoleColor    = $consoleColor;
         $this->summaryReporter = $summaryReporter;

@@ -89,7 +89,7 @@ final class ConsoleSummaryEventReporter implements EventReporterInterface
         $maxDeep = $this->consoleColor->success((string) $this->countMaxInstantiationDeep($events));
         $output->write(sprintf("Maximum instantiation deep: %s 🏊\n", $maxDeep));
 
-        $conclusion          = $this->consoleColor->success(
+        $conclusion = $this->consoleColor->success(
             sprintf(
                 "\nAs far as I can tell, it's all good 🚀\n",
             )
