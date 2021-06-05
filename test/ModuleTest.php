@@ -11,22 +11,23 @@ declare(strict_types=1);
 namespace LaminasTest\ServiceManager\Inspector;
 
 use Laminas\ServiceManager\Inspector\Command\InspectCommand;
-use Laminas\ServiceManager\Inspector\ConfigProvider;
+use Laminas\ServiceManager\Inspector\Module;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
- * @covers \Laminas\ServiceManager\Inspector\ConfigProvider
+ * @covers \Laminas\ServiceManager\Inspector\Module
  */
-class ConfigProviderTest extends TestCase
+class ModuleTest extends TestCase
 {
     use ProphecyTrait;
 
     public function testProviderHasExpectedTopLevelKeys(): void
     {
-        $config = (new ConfigProvider())();
+        $module = new Module();
+        $config = $module->getConfig();
 
-        $this->assertArrayHasKey('dependencies', $config);
+        $this->assertArrayHasKey('service_manager', $config);
         $this->assertArrayHasKey('laminas-cli', $config);
     }
 
@@ -42,10 +43,11 @@ class ConfigProviderTest extends TestCase
      */
     public function testDependenciesIncludesFactoriesForEachCommand(string $commandClass): void
     {
-        $config = (new ConfigProvider())();
-        $this->assertArrayHasKey('dependencies', $config);
+        $module = new Module();
+        $config = $module->getConfig();
+        $this->assertArrayHasKey('service_manager', $config);
 
-        $dependencies = $config['dependencies'];
+        $dependencies = $config['service_manager'];
         $this->assertArrayHasKey('factories', $dependencies);
 
         $factories = $dependencies['factories'];
@@ -57,7 +59,8 @@ class ConfigProviderTest extends TestCase
      */
     public function tesCommandNamesToCommandClasses(string $commandClass, string $command): void
     {
-        $config = (new ConfigProvider())();
+        $module = new Module();
+        $config = $module->getConfig();
         $this->assertArrayHasKey('laminas-cli', $config);
 
         $cliConfig = $config['laminas-cli'];

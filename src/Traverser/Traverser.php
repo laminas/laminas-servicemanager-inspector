@@ -23,6 +23,11 @@ use Throwable;
 
 use function in_array;
 
+/**
+ * Traverses all the way down dependency tree.
+ *
+ * Fires an event in case if no factory can satisfy a required dependency.
+ */
 final class Traverser implements TraverserInterface
 {
     /** @var DependencyConfigInterface */

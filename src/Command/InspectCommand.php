@@ -26,7 +26,7 @@ use function array_keys;
 final class InspectCommand extends Command
 {
     public const HELP = <<<'EOH'
-TODO
+Inspects for ServiceManager configuration defects 
 EOH;
 
     /** @var string|null $defaultName */

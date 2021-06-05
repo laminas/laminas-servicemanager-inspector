@@ -38,15 +38,15 @@ final class ConfigProvider
     public function __invoke(): array
     {
         return [
-            'dependencies' => $this->getServiceDependencies(),
-            'laminas-cli'  => $this->laminasCliConfiguration(),
+            'dependencies' => $this->getDependencies(),
+            'laminas-cli'  => $this->getCliConfig(),
         ];
     }
 
     /**
      * @psalm-return array{factories:array<string,class-string>,aliases:array<string,string>}
      */
-    public function getServiceDependencies(): array
+    public function getDependencies(): array
     {
         return [
             'factories' => [
@@ -77,7 +77,7 @@ final class ConfigProvider
     /**
      * @psalm-return array<string, mixed>
      */
-    private function laminasCliConfiguration(): array
+    public function getCliConfig(): array
     {
         return [
             'commands' => [
