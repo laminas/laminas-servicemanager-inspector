@@ -123,7 +123,7 @@ class ReflectionBasedDependencyScannerTest extends TestCase
         );
 
         $eventCollector = $this->prophesize(EventCollectorInterface::class);
-        $eventCollector->collect(Argument::type(UnexpectedScalarDetectedEvent::class))->shouldBeCalled();
+        $eventCollector->__invoke(Argument::type(UnexpectedScalarDetectedEvent::class))->shouldBeCalled();
 
         $scanner = new ReflectionBasedDependencyScanner(
             $config,

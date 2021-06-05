@@ -23,7 +23,7 @@ class ConsoleEventCollectorTest extends TestCase
     public function testReturnsErrorExitCodeReturnedWhenTerminalEventIsProvided()
     {
         $collector = new EventCollector();
-        $collector->collect(new MissingFactoryDetectedEvent('a'));
+        $collector(new MissingFactoryDetectedEvent('a'));
 
         $this->assertTrue($collector->hasTerminalEvent());
     }
@@ -31,7 +31,7 @@ class ConsoleEventCollectorTest extends TestCase
     public function testReturnsSuccessExitCodeReturnedWhenNoTerminalEventIsProvided()
     {
         $collector = new EventCollector();
-        $collector->collect(new CustomFactoryEnteredEvent('a', []));
+        $collector(new CustomFactoryEnteredEvent('a', []));
 
         $this->assertfalse($collector->hasTerminalEvent());
     }

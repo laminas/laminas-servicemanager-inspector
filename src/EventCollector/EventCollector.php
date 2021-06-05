@@ -25,7 +25,7 @@ final class EventCollector implements EventCollectorInterface
      * TODO preserve number of occurred events per dependency
      * TODO preserve the events with the longest instantiation deep only
      */
-    public function collect(EventInterface $event): void
+    public function __invoke(EventInterface $event): void
     {
         foreach ($this->events as $existingEvent) {
             if ($existingEvent->getDependencyName() === $event->getDependencyName()) {

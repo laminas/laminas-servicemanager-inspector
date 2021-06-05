@@ -103,7 +103,6 @@ final class DependencyConfig implements DependencyConfigInterface
         return array_merge($invokableAliases, $resolvedAliases);
     }
 
-
     /**
      * TODO it's not a list
      */

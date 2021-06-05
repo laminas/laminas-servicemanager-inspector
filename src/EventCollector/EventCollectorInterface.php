@@ -14,7 +14,7 @@ use Laminas\ServiceManager\Inspector\Event\EventInterface;
 
 interface EventCollectorInterface
 {
-    public function collect(EventInterface $event): void;
+    public function __invoke(EventInterface $event): void;
 
     /**
      * @psalm-return list<EventInterface>

@@ -32,7 +32,7 @@ class NullEventCollectorTest extends TestCase
     public function testHasTerminalEventsReturnsFalseOnTerminalEventProvided()
     {
         $collector = new NullEventCollector();
-        $collector->collect($this->prophesize(TerminalEventInterface::class)->reveal());
+        $collector($this->prophesize(TerminalEventInterface::class)->reveal());
 
         $this->assertFalse($collector->hasTerminalEvent());
     }

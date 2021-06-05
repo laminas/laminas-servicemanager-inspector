@@ -45,7 +45,7 @@ class TraverserTest extends TestCase
         $scanner->scan(Argument::type('string'))->willReturn([]);
 
         $events = $this->prophesize(EventCollectorInterface::class);
-        $events->collect(Argument::type(InvokableEnteredEvent::class))->shouldBeCalled();
+        $events->__invoke(Argument::type(InvokableEnteredEvent::class))->shouldBeCalled();
 
         $traverser = new Traverser(
             $config,
@@ -68,7 +68,7 @@ class TraverserTest extends TestCase
         $scanner->scan(Argument::type('string'))->willReturn([]);
 
         $events = $this->prophesize(EventCollectorInterface::class);
-        $events->collect(Argument::type(AutowireFactoryEnteredEvent::class))->shouldBeCalled();
+        $events->__invoke(Argument::type(AutowireFactoryEnteredEvent::class))->shouldBeCalled();
 
         $traverser = new Traverser(
             $config,
@@ -91,7 +91,7 @@ class TraverserTest extends TestCase
         $scanner->scan(Argument::type('string'))->willReturn([]);
 
         $events = $this->prophesize(EventCollectorInterface::class);
-        $events->collect(Argument::type(CustomFactoryEnteredEvent::class))->shouldBeCalled();
+        $events->__invoke(Argument::type(CustomFactoryEnteredEvent::class))->shouldBeCalled();
 
         $traverser = new Traverser(
             $config,
@@ -110,7 +110,7 @@ class TraverserTest extends TestCase
         $scanner->scan(Argument::type('string'))->willReturn([]);
 
         $events = $this->prophesize(EventCollectorInterface::class);
-        $events->collect(Argument::type(MissingFactoryDetectedEvent::class))->shouldNotBeCalled();
+        $events->__invoke(Argument::type(MissingFactoryDetectedEvent::class))->shouldNotBeCalled();
 
         $traverser = new Traverser(
             $config,
@@ -129,7 +129,7 @@ class TraverserTest extends TestCase
         $scanner->scan(Argument::type('string'))->willReturn([]);
 
         $events = $this->prophesize(EventCollectorInterface::class);
-        $events->collect(Argument::type(MissingFactoryDetectedEvent::class))->shouldBeCalled();
+        $events->__invoke(Argument::type(MissingFactoryDetectedEvent::class))->shouldBeCalled();
 
         $traverser = new Traverser(
             $config,
@@ -152,8 +152,8 @@ class TraverserTest extends TestCase
         $scanner->scan(Argument::type('string'))->willReturn([new Dependency('a')]);
 
         $events = $this->prophesize(EventCollectorInterface::class);
-        $events->collect(Argument::type(AutowireFactoryEnteredEvent::class))->shouldBeCalled();
-        $events->collect(Argument::type(CircularDependencyDetectedEvent::class))->shouldBeCalled();
+        $events->__invoke(Argument::type(AutowireFactoryEnteredEvent::class))->shouldBeCalled();
+        $events->__invoke(Argument::type(CircularDependencyDetectedEvent::class))->shouldBeCalled();
 
         $traverser = new Traverser(
             $config,

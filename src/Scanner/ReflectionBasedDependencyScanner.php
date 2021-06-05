@@ -89,7 +89,7 @@ final class ReflectionBasedDependencyScanner implements DependencyScannerInterfa
         foreach ($constructor->getParameters() as $parameter) {
             $className = $this->getParameterClassName($parameter);
             if ($className === null && ! $this->isOptional($parameter)) {
-                $this->eventCollector->collect(new UnexpectedScalarDetectedEvent($serviceName, $parameter->getName()));
+                ($this->eventCollector)(new UnexpectedScalarDetectedEvent($serviceName, $parameter->getName()));
                 return [];
             }
 

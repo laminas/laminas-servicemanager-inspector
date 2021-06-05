@@ -28,34 +28,34 @@ class DependencyConfigTest extends TestCase
      */
     public function testThrowsNoExceptionOnEmptyDependencies()
     {
-        new DependencyConfig([]);
+        (new DependencyConfig([]))->getFactories();
     }
 
     public function testThrowsExceptionOnInvalidFactories()
     {
         $this->expectException(UnexpectedTypeException::class);
 
-        new DependencyConfig([
+        (new DependencyConfig([
             'factories' => ['a'],
-        ]);
+        ]))->getFactories();
     }
 
     public function testThrowsExceptionOnInvalidInvokables()
     {
         $this->expectException(UnexpectedTypeException::class);
 
-        new DependencyConfig([
+        (new DependencyConfig([
             'invokables' => ['a'],
-        ]);
+        ]))->getFactories();
     }
 
     public function testThrowsExceptionOnInvalidAliases()
     {
         $this->expectException(UnexpectedTypeException::class);
 
-        new DependencyConfig([
+        (new DependencyConfig([
             'aliases' => ['a'],
-        ]);
+        ]))->getRealName('b');
     }
 
     public function testReturnsSameFactoriesWhenValidFactoriesAreProvided()
@@ -92,8 +92,7 @@ class DependencyConfigTest extends TestCase
     public function testHasFactoryReturnsFalseWhenNoFactoryIsProvided()
     {
         $depenencies = [
-            'factories' => [
-            ],
+            'factories' => [],
         ];
 
         $config = new DependencyConfig($depenencies);

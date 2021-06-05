@@ -14,7 +14,7 @@ use Laminas\ServiceManager\Inspector\Event\EventInterface;
 
 final class NullEventCollector implements EventCollectorInterface
 {
-    public function collect(EventInterface $event): void
+    public function __invoke(EventInterface $event): void
     {
     }
 
