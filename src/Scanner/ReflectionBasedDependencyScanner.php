@@ -114,7 +114,11 @@ final class ReflectionBasedDependencyScanner implements DependencyScannerInterfa
             return null;
         }
 
-        /** @psalm-var ReflectionNamedType $type */
+        if (! $type instanceof ReflectionNamedType) {
+            // TODO ReflectionUnionType is possible here (in PHP 8)
+            return null;
+        }
+
         if ($type->isBuiltin()) {
             return null;
         }
