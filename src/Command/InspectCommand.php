@@ -25,10 +25,6 @@ use function array_keys;
 
 final class InspectCommand extends Command
 {
-    public const HELP = <<<'EOH'
-Inspects for ServiceManager configuration defects 
-EOH;
-
     /** @var string|null $defaultName */
     public static $defaultName = 'servicemanager:inspect';
 
@@ -65,8 +61,9 @@ EOH;
 
     protected function configure(): void
     {
-        $this->setDescription('ServiceManager inspector');
-        $this->setHelp(self::HELP);
+        // FIXME refine
+        $this->setDescription('Inspect for autowire-related ServiceManager configuration defects');
+        $this->setHelp('Prints a detailed autowire-related report. Returns a non-zero code upon any defect.');
     }
 
     /**

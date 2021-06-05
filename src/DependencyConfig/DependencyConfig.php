@@ -41,14 +41,8 @@ final class DependencyConfig implements DependencyConfigInterface
         'config',
     ];
 
-    /** @psalm-var array<string, string> */
-    private $factories;
-
-    /** @psalm-var array<string, string> */
-    private $invokables;
-
-    /** @psalm-var array<string, string> */
-    private $resolvedAliases;
+    /** @psalm-var array<string, mixed> */
+    private $dependencies;
 
     /**
      * @psalm-param array<string, mixed> $dependencies
@@ -56,74 +50,59 @@ final class DependencyConfig implements DependencyConfigInterface
      */
     public function __construct(array $dependencies)
     {
-        $this->factories       = $this->getValidFactories($dependencies);
-        $this->invokables      = $this->getValidInvokables($dependencies);
-        $this->resolvedAliases = $this->getValidResolvedAliases($dependencies);
+        $this->dependencies = $dependencies;
     }
 
     /**
-     * @psalm-param array<string, mixed> $dependencies
-     * @param string[] $dependencies
      * @psalm-return array<string, string>
      * @return string[]
      */
-    private function getValidFactories(array $dependencies): array
+    public function getFactories(): array
     {
         $invokableFactories = [];
-        $invokables         = $this->getValidInvokables($dependencies);
+        $invokables         = $this->getInvokables();
         foreach ($invokables as $name => $class) {
             if ($name !== $class) {
                 $invokableFactories[$class] = InvokableFactory::class;
             }
         }
 
-        $factories = (new Mess($dependencies))['factories']->findArrayOfStringToString() ?? [];
+        $factories = (new Mess($this->dependencies))['factories']->findArrayOfStringToString() ?? [];
 
         return array_merge($invokableFactories, $factories);
     }
 
     /**
-     * @psalm-param array<string, mixed> $dependencies
-     * @param string[] $dependencies
      * @psalm-return array<string, string>
      * @return string[]
      */
-    private function getValidInvokables(array $dependencies): array
+    private function getInvokables(): array
     {
-        $messedInvokables = (new Mess($dependencies))['invokables'];
+        $messedInvokables = (new Mess($this->dependencies))['invokables'];
 
-        return $messedInvokables->findArray() ?? [];
+        return $messedInvokables->findArrayOfStringToString() ?? [];
     }
 
     /**
-     * @psalm-param array<string, mixed> $dependencies
-     * @param string[] $dependencies
      * @psalm-return array<string, string>
      * @return string[]
      */
-    private function getValidResolvedAliases(array $dependencies): array
+    private function getResolvedAliases(): array
     {
         $invokableAliases = [];
-        $invokables       = $this->getValidInvokables($dependencies);
+        $invokables       = $this->getInvokables();
         foreach ($invokables as $name => $class) {
             if ($name !== $class) {
                 $invokableAliases[$name] = $class;
             }
         }
 
-        $aliases         = (new Mess($dependencies))['aliases']->findArrayOfStringToString() ?? [];
+        $aliases         = (new Mess($this->dependencies))['aliases']->findArrayOfStringToString() ?? [];
         $resolvedAliases = (new AliasResolver())($aliases);
 
         return array_merge($invokableAliases, $resolvedAliases);
     }
 
-    /**
-     * @psalm-var array<string, string>
-     */
-    public function getFactories(): array
-    {
-        return $this->factories;
-    }
 
     /**
      * TODO it's not a list
@@ -131,7 +110,7 @@ final class DependencyConfig implements DependencyConfigInterface
     public function isInvokable(string $serviceName): bool
     {
         $realServiceName     = $this->getRealName($serviceName);
-        $isInvokable         = in_array($realServiceName, $this->invokables, true);
+        $isInvokable         = in_array($realServiceName, $this->getInvokables(), true);
         $hasInvokableFactory = in_array($this->getFactory($realServiceName), self::INVOKABLE_FACTORIES, true);
 
         return $isInvokable || $hasInvokableFactory;
@@ -140,14 +119,14 @@ final class DependencyConfig implements DependencyConfigInterface
     public function getRealName(string $serviceName): string
     {
         // TODO Alias resolver
-        return $this->resolvedAliases[$serviceName] ?? $serviceName;
+        return $this->getResolvedAliases()[$serviceName] ?? $serviceName;
     }
 
     public function getFactory(string $serviceName): ?string
     {
         $realName = $this->getRealName($serviceName);
 
-        return $this->factories[$realName] ?? null;
+        return $this->getFactories()[$realName] ?? null;
     }
 
     public function hasAutowireFactory(string $serviceName): bool
