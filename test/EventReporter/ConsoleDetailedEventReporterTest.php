@@ -14,8 +14,7 @@ use Laminas\ServiceManager\Inspector\Event\CustomFactoryEnteredEvent;
 use Laminas\ServiceManager\Inspector\Event\UnexpectedScalarDetectedEvent;
 use Laminas\ServiceManager\Inspector\EventReporter\ConsoleColor\NullConsoleColor;
 use Laminas\ServiceManager\Inspector\EventReporter\ConsoleDetailedEventReporter;
-use Laminas\ServiceManager\Inspector\EventReporter\EventReporterInterface;
-use Laminas\ServiceManager\Inspector\EventReporter\NullEventReporter;
+use Laminas\ServiceManager\Inspector\EventReporter\ConsoleSummaryEventReporter;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
@@ -38,7 +37,9 @@ class ConsoleDetailedEventReporterTest extends TestCase
         ];
         $buffer = new BufferedOutput();
 
-        $reporter = new ConsoleDetailedEventReporter(new NullConsoleColor(), new NullEventReporter());
+        $summaryEventReporter = $this->prophesize(ConsoleSummaryEventReporter::class);
+
+        $reporter = new ConsoleDetailedEventReporter(new NullConsoleColor(), $summaryEventReporter->reveal());
         $reporter($events, $buffer);
 
         $this->assertSame(
@@ -49,7 +50,7 @@ class ConsoleDetailedEventReporterTest extends TestCase
 
     public function testCallsSummaryEventReporter()
     {
-        $summaryEventReporter = $this->prophesize(EventReporterInterface::class);
+        $summaryEventReporter = $this->prophesize(ConsoleSummaryEventReporter::class);
         $summaryEventReporter->__invoke(
             Argument::type('array'),
             Argument::type(OutputInterface::class)

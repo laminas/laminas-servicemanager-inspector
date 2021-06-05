@@ -16,6 +16,7 @@ use Laminas\ServiceManager\Inspector\Event\UnexpectedScalarDetectedEvent;
 use Laminas\ServiceManager\Inspector\EventCollector\EventCollectorInterface;
 use ReflectionClass;
 use ReflectionException;
+use ReflectionNamedType;
 use ReflectionParameter;
 
 use function in_array;
@@ -86,14 +87,14 @@ final class ReflectionBasedDependencyScanner implements DependencyScannerInterfa
 
         $unsatisfiedDependencies = [];
         foreach ($constructor->getParameters() as $parameter) {
-            $class = $parameter->getClass();
-            if ($class === null && ! $this->isOptional($parameter)) {
+            $className = $this->getParameterClassName($parameter);
+            if ($className === null && ! $this->isOptional($parameter)) {
                 $this->eventCollector->collect(new UnexpectedScalarDetectedEvent($serviceName, $parameter->getName()));
                 return [];
             }
 
-            /** @psalm-var ReflectionClass $class */
-            $realDependencyName = $this->config->getRealName($class->getName());
+            /** @psalm-var string $className */
+            $realDependencyName = $this->config->getRealName($className);
 
             $unsatisfiedDependencies[] = new Dependency($realDependencyName, $this->isOptional($parameter));
         }
@@ -104,5 +105,20 @@ final class ReflectionBasedDependencyScanner implements DependencyScannerInterfa
     private function isOptional(ReflectionParameter $parameter): bool
     {
         return $parameter->isOptional() || ($parameter->hasType() && $parameter->getType()->allowsNull());
+    }
+
+    private function getParameterClassName(ReflectionParameter $parameter): ?string
+    {
+        $type = $parameter->getType();
+        if ($type === null) {
+            return null;
+        }
+
+        /** @psalm-var ReflectionNamedType $type */
+        if ($type->isBuiltin()) {
+            return null;
+        }
+
+        return $type->getName();
     }
 }

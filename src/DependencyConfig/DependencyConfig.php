@@ -72,7 +72,7 @@ final class DependencyConfig implements DependencyConfigInterface
     private function getValidFactories(array $dependencies): array
     {
         $invokableFactories = [];
-        $invokables         = (new Mess($dependencies))['invokables']->findArrayOfStringToString() ?? [];
+        $invokables         = $this->getValidInvokables($dependencies);
         foreach ($invokables as $name => $class) {
             if ($name !== $class) {
                 $invokableFactories[$class] = InvokableFactory::class;
@@ -115,7 +115,7 @@ final class DependencyConfig implements DependencyConfigInterface
     private function getValidResolvedAliases(array $dependencies): array
     {
         $invokableAliases = [];
-        $invokables       = (new Mess($dependencies))['invokables']->findArrayOfStringToString() ?? [];
+        $invokables       = $this->getValidInvokables($dependencies);
         foreach ($invokables as $name => $class) {
             if ($name !== $class) {
                 $invokableAliases[$name] = $class;

@@ -22,7 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use function count;
 use function sprintf;
 
-final class ConsoleSummaryEventReporter implements EventReporterInterface
+class ConsoleSummaryEventReporter implements EventReporterInterface
 {
     /** @var ConsoleColorInterface */
     private $consoleColor;

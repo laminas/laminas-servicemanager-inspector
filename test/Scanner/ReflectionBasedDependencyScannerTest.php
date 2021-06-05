@@ -11,9 +11,12 @@ declare(strict_types=1);
 namespace LaminasTest\ServiceManager\Inspector\Scanner;
 
 use Laminas\ServiceManager\Inspector\DependencyConfig\DependencyConfig;
+use Laminas\ServiceManager\Inspector\Event\UnexpectedScalarDetectedEvent;
+use Laminas\ServiceManager\Inspector\EventCollector\EventCollectorInterface;
 use Laminas\ServiceManager\Inspector\EventCollector\NullEventCollector;
 use Laminas\ServiceManager\Inspector\Scanner\ReflectionBasedDependencyScanner;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use stdClass;
 
@@ -31,11 +34,13 @@ class ReflectionBasedDependencyScannerTest extends TestCase
      */
     public function testCanScanWhenSupportedFactoriesAreProvided(string $factory)
     {
-        $config = new DependencyConfig([
-            'factories' => [
-                'a' => $factory,
-            ],
-        ]);
+        $config = new DependencyConfig(
+            [
+                'factories' => [
+                    'a' => $factory,
+                ],
+            ]
+        );
 
         $scanner = new ReflectionBasedDependencyScanner(
             $config,
@@ -79,12 +84,14 @@ class ReflectionBasedDependencyScannerTest extends TestCase
             }
         };
 
-        $config = new DependencyConfig([
-            'factories' => [
-                // phpcs:ignore
-                get_class($obj) => 'Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory',
-            ],
-        ]);
+        $config = new DependencyConfig(
+            [
+                'factories' => [
+                    // phpcs:ignore
+                    get_class($obj) => 'Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory',
+                ],
+            ]
+        );
 
         $scanner = new ReflectionBasedDependencyScanner(
             $config,
@@ -96,5 +103,35 @@ class ReflectionBasedDependencyScannerTest extends TestCase
         $this->assertArrayHasKey(0, $dependencies);
         $this->assertSame(stdClass::class, $dependencies[0]->getName());
         $this->assertFalse($dependencies[0]->isOptional());
+    }
+
+    public function testFiresUnexpectedScalarEventOnScalarInConstructor()
+    {
+        $obj = new class (1) {
+            public function __construct(int $value)
+            {
+            }
+        };
+
+        $config = new DependencyConfig(
+            [
+                'factories' => [
+                    // phpcs:ignore
+                    get_class($obj) => 'Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory',
+                ],
+            ]
+        );
+
+        $eventCollector = $this->prophesize(EventCollectorInterface::class);
+        $eventCollector->collect(Argument::type(UnexpectedScalarDetectedEvent::class))->shouldBeCalled();
+
+        $scanner = new ReflectionBasedDependencyScanner(
+            $config,
+            $eventCollector->reveal(),
+        );
+
+        $dependencies = $scanner->scan(get_class($obj));
+
+        $this->assertEmpty($dependencies);
     }
 }
