@@ -62,7 +62,7 @@ final class InspectCommand extends Command
     protected function configure(): void
     {
         // FIXME refine
-        $this->setDescription('Inspect for autowire-related ServiceManager configuration defects');
+        $this->setDescription('Inspects for autowire-related ServiceManager configuration defects');
         $this->setHelp('Prints a detailed autowire-related report. Returns a non-zero code upon any defect.');
     }
 
