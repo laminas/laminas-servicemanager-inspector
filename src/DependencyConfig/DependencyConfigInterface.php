@@ -10,8 +10,6 @@ declare(strict_types=1);
 
 namespace Laminas\ServiceManager\Inspector\DependencyConfig;
 
-use Laminas\ServiceManager\Inspector\EventCollector\EventCollectorInterface;
-
 interface DependencyConfigInterface
 {
     /**
@@ -28,6 +26,4 @@ interface DependencyConfigInterface
     public function hasAutowireFactory(string $serviceName): bool;
 
     public function hasFactory(string $serviceName): bool;
-
-    public function releaseEvents(EventCollectorInterface $eventCollector): void;
 }

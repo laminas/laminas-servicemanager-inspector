@@ -12,9 +12,6 @@ namespace Laminas\ServiceManager\Inspector\DependencyConfig;
 
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\ServiceManager\Inspector\AliasResolver\AliasResolver;
-use Laminas\ServiceManager\Inspector\Event\AutoloadProblemDetectedEvent;
-use Laminas\ServiceManager\Inspector\Event\EventInterface;
-use Laminas\ServiceManager\Inspector\EventCollector\EventCollectorInterface;
 use Zakirullin\Mess\Mess;
 
 use function array_merge;
@@ -23,9 +20,6 @@ use function in_array;
 
 /**
  * Provides a convenient abstraction over raw ServiceManager configuration.
- *
- * During an initialization phase collects {@see AutoloadProblemDetectedEvent}
- * which can be later released.
  */
 final class DependencyConfig implements DependencyConfigInterface
 {
@@ -46,9 +40,6 @@ final class DependencyConfig implements DependencyConfigInterface
     private const PREDEFINED_CONTAINER_KEYS = [
         'config',
     ];
-
-    /** @psalm-var list<EventInterface> */
-    private $events = [];
 
     /** @psalm-var array<string, string> */
     private $factories;
@@ -87,15 +78,6 @@ final class DependencyConfig implements DependencyConfigInterface
         }
 
         $factories = (new Mess($dependencies))['factories']->findArrayOfStringToString() ?? [];
-        foreach ($factories as $serviceName => $factoryClass) {
-            if (in_array($serviceName, self::PREDEFINED_CONTAINER_KEYS, true)) {
-                continue;
-            }
-
-            if (! class_exists($factoryClass)) {
-                $this->events[] = new AutoloadProblemDetectedEvent($serviceName, $factoryClass);
-            }
-        }
 
         return array_merge($invokableFactories, $factories);
     }
@@ -110,7 +92,7 @@ final class DependencyConfig implements DependencyConfigInterface
     {
         $messedInvokables = (new Mess($dependencies))['invokables'];
 
-        return $messedInvokables->findArrayOfStringToString() ?? [];
+        return $messedInvokables->findArray() ?? [];
     }
 
     /**
@@ -180,15 +162,11 @@ final class DependencyConfig implements DependencyConfigInterface
             return true;
         }
 
-        return $this->getFactory($serviceName) !== null;
-    }
-
-    public function releaseEvents(EventCollectorInterface $eventCollector): void
-    {
-        foreach ($this->events as $event) {
-            $eventCollector->collect($event);
+        $class = $this->getFactory($serviceName);
+        if ($class === null) {
+            return false;
         }
 
-        $this->events = [];
+        return class_exists($class);
     }
 }

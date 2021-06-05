@@ -76,8 +76,6 @@ EOH;
     {
         $this->scan();
 
-        $this->config->releaseEvents($this->eventCollector);
-
         $exitCode = $this->eventCollector->hasTerminalEvent() ? 1 : 0;
 
         ($this->eventReporter)($this->eventCollector->release(), $output);
