@@ -32,9 +32,7 @@ use Laminas\ServiceManager\Inspector\Traverser\TraverserInterface;
 
 final class ConfigProvider
 {
-    /**
-     * @psalm-return array<string, mixed>
-     */
+    /** @psalm-return array<string, mixed> */
     public function __invoke(): array
     {
         return [
@@ -43,9 +41,7 @@ final class ConfigProvider
         ];
     }
 
-    /**
-     * @psalm-return array{factories:array<string,class-string>,aliases:array<string,string>}
-     */
+    /** @psalm-return array{factories:array<string,class-string>,aliases:array<string,string>} */
     public function getDependencies(): array
     {
         return [
@@ -74,9 +70,7 @@ final class ConfigProvider
         ];
     }
 
-    /**
-     * @psalm-return array<string, mixed>
-     */
+    /** @psalm-return array<string, mixed> */
     public function getCliConfig(): array
     {
         return [

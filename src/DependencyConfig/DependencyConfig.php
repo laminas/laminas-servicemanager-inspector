@@ -14,12 +14,19 @@ use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\ServiceManager\Inspector\AliasResolver\AliasResolver;
 use Laminas\ServiceManager\Inspector\Event\AutoloadProblemDetectedEvent;
 use Laminas\ServiceManager\Inspector\Event\EventInterface;
+use Laminas\ServiceManager\Inspector\EventCollector\EventCollectorInterface;
 use Zakirullin\Mess\Mess;
 
 use function array_merge;
 use function class_exists;
 use function in_array;
 
+/**
+ * Provides a convenient abstraction over raw ServiceManager configuration.
+ *
+ * During an initialization phase collects {@see AutoloadProblemDetectedEvent}
+ * which can be later released.
+ */
 final class DependencyConfig implements DependencyConfigInterface
 {
     private const INVOKABLE_FACTORIES = [
@@ -176,15 +183,12 @@ final class DependencyConfig implements DependencyConfigInterface
         return $this->getFactory($serviceName) !== null;
     }
 
-    /**
-     * @psalm-return list<EventInterface>
-     */
-    public function releaseEvents(): array
+    public function releaseEvents(EventCollectorInterface $eventCollector): void
     {
-        $events = $this->events;
+        foreach ($this->events as $event) {
+            $eventCollector->collect($event);
+        }
 
         $this->events = [];
-
-        return $events;
     }
 }

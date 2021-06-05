@@ -12,6 +12,7 @@ namespace Laminas\ServiceManager\Inspector;
 
 class Module
 {
+    /** @psalm-return array<string, mixed> */
     public function getConfig(): array
     {
         $provider = new ConfigProvider();

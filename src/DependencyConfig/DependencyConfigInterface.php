@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Laminas\ServiceManager\Inspector\DependencyConfig;
 
-use Laminas\ServiceManager\Inspector\Event\EventInterface;
+use Laminas\ServiceManager\Inspector\EventCollector\EventCollectorInterface;
 
 interface DependencyConfigInterface
 {
@@ -29,8 +29,5 @@ interface DependencyConfigInterface
 
     public function hasFactory(string $serviceName): bool;
 
-    /**
-     * @psalm-return list<EventInterface>
-     */
-    public function releaseEvents(): array;
+    public function releaseEvents(EventCollectorInterface $eventCollector): void;
 }

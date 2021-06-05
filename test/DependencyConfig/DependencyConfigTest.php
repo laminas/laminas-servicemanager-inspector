@@ -12,7 +12,10 @@ namespace LaminasTest\ServiceManager\Inspector\DependencyConfig;
 
 use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 use Laminas\ServiceManager\Inspector\DependencyConfig\DependencyConfig;
+use Laminas\ServiceManager\Inspector\Event\AutoloadProblemDetectedEvent;
+use Laminas\ServiceManager\Inspector\EventCollector\EventCollectorInterface;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Zakirullin\Mess\Exception\UnexpectedTypeException;
 
@@ -74,5 +77,21 @@ class DependencyConfigTest extends TestCase
             ],
             $config->getFactories()
         );
+    }
+
+    public function testFiresAutoloadProblemEventWhenAutoloadProblemOccurs()
+    {
+        $depenencies = [
+            'factories' => [
+                'service1' => 'unresolvable',
+            ],
+        ];
+
+        $config = new DependencyConfig($depenencies);
+
+        $eventCollector = $this->prophesize(EventCollectorInterface::class);
+        $eventCollector->collect(Argument::type(AutoloadProblemDetectedEvent::class))->shouldBeCalled();
+
+        $config->releaseEvents($eventCollector->reveal());
     }
 }

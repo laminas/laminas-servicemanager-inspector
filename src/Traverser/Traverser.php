@@ -24,9 +24,10 @@ use Throwable;
 use function in_array;
 
 /**
- * Traverses all the way down dependency tree.
+ * Traverses all the way down a dependency tree.
+ * The tree is formed by scanning given dependency constructor.
  *
- * Fires an event in case if no factory can satisfy a required dependency.
+ * Fires an even {@see EventInterface} upon any ServiceManager-related misconfiguration.
  */
 final class Traverser implements TraverserInterface
 {

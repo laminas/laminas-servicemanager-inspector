@@ -75,7 +75,8 @@ EOH;
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->scan();
-        $this->collectEventsFromConfig();
+
+        $this->config->releaseEvents($this->eventCollector);
 
         $exitCode = $this->eventCollector->hasTerminalEvent() ? 1 : 0;
 
@@ -93,13 +94,6 @@ EOH;
             if ($this->dependencyScanner->canScan($serviceName)) {
                 ($this->traverser)(new Dependency($serviceName));
             }
-        }
-    }
-
-    private function collectEventsFromConfig(): void
-    {
-        foreach ($this->config->releaseEvents() as $event) {
-            $this->eventCollector->collect($event);
         }
     }
 }
