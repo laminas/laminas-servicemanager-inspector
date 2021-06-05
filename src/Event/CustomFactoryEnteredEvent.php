@@ -18,6 +18,10 @@ final class CustomFactoryEnteredEvent implements EnterEventInterface
     /** @psalm-var list<string> */
     private $instantiationStack;
 
+    /**
+     * @psalm-param list<string> $instantiationStack
+     * @param string[] $instantiationStack
+     */
     public function __construct(string $dependencyName, array $instantiationStack)
     {
         $this->dependencyName     = $dependencyName;

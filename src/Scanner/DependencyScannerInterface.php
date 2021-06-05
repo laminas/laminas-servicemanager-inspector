@@ -15,6 +15,7 @@ use Laminas\ServiceManager\Inspector\Dependency\Dependency;
 interface DependencyScannerInterface
 {
     /**
+     * @psalm-return list<Dependency>
      * @return Dependency[]
      */
     public function scan(string $serviceName): array;

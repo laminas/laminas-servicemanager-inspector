@@ -32,13 +32,17 @@ final class ConsoleSummaryEventReporter implements EventReporterInterface
         $this->consoleColor = $consoleColor;
     }
 
+    /**
+     * @psalm-param list<EventInterface> $events
+     * @param EventInterface[] $events
+     */
     public function __invoke(array $events, OutputInterface $output): void
     {
         $this->printSummary($events, $output);
     }
 
     /**
-     * @psalm-var list<EventInterface> $events
+     * @psalm-param list<EventInterface> $events
      * @param EventInterface[] $events
      */
     private function printSummary(array $events, OutputInterface $output): void
@@ -100,8 +104,8 @@ final class ConsoleSummaryEventReporter implements EventReporterInterface
     }
 
     /**
-     * @psalm-var list<EventInterface> $events
-     * @psalm-var list<class-string> $desiredEvents
+     * @psalm-param list<EventInterface> $events
+     * @psalm-param list<class-string> $desiredEvents
      * @var EventInterface[] $events
      */
     private function countEnterEvent(array $events, array $desiredEvents): int
@@ -122,6 +126,10 @@ final class ConsoleSummaryEventReporter implements EventReporterInterface
         return $foundEventCount;
     }
 
+    /**
+     * @psalm-param list<EventInterface> $events
+     * @param EventInterface[] $events
+     */
     private function countMaxInstantiationDeep(array $events): int
     {
         $maxInstantiationDeep = 0;
@@ -137,6 +145,10 @@ final class ConsoleSummaryEventReporter implements EventReporterInterface
         return $maxInstantiationDeep;
     }
 
+    /**
+     * @psalm-param list<EventInterface> $events
+     * @param EventInterface[] $events
+     */
     private function countTerminalEvents(array $events): int
     {
         $count = 0;

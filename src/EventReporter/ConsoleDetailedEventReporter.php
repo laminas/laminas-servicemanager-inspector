@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Laminas\ServiceManager\Inspector\EventReporter;
 
 use Laminas\ServiceManager\Inspector\Event\EnterEventInterface;
+use Laminas\ServiceManager\Inspector\Event\EventInterface;
 use Laminas\ServiceManager\Inspector\Event\TerminalEventInterface;
 use Laminas\ServiceManager\Inspector\EventReporter\ConsoleColor\ConsoleColorInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -24,7 +25,7 @@ final class ConsoleDetailedEventReporter implements EventReporterInterface
     /** @var ConsoleColorInterface */
     private $consoleColor;
 
-    /** @var ConsoleSummaryEventReporter */
+    /** @var EventReporterInterface */
     private $summaryReporter;
 
     public function __construct(ConsoleColorInterface $consoleColor, EventReporterInterface $summaryReporter)
@@ -33,6 +34,10 @@ final class ConsoleDetailedEventReporter implements EventReporterInterface
         $this->summaryReporter = $summaryReporter;
     }
 
+    /**
+     * @psalm-param list<EventInterface> $events
+     * @param EventInterface[] $events
+     */
     public function __invoke(array $events, OutputInterface $output): void
     {
         foreach ($events as $event) {

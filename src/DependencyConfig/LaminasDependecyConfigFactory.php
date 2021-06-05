@@ -21,8 +21,7 @@ final class LaminasDependecyConfigFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): DependencyConfig
     {
-        $config       = $container->get('config');
-        $dependencies = (new Mess($config))['service_manager']->getArrayOfStringToMixed();
+        $dependencies = (new Mess($container->get('config')))['service_manager']->getArrayOfStringToMixed();
 
         return new DependencyConfig($dependencies);
     }

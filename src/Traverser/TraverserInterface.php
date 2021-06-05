@@ -16,7 +16,8 @@ use Throwable;
 interface TraverserInterface
 {
     /**
-     * @psalm-var list<string> $instantiationStack
+     * @psalm-param list<string> $instantiationStack
+     * @param string[] $instantiationStack
      * @throws Throwable
      */
     public function __invoke(Dependency $dependency, array $instantiationStack = []): void;

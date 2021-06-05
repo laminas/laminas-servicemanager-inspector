@@ -21,8 +21,7 @@ final class MezzioDependencyConfigFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): DependencyConfig
     {
-        $config       = $container->get('config');
-        $dependencies = (new Mess($config))['dependencies']->getArrayOfStringToMixed();
+        $dependencies = (new Mess($container->get('config')))['dependencies']->getArrayOfStringToMixed();
 
         return new DependencyConfig($dependencies);
     }

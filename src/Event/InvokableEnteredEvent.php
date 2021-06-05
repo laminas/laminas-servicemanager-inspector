@@ -18,6 +18,10 @@ final class InvokableEnteredEvent implements EnterEventInterface
     /** @psalm-var list<string> */
     private $instantiationStack;
 
+    /**
+     * @psalm-param list<string> $instantiationStack
+     * @param string[] $instantiationStack
+     */
     public function __construct(string $dependencyName, array $instantiationStack)
     {
         $this->dependencyName     = $dependencyName;
@@ -31,6 +35,7 @@ final class InvokableEnteredEvent implements EnterEventInterface
 
     /**
      * @psalm-return list<string>
+     * @return string[]
      */
     public function getInstantiationStack(): array
     {

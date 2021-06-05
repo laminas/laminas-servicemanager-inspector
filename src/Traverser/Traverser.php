@@ -45,8 +45,8 @@ final class Traverser implements TraverserInterface
     }
 
     /**
-     * @psalm-var list<string> $instantiationStack
-     * @param array            $instantiationStack
+     * @psalm-param list<string> $instantiationStack
+     * @param string[]            $instantiationStack
      * @throws Throwable
      */
     public function __invoke(Dependency $dependency, array $instantiationStack = []): void
@@ -67,6 +67,10 @@ final class Traverser implements TraverserInterface
         }
     }
 
+    /**
+     * @psalm-param list<string> $instantiationStack
+     * @param string[] $instantiationStack
+     */
     private function hasFactory(Dependency $dependency, array $instantiationStack): bool
     {
         $isInvokable = $this->config->isInvokable($dependency->getName());
@@ -108,7 +112,7 @@ final class Traverser implements TraverserInterface
     }
 
     /**
-     * @psalm-var list<string> $instantiationStack
+     * @psalm-param list<string> $instantiationStack
      * @param array            $instantiationStack
      */
     private function hasCircularDependency(Dependency $dependency, array $instantiationStack): bool

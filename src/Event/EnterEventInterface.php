@@ -12,5 +12,8 @@ namespace Laminas\ServiceManager\Inspector\Event;
 
 interface EnterEventInterface extends EventInterface
 {
+    /**
+     * @psalm-return list<string>
+     */
     public function getInstantiationStack(): array;
 }

@@ -12,16 +12,20 @@ namespace Laminas\ServiceManager\Inspector\AliasResolver;
 
 use Laminas\ServiceManager\Inspector\Exception\CyclicAliasException;
 
+use function array_keys;
+
 final class AliasResolver
 {
     /**
-     * @param array $aliases
-     * @return array
+     * @psalm-param array<string, string> $aliases
+     * @param string[] $aliases
+     * @psalm-return array<string, string>
+     * @return string[]
      */
     public function __invoke(array $aliases): array
     {
         $resolvedAliases = [];
-        foreach ($aliases as $alias => $service) {
+        foreach (array_keys($aliases) as $alias) {
             $visited = [];
             $name    = $alias;
 

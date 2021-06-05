@@ -42,6 +42,7 @@ final class ReflectionBasedDependencyScanner implements DependencyScannerInterfa
     }
 
     /**
+     * @psalm-return list<Dependency>
      * @return Dependency[]
      * @throws ReflectionException
      */
@@ -54,7 +55,7 @@ final class ReflectionBasedDependencyScanner implements DependencyScannerInterfa
         // TODO throw an event on interface
 
         $realServiceName = $this->config->getRealName($serviceName);
-        // TODO Check if invokable has zero params
+        // TODO check if invokable has zero params
         if ($this->config->isInvokable($realServiceName)) {
             return [];
         }
@@ -70,7 +71,8 @@ final class ReflectionBasedDependencyScanner implements DependencyScannerInterfa
     }
 
     /**
-     * @return array
+     * @psalm-return list<Dependency>
+     * @return Dependency[]
      * @throws ReflectionException
      */
     private function getConstructorParameters(string $serviceName): array

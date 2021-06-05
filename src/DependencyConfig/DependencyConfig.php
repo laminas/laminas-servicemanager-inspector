@@ -53,7 +53,8 @@ final class DependencyConfig implements DependencyConfigInterface
     private $resolvedAliases;
 
     /**
-     * @psalm-var array<string, string> $dependencies
+     * @psalm-param array<string, mixed> $dependencies
+     * @param string[] $dependencies
      */
     public function __construct(array $dependencies)
     {
@@ -63,16 +64,15 @@ final class DependencyConfig implements DependencyConfigInterface
     }
 
     /**
-     * @psalm-var array<string, string> $dependencies
-     * @psalm-return array<string, class-string>
-     * @param array $dependencies
-     * @return array
+     * @psalm-param array<string, mixed> $dependencies
+     * @param string[] $dependencies
+     * @psalm-return array<string, string>
+     * @return string[]
      */
     private function getValidFactories(array $dependencies): array
     {
         $invokableFactories = [];
-        // FIXME string of string
-        $invokables = (new Mess($dependencies))['invokables']->findArrayOfStringToString() ?? [];
+        $invokables         = (new Mess($dependencies))['invokables']->findArrayOfStringToString() ?? [];
         foreach ($invokables as $name => $class) {
             if ($name !== $class) {
                 $invokableFactories[$class] = InvokableFactory::class;
@@ -94,29 +94,28 @@ final class DependencyConfig implements DependencyConfigInterface
     }
 
     /**
-     * @psalm-var array<string, string> $dependencies
+     * @psalm-param array<string, mixed> $dependencies
+     * @param string[] $dependencies
      * @psalm-return array<string, string>
-     * @param array $dependencies
-     * @return array
+     * @return string[]
      */
     private function getValidInvokables(array $dependencies): array
     {
         $messedInvokables = (new Mess($dependencies))['invokables'];
 
-        // FIXME string
-        return $messedInvokables->findArray() ?? [];
+        return $messedInvokables->findArrayOfStringToString() ?? [];
     }
 
     /**
-     * @psalm-var array<string, string> $dependencies
+     * @psalm-param array<string, mixed> $dependencies
+     * @param string[] $dependencies
      * @psalm-return array<string, string>
-     * @param array $dependencies
-     * @return array
+     * @return string[]
      */
     private function getValidResolvedAliases(array $dependencies): array
     {
         $invokableAliases = [];
-        $invokables       = (new Mess($dependencies))['invokables']->findArray() ?? [];
+        $invokables       = (new Mess($dependencies))['invokables']->findArrayOfStringToString() ?? [];
         foreach ($invokables as $name => $class) {
             if ($name !== $class) {
                 $invokableAliases[$name] = $class;

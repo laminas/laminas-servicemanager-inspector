@@ -15,7 +15,10 @@ use Laminas\ServiceManager\Inspector\Event\TerminalEventInterface;
 
 final class EventCollector implements EventCollectorInterface
 {
-    /** @var EventInterface[] */
+    /**
+     * @psalm-var list<EventInterface>
+     * @var EventInterface[]
+     */
     private $events = [];
 
     /**

@@ -21,6 +21,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
 
+use function array_keys;
+
 final class InspectCommand extends Command
 {
     public const HELP = <<<'EOH'
@@ -82,17 +84,19 @@ EOH;
         return $exitCode;
     }
 
+    /**
+     * @throws Throwable
+     */
     private function scan(): void
     {
-        foreach ($this->config->getFactories() as $serviceName => $factoryClass) {
+        foreach (array_keys($this->config->getFactories()) as $serviceName) {
             if ($this->dependencyScanner->canScan($serviceName)) {
-                // TODO don't fail here - collect all occurring errors
                 ($this->traverser)(new Dependency($serviceName));
             }
         }
     }
 
-    private function collectEventsFromConfig()
+    private function collectEventsFromConfig(): void
     {
         foreach ($this->config->releaseEvents() as $event) {
             $this->eventCollector->collect($event);
