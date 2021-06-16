@@ -92,7 +92,6 @@ final class ReflectionBasedDependencyScanner implements DependencyScannerInterfa
         foreach ($constructor->getParameters() as $parameter) {
             $type = $parameter->getType();
             $type = $type instanceof ReflectionNamedType ? $type->getName() : null;
-
             $isNotClass = is_string($type) && ! class_exists($type) && ! interface_exists($type);
             if ($type === null || $isNotClass) {
                 if (! $parameter->isDefaultValueAvailable()) {
