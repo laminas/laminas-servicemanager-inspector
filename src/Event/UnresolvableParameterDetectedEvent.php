@@ -12,7 +12,7 @@ namespace Laminas\ServiceManager\Inspector\Event;
 
 use function sprintf;
 
-final class UnexpectedScalarDetectedEvent implements TerminalEventInterface
+final class UnresolvableParameterDetectedEvent implements TerminalEventInterface
 {
     /** @var string */
     private $dependencyName;
@@ -34,7 +34,7 @@ final class UnexpectedScalarDetectedEvent implements TerminalEventInterface
     public function getError(): string
     {
         return sprintf(
-            "ReflectionBasedAbstractFactory cannot resolve scalar '%s' for '%s' service.",
+            "ReflectionBasedAbstractFactory cannot resolve parameter '%s' of '%s' service.",
             $this->paramName,
             $this->dependencyName
         );

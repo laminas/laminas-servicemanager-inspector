@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace LaminasTest\ServiceManager\Inspector\EventReporter;
 
 use Laminas\ServiceManager\Inspector\Event\CustomFactoryEnteredEvent;
-use Laminas\ServiceManager\Inspector\Event\UnexpectedScalarDetectedEvent;
+use Laminas\ServiceManager\Inspector\Event\UnresolvableParameterDetectedEvent;
 use Laminas\ServiceManager\Inspector\EventReporter\ConsoleColor\NullConsoleColor;
 use Laminas\ServiceManager\Inspector\EventReporter\ConsoleDetailedEventReporter;
 use Laminas\ServiceManager\Inspector\EventReporter\ConsoleSummaryEventReporter;
@@ -33,7 +33,7 @@ class ConsoleDetailedEventReporterTest extends TestCase
     {
         $events = [
             new CustomFactoryEnteredEvent('dep1', ['a', 'b']),
-            new UnexpectedScalarDetectedEvent('dep2', 'param'),
+            new UnresolvableParameterDetectedEvent('dep2', 'p'),
         ];
         $buffer = new BufferedOutput();
 
@@ -43,7 +43,7 @@ class ConsoleDetailedEventReporterTest extends TestCase
         $reporter($events, $buffer);
 
         $this->assertSame(
-            "    └─dep1\n\n\n  ReflectionBasedAbstractFactory cannot resolve scalar 'param' for 'dep2' service.\n\n\n",
+            "    └─dep1\n\n\n  ReflectionBasedAbstractFactory cannot resolve parameter 'p' of 'dep2' service.\n\n\n",
             $buffer->fetch()
         );
     }

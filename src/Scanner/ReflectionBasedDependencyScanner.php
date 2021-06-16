@@ -12,14 +12,17 @@ namespace Laminas\ServiceManager\Inspector\Scanner;
 
 use Laminas\ServiceManager\Inspector\Dependency\Dependency;
 use Laminas\ServiceManager\Inspector\DependencyConfig\DependencyConfigInterface;
-use Laminas\ServiceManager\Inspector\Event\UnexpectedScalarDetectedEvent;
+use Laminas\ServiceManager\Inspector\Event\UnresolvableParameterDetectedEvent;
 use Laminas\ServiceManager\Inspector\EventCollector\EventCollectorInterface;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionNamedType;
 use ReflectionParameter;
 
+use function class_exists;
 use function in_array;
+use function interface_exists;
+use function is_string;
 
 final class ReflectionBasedDependencyScanner implements DependencyScannerInterface
 {
@@ -87,14 +90,22 @@ final class ReflectionBasedDependencyScanner implements DependencyScannerInterfa
 
         $unsatisfiedDependencies = [];
         foreach ($constructor->getParameters() as $parameter) {
-            $className = $this->getParameterClassName($parameter);
-            if ($className === null && ! $this->isOptional($parameter)) {
-                ($this->eventCollector)(new UnexpectedScalarDetectedEvent($serviceName, $parameter->getName()));
-                return [];
+            $type = $parameter->getType();
+            $type = $type instanceof ReflectionNamedType ? $type->getName() : null;
+
+            $isNotClass = is_string($type) && ! class_exists($type) && ! interface_exists($type);
+            if ($type === null || $isNotClass) {
+                if (! $parameter->isDefaultValueAvailable()) {
+                    $event = new UnresolvableParameterDetectedEvent($serviceName, $parameter->getName());
+                    ($this->eventCollector)($event);
+                }
+
+                continue;
             }
 
+            $class = $type;
             /** @psalm-var string $className */
-            $realDependencyName = $this->config->getRealName($className);
+            $realDependencyName = $this->config->getRealName($class);
 
             $unsatisfiedDependencies[] = new Dependency($realDependencyName, $this->isOptional($parameter));
         }
@@ -105,24 +116,5 @@ final class ReflectionBasedDependencyScanner implements DependencyScannerInterfa
     private function isOptional(ReflectionParameter $parameter): bool
     {
         return $parameter->isOptional() || ($parameter->hasType() && $parameter->getType()->allowsNull());
-    }
-
-    private function getParameterClassName(ReflectionParameter $parameter): ?string
-    {
-        $type = $parameter->getType();
-        if ($type === null) {
-            return null;
-        }
-
-        if (! $type instanceof ReflectionNamedType) {
-            // TODO ReflectionUnionType is possible here (in PHP 8)
-            return null;
-        }
-
-        if ($type->isBuiltin()) {
-            return null;
-        }
-
-        return $type->getName();
     }
 }

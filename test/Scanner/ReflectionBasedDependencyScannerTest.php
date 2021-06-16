@@ -11,16 +11,20 @@ declare(strict_types=1);
 namespace LaminasTest\ServiceManager\Inspector\Scanner;
 
 use Laminas\ServiceManager\Inspector\DependencyConfig\DependencyConfig;
-use Laminas\ServiceManager\Inspector\Event\UnexpectedScalarDetectedEvent;
+use Laminas\ServiceManager\Inspector\Event\UnresolvableParameterDetectedEvent;
 use Laminas\ServiceManager\Inspector\EventCollector\EventCollectorInterface;
 use Laminas\ServiceManager\Inspector\EventCollector\NullEventCollector;
 use Laminas\ServiceManager\Inspector\Scanner\ReflectionBasedDependencyScanner;
+use LaminasTest\ServiceManager\Inspector\Scanner\Stub\ClassWithExistingClassParameter;
+use LaminasTest\ServiceManager\Inspector\Scanner\Stub\ClassWithNonExistingClassParameter;
+use LaminasTest\ServiceManager\Inspector\Scanner\Stub\ClassWithOptionalNonExistingClassParameter;
+use LaminasTest\ServiceManager\Inspector\Scanner\Stub\ClassWithOptionalScalarParameter;
+use LaminasTest\ServiceManager\Inspector\Scanner\Stub\ClassWithScalarParameter;
+use LaminasTest\ServiceManager\Inspector\Scanner\Stub\ClassWithScalarParameterWithDefaultValue;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use stdClass;
-
-use function get_class;
 
 /**
  * @covers \Laminas\ServiceManager\Inspector\Scanner\ReflectionBasedDependencyScanner
@@ -78,17 +82,12 @@ class ReflectionBasedDependencyScannerTest extends TestCase
 
     public function testDetectsAllDependenciesRequiredInConstructor()
     {
-        $obj = new class (new stdClass()) {
-            public function __construct(stdClass $dependency)
-            {
-            }
-        };
-
         $config = new DependencyConfig(
             [
                 'factories' => [
+                    ClassWithExistingClassParameter::class
                     // phpcs:ignore
-                    get_class($obj) => 'Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory',
+                    => 'Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory',
                 ],
             ]
         );
@@ -98,39 +97,134 @@ class ReflectionBasedDependencyScannerTest extends TestCase
             new NullEventCollector(),
         );
 
-        $dependencies = $scanner->scan(get_class($obj));
+        $dependencies = $scanner->scan(ClassWithExistingClassParameter::class);
 
         $this->assertArrayHasKey(0, $dependencies);
         $this->assertSame(stdClass::class, $dependencies[0]->getName());
         $this->assertFalse($dependencies[0]->isOptional());
     }
 
-    public function testFiresUnexpectedScalarEventOnScalarInConstructor()
+    public function testFiresUnresolvableParameterEventOnScalarInConstructor()
     {
-        $obj = new class (1) {
-            public function __construct(int $value)
-            {
-            }
-        };
-
         $config = new DependencyConfig(
             [
                 'factories' => [
+                    ClassWithScalarParameter::class
                     // phpcs:ignore
-                    get_class($obj) => 'Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory',
+                    => 'Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory',
                 ],
             ]
         );
 
         $eventCollector = $this->prophesize(EventCollectorInterface::class);
-        $eventCollector->__invoke(Argument::type(UnexpectedScalarDetectedEvent::class))->shouldBeCalled();
+        $eventCollector->__invoke(Argument::type(UnresolvableParameterDetectedEvent::class))->shouldBeCalled();
 
         $scanner = new ReflectionBasedDependencyScanner(
             $config,
             $eventCollector->reveal(),
         );
 
-        $dependencies = $scanner->scan(get_class($obj));
+        $dependencies = $scanner->scan(ClassWithScalarParameter::class);
+
+        $this->assertEmpty($dependencies);
+    }
+
+    public function testFiresNoEventsOnOptionalScalarInConstructor()
+    {
+        $config = new DependencyConfig(
+            [
+                'factories' => [
+                    ClassWithOptionalScalarParameter::class
+                    // phpcs:ignore
+                    => 'Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory',
+                ],
+            ]
+        );
+
+        $eventCollector = $this->prophesize(EventCollectorInterface::class);
+        $eventCollector->__invoke(Argument::type(UnresolvableParameterDetectedEvent::class))->shouldBeCalled();
+
+        $scanner = new ReflectionBasedDependencyScanner(
+            $config,
+            $eventCollector->reveal(),
+        );
+
+        $dependencies = $scanner->scan(ClassWithOptionalScalarParameter::class);
+
+        $this->assertEmpty($dependencies);
+    }
+
+    public function testFiresNoEventsOnScalarWithDefaultValueInConstructor()
+    {
+        $config = new DependencyConfig(
+            [
+                'factories' => [
+                    ClassWithScalarParameterWithDefaultValue::class
+                    // phpcs:ignore
+                    => 'Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory',
+                ],
+            ]
+        );
+
+        $eventCollector = $this->prophesize(EventCollectorInterface::class);
+        $eventCollector->__invoke(Argument::any())->shouldNotBeCalled();
+
+        $scanner = new ReflectionBasedDependencyScanner(
+            $config,
+            $eventCollector->reveal(),
+        );
+
+        $dependencies = $scanner->scan(ClassWithScalarParameterWithDefaultValue::class);
+
+        $this->assertEmpty($dependencies);
+    }
+
+    public function testFiresUnresolvableParameterEventOnNonExistingClassParameterInConstructor()
+    {
+        $config = new DependencyConfig(
+            [
+                'factories' => [
+                    ClassWithNonExistingClassParameter::class
+                    // phpcs:ignore
+                    => 'Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory',
+                ],
+            ]
+        );
+
+        $eventCollector = $this->prophesize(EventCollectorInterface::class);
+        $eventCollector->__invoke(Argument::type(UnresolvableParameterDetectedEvent::class))->shouldBeCalled();
+
+        $scanner = new ReflectionBasedDependencyScanner(
+            $config,
+            $eventCollector->reveal(),
+        );
+
+        $dependencies = $scanner->scan(ClassWithNonExistingClassParameter::class);
+
+        $this->assertEmpty($dependencies);
+    }
+
+    public function testFiresNoEventsOnOptionalNonExistingClassParameterInConstructor()
+    {
+        $config = new DependencyConfig(
+            [
+                'factories' => [
+                    ClassWithOptionalNonExistingClassParameter::class
+                    // phpcs:ignore
+                    => 'Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory',
+                ],
+            ]
+        );
+
+        $eventCollector = $this->prophesize(EventCollectorInterface::class);
+        $eventCollector->__invoke(Argument::any())->shouldNotBeCalled();
+
+        $scanner = new ReflectionBasedDependencyScanner(
+            $config,
+            $eventCollector->reveal(),
+        );
+
+        $dependencies = $scanner->scan(ClassWithNonExistingClassParameter::class);
 
         $this->assertEmpty($dependencies);
     }

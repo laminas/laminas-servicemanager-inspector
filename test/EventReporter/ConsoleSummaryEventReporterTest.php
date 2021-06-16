@@ -13,7 +13,7 @@ namespace LaminasTest\ServiceManager\Inspector\EventReporter;
 use Laminas\ServiceManager\Inspector\Event\AutowireFactoryEnteredEvent;
 use Laminas\ServiceManager\Inspector\Event\CustomFactoryEnteredEvent;
 use Laminas\ServiceManager\Inspector\Event\InvokableEnteredEvent;
-use Laminas\ServiceManager\Inspector\Event\UnexpectedScalarDetectedEvent;
+use Laminas\ServiceManager\Inspector\Event\UnresolvableParameterDetectedEvent;
 use Laminas\ServiceManager\Inspector\EventReporter\ConsoleColor\NullConsoleColor;
 use Laminas\ServiceManager\Inspector\EventReporter\ConsoleSummaryEventReporter;
 use PHPUnit\Framework\TestCase;
@@ -56,7 +56,7 @@ As far as I can tell, it\'s all good 🚀
             new CustomFactoryEnteredEvent('a', ['b', 'c']),
             new InvokableEnteredEvent('b', ['b']),
             new AutowireFactoryEnteredEvent('c', []),
-            new UnexpectedScalarDetectedEvent('d', 'param'),
+            new UnresolvableParameterDetectedEvent('d', 'param'),
         ];
 
         $reporter = new ConsoleSummaryEventReporter(new NullConsoleColor());
