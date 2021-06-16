@@ -28,8 +28,12 @@ The tool can be added to your favorite `CI` so to make sure there are no defects
 Run the following to install this library:
 
 ```bash
-$ composer require --dev laminas/servicemanager-inspector
+$ composer require --dev laminas/laminas-servicemanager-inspector
 ```
+
+## Configuration
+
+No configuration is needed. All you need to do is to include `ConfigProvider` (or `Module`) to your application.
 
 ## Usage
 
