@@ -1,7 +1,7 @@
 # laminas-servicemanager-inspector
 
-[![Build Status](https://github.com/laminas/laminas-cli/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/laminas/laminas-cli/actions/workflows/continuous-integration.yml)
-![Psalm coverage](https://shepherd.dev/github/zakirullin/mess/coverage.svg?)
+[![Build Status](https://github.com/laminas/laminas-servicemanager-inspector/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/laminas/laminas-servicemanager-inspector/actions/workflows/continuous-integration.yml)
+[![Psalm coverage](https://shepherd.dev/github/laminas/laminas-servicemanager-inspector/coverage.svg?)](https://shepherd.dev/github/laminas/laminas-servicemanager-inspector)
 
 The purpose of this package is to make autowiring reliable (no `AoT` is involved).
 At the moment it makes sure that `ReflectionBasedAbstractFactory` won't cause any runtime problems.
