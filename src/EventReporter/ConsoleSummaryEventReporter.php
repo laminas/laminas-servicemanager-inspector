@@ -106,7 +106,7 @@ class ConsoleSummaryEventReporter implements EventReporterInterface
     /**
      * @psalm-param list<EventInterface> $events
      * @psalm-param list<class-string> $desiredEvents
-     * @var EventInterface[] $events
+     * @param EventInterface[] $events
      */
     private function countEnterEvent(array $events, array $desiredEvents): int
     {
