@@ -19,8 +19,4 @@
 
     <!-- Include all rules from Laminas Coding Standard -->
     <rule ref="LaminasCodingStandard"/>
-
-    <rule ref="SlevomatCodingStandard.Classes.UnusedPrivateElements.UnusedMethod">
-        <exclude-pattern>src/Exception/CyclicAliasException.php</exclude-pattern>
-    </rule>
 </ruleset>
