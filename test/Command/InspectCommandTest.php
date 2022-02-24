@@ -22,7 +22,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class InspectCommandTest extends TestCase
 {
-
     public function testBeginsAnalysisWhenScannableDependenciesAreProvided(): void
     {
         $config = new DependencyConfig([
