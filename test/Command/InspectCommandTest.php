@@ -12,9 +12,8 @@ use Laminas\ServiceManager\Inspector\EventCollector\NullEventCollector;
 use Laminas\ServiceManager\Inspector\EventReporter\NullEventReporter;
 use Laminas\ServiceManager\Inspector\Scanner\DependencyScannerInterface;
 use Laminas\ServiceManager\Inspector\Traverser\TraverserInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
-use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -23,7 +22,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class InspectCommandTest extends TestCase
 {
-    use ProphecyTrait;
 
     public function testBeginsAnalysisWhenScannableDependenciesAreProvided(): void
     {
@@ -33,24 +31,29 @@ class InspectCommandTest extends TestCase
                 'service2' => LaminasDependecyConfigFactory::class,
             ],
         ]);
+        /** @var DependencyScannerInterface|MockObject $scanner  */
+        $scanner = $this->createMock(DependencyScannerInterface::class);
+        $scanner->method('canScan')
+            ->withAnyParameters()
+            ->willReturn(true);
 
-        $scanner = $this->prophesize(DependencyScannerInterface::class);
-        $scanner->canScan(Argument::any())->willReturn(true);
-
-        $traverser = $this->prophesize(TraverserInterface::class);
-        $traverser->__invoke(Argument::type(Dependency::class))->shouldBeCalled(2);
+        /** @var TraverserInterface|MockObject $traverser  */
+        $traverser = $this->createMock(TraverserInterface::class);
+        $traverser->expects($this->exactly(2))
+            ->method('__invoke')
+            ->with($this->isInstanceOf(Dependency::class));
 
         $command = new InspectCommand(
             $config,
-            $scanner->reveal(),
-            $traverser->reveal(),
+            $scanner,
+            $traverser,
             new NullEventCollector(),
             new NullEventReporter(),
         );
 
         $command->run(
-            $this->prophesize(InputInterface::class)->reveal(),
-            $this->prophesize(OutputInterface::class)->reveal(),
+            $this->createMock(InputInterface::class),
+            $this->createMock(OutputInterface::class),
         );
     }
 
@@ -63,23 +66,27 @@ class InspectCommandTest extends TestCase
             ],
         ]);
 
-        $scanner = $this->prophesize(DependencyScannerInterface::class);
-        $scanner->canScan(Argument::any())->willReturn(false);
+        /** @var DependencyScannerInterface|MockObject $scanner  */
+        $scanner = $this->createMock(DependencyScannerInterface::class);
+        $scanner->method('canScan')->withAnyParameters()->willReturn(false);
 
-        $traverser = $this->prophesize(TraverserInterface::class);
-        $traverser->__invoke(Argument::type(Dependency::class))->shouldNotBeCalled();
+        /** @var TraverserInterface|MockObject $traverser  */
+        $traverser = $this->createMock(TraverserInterface::class);
+        $traverser->expects($this->never())
+            ->method('__invoke')
+            ->with($this->isInstanceOf(Dependency::class));
 
         $command = new InspectCommand(
             $config,
-            $scanner->reveal(),
-            $traverser->reveal(),
+            $scanner,
+            $traverser,
             new NullEventCollector(),
             new NullEventReporter(),
         );
 
         $command->run(
-            $this->prophesize(InputInterface::class)->reveal(),
-            $this->prophesize(OutputInterface::class)->reveal(),
+            $this->createMock(InputInterface::class),
+            $this->createMock(OutputInterface::class),
         );
     }
 }
