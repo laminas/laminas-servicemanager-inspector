@@ -6,8 +6,7 @@ namespace Laminas\ServiceManager\Inspector\Event;
 
 final class CustomFactoryEnteredEvent implements EnterEventInterface
 {
-    /** @var string */
-    private $dependencyName;
+    private string $dependencyName;
 
     /** @psalm-var list<string> */
     private $instantiationStack;

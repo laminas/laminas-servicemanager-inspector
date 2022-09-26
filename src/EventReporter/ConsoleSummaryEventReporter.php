@@ -18,8 +18,7 @@ use function sprintf;
 
 class ConsoleSummaryEventReporter implements EventReporterInterface
 {
-    /** @var ConsoleColorInterface */
-    private $consoleColor;
+    private ConsoleColorInterface $consoleColor;
 
     public function __construct(ConsoleColorInterface $consoleColor)
     {

@@ -25,14 +25,11 @@ use function in_array;
  */
 final class Traverser implements TraverserInterface
 {
-    /** @var DependencyConfigInterface */
-    private $config;
+    private DependencyConfigInterface $config;
 
-    /** @var DependencyScannerInterface */
-    private $dependencyScanner;
+    private DependencyScannerInterface $dependencyScanner;
 
-    /** @var EventCollectorInterface */
-    private $eventCollector;
+    private EventCollectorInterface $eventCollector;
 
     public function __construct(
         DependencyConfigInterface $config,

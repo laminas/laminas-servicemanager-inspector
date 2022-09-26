@@ -6,11 +6,9 @@ namespace Laminas\ServiceManager\Inspector\Dependency;
 
 final class Dependency
 {
-    /** @var string */
-    private $name;
+    private string $name;
 
-    /** @var bool */
-    private $isOptional;
+    private bool $isOptional;
 
     public function __construct(string $name, bool $isOptional = false)
     {

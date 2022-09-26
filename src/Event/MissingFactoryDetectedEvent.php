@@ -8,8 +8,7 @@ use function sprintf;
 
 final class MissingFactoryDetectedEvent implements TerminalEventInterface
 {
-    /** @var string */
-    private $dependencyName;
+    private string $dependencyName;
 
     public function __construct(string $dependencyName)
     {

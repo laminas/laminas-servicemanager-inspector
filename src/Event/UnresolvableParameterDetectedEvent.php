@@ -8,11 +8,9 @@ use function sprintf;
 
 final class UnresolvableParameterDetectedEvent implements TerminalEventInterface
 {
-    /** @var string */
-    private $dependencyName;
+    private string $dependencyName;
 
-    /** @var string */
-    private $paramName;
+    private string $paramName;
 
     public function __construct(string $dependencyName, string $paramName)
     {

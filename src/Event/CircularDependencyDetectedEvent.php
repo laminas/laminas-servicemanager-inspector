@@ -9,8 +9,7 @@ use function sprintf;
 
 final class CircularDependencyDetectedEvent implements TerminalEventInterface
 {
-    /** @var string */
-    private $dependencyName;
+    private string $dependencyName;
 
     /** @psalm-var list<string> */
     private $instantiationStack;

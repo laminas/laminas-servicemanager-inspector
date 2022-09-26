@@ -22,20 +22,15 @@ final class InspectCommand extends Command
     /** @var string|null $defaultName */
     public static $defaultName = 'servicemanager:inspect';
 
-    /** @var DependencyConfigInterface */
-    private $config;
+    private DependencyConfigInterface $config;
 
-    /** @var DependencyScannerInterface */
-    private $dependencyScanner;
+    private DependencyScannerInterface $dependencyScanner;
 
-    /** @var TraverserInterface */
-    private $traverser;
+    private TraverserInterface $traverser;
 
-    /** @var EventCollectorInterface */
-    private $eventCollector;
+    private EventCollectorInterface $eventCollector;
 
-    /** @var EventReporterInterface */
-    private $eventReporter;
+    private EventReporterInterface $eventReporter;
 
     public function __construct(
         DependencyConfigInterface $config,

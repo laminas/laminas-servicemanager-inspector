@@ -13,7 +13,7 @@ final class EventCollector implements EventCollectorInterface
      * @psalm-var list<EventInterface>
      * @var EventInterface[]
      */
-    private $events = [];
+    private array $events = [];
 
     /**
      * TODO preserve number of occurred events per dependency
