@@ -27,11 +27,9 @@ final class ReflectionBasedDependencyScanner implements DependencyScannerInterfa
         'Zend\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory',
     ];
 
-    /** @var DependencyConfigInterface */
-    private $config;
+    private DependencyConfigInterface $config;
 
-    /** @var EventCollectorInterface */
-    private $eventCollector;
+    private EventCollectorInterface $eventCollector;
 
     public function __construct(DependencyConfigInterface $config, EventCollectorInterface $eventCollector)
     {

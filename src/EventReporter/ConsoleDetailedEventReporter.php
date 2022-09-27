@@ -8,6 +8,7 @@ use Laminas\ServiceManager\Inspector\Event\EnterEventInterface;
 use Laminas\ServiceManager\Inspector\Event\EventInterface;
 use Laminas\ServiceManager\Inspector\Event\TerminalEventInterface;
 use Laminas\ServiceManager\Inspector\EventReporter\ConsoleColor\ConsoleColorInterface;
+use Laminas\ServiceManager\Inspector\EventReporter\ConsoleSummaryEventReporter;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use function count;
@@ -16,11 +17,9 @@ use function str_repeat;
 
 final class ConsoleDetailedEventReporter implements EventReporterInterface
 {
-    /** @var ConsoleColorInterface */
-    private $consoleColor;
+    private ConsoleColorInterface $consoleColor;
 
-    /** @var ConsoleSummaryEventReporter */
-    private $summaryReporter;
+    private ConsoleSummaryEventReporter $summaryReporter;
 
     public function __construct(ConsoleColorInterface $consoleColor, ConsoleSummaryEventReporter $summaryReporter)
     {
