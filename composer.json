@@ -19,7 +19,7 @@
         "zakirullin/mess": "^0.8.3"
     },
     "require-dev": {
-        "laminas/laminas-coding-standard": "^2.3.0",
+        "laminas/laminas-coding-standard": "^2.4.0",
         "phpspec/prophecy-phpunit": "^2.0.1",
         "phpunit/phpunit": "^9.5.26",
         "vimeo/psalm": "^4.29.0"
