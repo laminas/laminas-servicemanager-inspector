@@ -21,8 +21,8 @@
     "require-dev": {
         "laminas/laminas-coding-standard": "^2.3.0",
         "phpspec/prophecy-phpunit": "^2.0.1",
-        "phpunit/phpunit": "^9.5.16",
-        "vimeo/psalm": "^4.21.0"
+        "phpunit/phpunit": "^9.5.26",
+        "vimeo/psalm": "^4.29.0"
     },
     "autoload": {
         "psr-4": {
