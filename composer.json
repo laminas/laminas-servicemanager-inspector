@@ -13,7 +13,7 @@
         "forum": "https://discourse.laminas.dev/"
     },
     "require": {
-        "php": ">=7.4, <8.2",
+        "php": "~8.0.0 || ~8.1.0 || ~8.2.0",
         "laminas/laminas-cli": "^1.4.0",
         "laminas/laminas-servicemanager": "^3.2 || ^4.0",
         "zakirullin/mess": "^0.8.3"
@@ -42,7 +42,7 @@
     "config": {
         "sort-packages": true,
         "platform": {
-            "php": "7.4.99"
+            "php": "8.0.99"
         },
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true
